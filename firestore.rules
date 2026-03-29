@@ -12,13 +12,17 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == uid;
     }
 
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.admin == true;
+    }
+
     // ─── Users ─────────────────────────────────────────────────────────────────
     // Cada usuário lê/escreve apenas seu próprio perfil.
     match /users/{uid} {
-      allow read:   if isOwner(uid);
+      allow read:   if isOwner(uid) || isAdmin();
       allow create: if isOwner(uid);
-      allow update: if isOwner(uid);
-      allow delete: if false;
+      allow update: if isOwner(uid) || isAdmin();
+      allow delete: if isAdmin();
     }
 
     // ─── Usernames (mapeamento username → uid, público para checagem) ──────────
