@@ -13,6 +13,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Check JS syntax
+        run: |
+          for f in \
+            public/js/config.js \
+            public/js/auth.js \
+            public/js/linkpage.js \
+            public/admin/js/admin-links.js \
+            public/admin/js/admin-design.js; do
+            node --check "$f" && echo "OK: $f" || { echo "SYNTAX ERROR: $f"; exit 1; }
+          done
+
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
 
