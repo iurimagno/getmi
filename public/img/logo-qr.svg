@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220" viewBox="0 0 220 220" fill="none" role="img" aria-labelledby="logoQrTitle">
+  <title id="logoQrTitle">getmi.ai QR logo</title>
+  <rect x="25" y="25" width="170" height="170" rx="54" fill="#FF6B4A"/>
+  <path d="M76 116L100.5 91.5A18.5 18.5 0 0 1 126.5 117.5L102 142A18.5 18.5 0 0 1 76 116Z" stroke="#FAFAF8" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M125 103L100.5 127.5A18.5 18.5 0 1 1 74.5 101.5L99 77" stroke="#FAFAF8" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="198" height="40" viewBox="0 0 198 40" fill="none" role="img" aria-labelledby="getmiLogoLightTitle">
+  <title id="getmiLogoLightTitle">getmi.ai</title>
+  <rect x="0" y="4" width="32" height="32" rx="10" fill="#FF6B4A"/>
+  <path d="M11.5 21.5L16 17A3.5 3.5 0 0 1 21 22L16.5 26.5A3.5 3.5 0 0 1 11.5 21.5Z" stroke="#FAFAF8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M20.5 22.5L16 27A3.5 3.5 0 1 1 11 22L15.5 17.5" stroke="#FAFAF8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="45" y="26" fill="#FAFAF8" font-family="Poppins, Avenir Next, Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="-0.6">getmi</text>
+  <text x="110" y="26" fill="#FF6B4A" font-family="Poppins, Avenir Next, Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="-0.6">.ai</text>
+</svg>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none" role="img" aria-labelledby="getmiMarkTitle">
+  <title id="getmiMarkTitle">getmi.ai mark</title>
+  <rect x="4" y="4" width="56" height="56" rx="18" fill="#FF6B4A"/>
+  <path d="M21 34L29 26A6 6 0 0 1 37.5 34.5L29.5 42.5A6 6 0 0 1 21 34Z" stroke="#FAFAF8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M37 30L29 38A6 6 0 1 1 20.5 29.5L28.5 21.5" stroke="#FAFAF8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

@@ -75,15 +75,24 @@ a:hover { opacity: .72; }
   align-items: center;
   height: var(--topbar-h);
   padding: 0 1.375rem;
-  font-weight: 700;
-  font-size: 1.25rem;
   color: var(--warm-white) !important;
-  letter-spacing: -.02em;
   border-bottom: 1px solid rgba(255,255,255,.08);
   flex-shrink: 0;
 }
 
-.sidebar-brand:hover { opacity: .85; }
+.sidebar-brand:hover  { opacity: .88; }
+.sidebar-brand:active { opacity: .80; }
+.sidebar-brand:focus-visible {
+  outline: 2px solid #FF6B4A;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.sidebar-brand__img {
+  display: block;
+  width: auto;
+  height: 28px;
+}
 
 .sidebar-nav {
   flex: 1;

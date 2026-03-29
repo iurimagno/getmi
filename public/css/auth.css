@@ -62,18 +62,25 @@ a:hover { opacity: .7; text-decoration: underline; }
 
 /* ─── LOGO ───────────────────────────────────────────────────────────────── */
 .auth-logo {
-  display: block;
-  text-align: center;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 700;
-  font-size: 1.6rem;
-  color: var(--navy);
-  letter-spacing: -.02em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-bottom: 1.75rem;
-  text-decoration: none;
 }
 
-.auth-logo:hover { opacity: .8; text-decoration: none; color: var(--navy); }
+.auth-logo:hover  { opacity: .88; text-decoration: none; color: var(--navy); }
+.auth-logo:active { opacity: .80; }
+.auth-logo:focus-visible {
+  outline: 2px solid #FF6B4A;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.auth-logo__img {
+  display: block;
+  width: auto;
+  height: 34px;
+}
 
 /* ─── TABS (Login / Registrar) ───────────────────────────────────────────── */
 .auth-tabs {

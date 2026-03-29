@@ -47,13 +47,25 @@
     }
 
     .logo {
-      display: inline-block;
-      font-weight: 700;
-      font-size: 1.5rem;
-      color: var(--navy);
-      text-decoration: none;
-      letter-spacing: -.02em;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       margin-bottom: 2.5rem;
+      transition: opacity .2s;
+    }
+
+    .logo:hover  { opacity: .88; }
+    .logo:active { opacity: .80; }
+    .logo:focus-visible {
+      outline: 2px solid #FF6B4A;
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    .logo__img {
+      display: block;
+      width: auto;
+      height: 34px;
     }
 
     .code {
@@ -133,7 +145,9 @@
 <body>
 
   <div class="card">
-    <a href="/" class="logo">getmi.ai</a>
+    <a href="/" class="logo" aria-label="getmi.ai — Página inicial">
+      <img src="/img/getmi-logo-rect6.png" class="logo__img" alt="getmi.ai">
+    </a>
 
     <p class="code" aria-hidden="true">404</p>
     <h1 class="title">Página não encontrada</h1>
