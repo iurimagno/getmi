@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Página não encontrada — getmi.ai</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon"     type="image/x-icon" href="/img/favicon.ico">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#FF6B4A">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/tokens.css">
+
+  <style>
+    :root {
+      --coral: var(--color-coral-500);
+      --navy:  var(--color-navy-800);
+      --warm-white: var(--color-warm-white);
+      --cream: var(--color-cream);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 300;
+      background-color: var(--warm-white);
+      color: var(--navy);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.25rem;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .card {
+      background: var(--warm-white);
+      text-align: center;
+      max-width: 420px;
+      width: 100%;
+    }
+
+    .logo {
+      display: inline-block;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--navy);
+      text-decoration: none;
+      letter-spacing: -.02em;
+      margin-bottom: 2.5rem;
+    }
+
+    .code {
+      font-size: clamp(5rem, 18vw, 8rem);
+      font-weight: 700;
+      line-height: 1;
+      color: var(--cream);
+      margin: 0 0 .5rem;
+      letter-spacing: -.05em;
+    }
+
+    .title {
+      font-size: 1.375rem;
+      font-weight: 700;
+      margin: 0 0 .75rem;
+    }
+
+    .desc {
+      font-size: .95rem;
+      color: rgba(26,31,54,.6);
+      line-height: 1.65;
+      margin: 0 0 2.25rem;
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+    }
+
+    .btn {
+      display: block;
+      padding: .75rem 1.5rem;
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: .9rem;
+      text-decoration: none;
+      transition: opacity .18s ease, transform .18s ease;
+    }
+
+    .btn:hover { opacity: .85; transform: translateY(-1px); }
+
+    .btn--primary {
+      background-color: var(--coral);
+      color: #fff;
+    }
+
+    .btn--outline {
+      background: transparent;
+      color: var(--navy);
+      border: 2px solid var(--navy);
+    }
+
+    .divider {
+      margin: 2.5rem 0 1.25rem;
+      border: none;
+      border-top: 1px solid rgba(26,31,54,.08);
+    }
+
+    .suggest {
+      font-size: .825rem;
+      color: rgba(26,31,54,.5);
+    }
+
+    .suggest a {
+      color: var(--navy);
+      font-weight: 700;
+    }
+
+    @media (min-width: 480px) {
+      .actions { flex-direction: row; justify-content: center; }
+      .btn { flex: 1; max-width: 180px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <a href="/" class="logo">getmi.ai</a>
+
+    <p class="code" aria-hidden="true">404</p>
+    <h1 class="title">Página não encontrada</h1>
+    <p class="desc">
+      Ops! O link que você acessou não existe<br>
+      ou foi removido.
+    </p>
+
+    <div class="actions">
+      <a href="/" class="btn btn--primary">Ir para home</a>
+      <a href="/login.html" class="btn btn--outline">Criar conta grátis</a>
+    </div>
+
+    <hr class="divider">
+
+    <p class="suggest">
+      Criador procurando sua página?
+      <a href="/admin/">Acesse o painel →</a>
+    </p>
+  </div>
+
+  <script src="/js/sw-register.js"></script>
+</body>
+</html>

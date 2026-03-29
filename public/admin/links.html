@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meus Links — getmi.ai</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#FF6B4A">
+  <link rel="icon"     type="image/x-icon" href="/img/favicon.ico">
+  <link rel="manifest" href="/manifest.json">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/lib/bootstrap.min.css">
+  <link rel="stylesheet" href="/admin/css/admin.css">
+  <link rel="stylesheet" href="/admin/css/links.css">
+</head>
+<body>
+
+  <!-- Sidebar overlay (mobile) -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="admin-shell">
+
+    <!-- ── SIDEBAR ───────────────────────────────────────────────────── -->
+    <aside class="admin-sidebar" id="adminSidebar" aria-label="Menu admin">
+      <a href="/admin/" class="sidebar-brand">getmi.ai</a>
+
+      <nav class="sidebar-nav">
+        <a href="/admin/" class="nav-item">
+          <span class="nav-icon">📊</span> Dashboard
+        </a>
+        <a href="/admin/links.html" class="nav-item is-active">
+          <span class="nav-icon">🔗</span> Meus Links
+        </a>
+        <a href="/admin/design.html" class="nav-item">
+          <span class="nav-icon">🎨</span> Design
+        </a>
+        <a href="/admin/analytics.html" class="nav-item">
+          <span class="nav-icon">📈</span> Analytics
+        </a>
+        <a href="/admin/settings.html" class="nav-item">
+          <span class="nav-icon">⚙️</span> Configurações
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="/" target="_blank">Ver minha página ↗</a>
+        <a href="#" id="btnSignOut">Sair</a>
+      </div>
+    </aside>
+
+    <!-- ── MAIN ───────────────────────────────────────────────────────── -->
+    <div class="admin-main">
+
+      <!-- Topbar -->
+      <header class="admin-topbar">
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn-hamburger d-md-none" id="btnMenuToggle"
+                  aria-label="Abrir menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+          </button>
+          <span class="topbar-title">Meus Links</span>
+        </div>
+        <div class="topbar-user">
+          <img class="topbar-avatar" id="topbarAvatar"
+               src="/img/avatar-placeholder.png" alt="Avatar">
+          <span id="topbarName"></span>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <main class="admin-content">
+
+        <!-- Limit banner (free plan) -->
+        <div class="limit-banner" id="limitBanner" role="alert">
+          <span>⚠️</span>
+          <span>
+            <strong>Limite do plano Free:</strong> você pode ter no máximo 5 links.
+            <a href="/admin/settings.html#upgrade">Faça upgrade para Pro</a> e adicione links ilimitados.
+          </span>
+        </div>
+
+        <!-- Page header -->
+        <div class="page-header">
+          <h1 class="page-title">Meus Links</h1>
+          <div class="d-flex gap-2" style="gap:.5rem">
+            <button class="btn-secondary-app" id="btnCopyLink" type="button"
+                    title="Copiar link da sua página">
+              📋 Copiar link
+            </button>
+            <button class="btn-secondary-app" id="btnShowQr" type="button"
+                    title="Gerar QR Code">
+              🔲 QR Code
+            </button>
+            <button class="btn-primary-app" id="btnAddLink" type="button">
+              + Adicionar link
+            </button>
+          </div>
+        </div>
+
+        <!-- Link list card -->
+        <div class="admin-card">
+
+          <!-- Loading -->
+          <div class="state-loading" id="stateLoading">
+            <div class="spinner-app"></div>
+          </div>
+
+          <!-- Empty -->
+          <div class="state-empty d-none" id="stateEmpty">
+            <div class="state-empty__icon">🔗</div>
+            <p class="state-empty__title">Nenhum link ainda</p>
+            <p class="state-empty__desc">Adicione seu primeiro link para começar.</p>
+          </div>
+
+          <!-- List -->
+          <ul class="link-list" id="linkList" role="list" aria-label="Lista de links"></ul>
+
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ── MODAL: ADICIONAR / EDITAR ──────────────────────────────────── -->
+  <div class="modal fade" id="modalLink" tabindex="-1"
+       aria-labelledby="modalLinkTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content gm-modal">
+
+        <div class="modal-header gm-modal__header">
+          <h5 class="modal-title" id="modalLinkTitle">Adicionar link</h5>
+          <button type="button" class="gm-modal__close"
+                  data-dismiss="modal" aria-label="Fechar">&times;</button>
+        </div>
+
+        <form id="formLink" novalidate>
+          <div class="modal-body gm-modal__body">
+
+            <input type="hidden" id="linkId">
+
+            <!-- Título -->
+            <div class="form-group-app">
+              <label class="form-label-app" for="linkTitle">Título</label>
+              <input class="form-control-app" type="text" id="linkTitle"
+                     placeholder="Ex: Meu produto principal"
+                     maxlength="60" required>
+              <span class="field-error-app" id="errTitle">Campo obrigatório.</span>
+            </div>
+
+            <!-- URL -->
+            <div class="form-group-app">
+              <label class="form-label-app" for="linkUrl">URL</label>
+              <input class="form-control-app" type="url" id="linkUrl"
+                     placeholder="https://"
+                     maxlength="500" required>
+              <span class="field-error-app" id="errUrl">URL inválida.</span>
+            </div>
+
+            <!-- Tipo + Ícone (linha) -->
+            <div class="form-row-app">
+              <div class="form-group-app form-group-app--flex">
+                <label class="form-label-app" for="linkType">Tipo</label>
+                <select class="form-control-app" id="linkType">
+                  <option value="secondary">Padrão (navy)</option>
+                  <option value="monetization">Monetização (coral)</option>
+                  <option value="social">Social (outlined)</option>
+                  <option value="whatsapp">WhatsApp</option>
+                </select>
+              </div>
+
+              <div class="form-group-app form-group-app--icon">
+                <label class="form-label-app" for="linkIcon">Ícone</label>
+                <div class="emoji-picker-wrap">
+                  <button type="button" class="emoji-picker-btn" id="emojiPickerBtn"
+                          aria-label="Escolher emoji" aria-expanded="false">
+                    <span id="emojiDisplay">✨</span>
+                  </button>
+                  <input type="hidden" id="linkIcon" value="✨">
+                  <div class="emoji-grid" id="emojiGrid" role="listbox"
+                       aria-label="Emojis disponíveis" hidden></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Preview do botão -->
+            <div class="form-group-app">
+              <label class="form-label-app">Preview</label>
+              <div class="link-btn-preview" id="linkBtnPreview">
+                <button type="button" class="g-link-btn g-link-btn--secondary" id="previewBtn">
+                  <span id="previewIcon">✨</span>
+                  <span id="previewTitle">Meu link</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="modal-footer gm-modal__footer">
+            <button type="button" class="btn-secondary-app"
+                    data-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn-primary-app" id="btnSaveLink">
+              Salvar
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODAL: QR CODE ────────────────────────────────────────────── -->
+  <div class="modal fade" id="modalQr" tabindex="-1"
+       aria-labelledby="modalQrTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content gm-modal">
+
+        <div class="modal-header gm-modal__header">
+          <h5 class="modal-title" id="modalQrTitle">QR Code da sua página</h5>
+          <button type="button" class="gm-modal__close"
+                  data-dismiss="modal" aria-label="Fechar">&times;</button>
+        </div>
+
+        <div class="modal-body gm-modal__body" style="text-align:center">
+          <p class="mb-2" style="font-size:.825rem;color:rgba(26,31,54,.6)">
+            <span id="qrUrlLabel" style="font-weight:700;color:#1A1F36"></span>
+          </p>
+
+          <div id="qrContainer" style="display:inline-block;margin:.75rem 0;
+               border-radius:12px;overflow:hidden;box-shadow:0 4px 16px rgba(26,31,54,.1)">
+          </div>
+
+          <div class="d-flex justify-content-center" style="gap:.625rem;flex-wrap:wrap">
+            <button type="button" class="btn-secondary-app" id="btnDownloadQr">
+              ⬇️ Baixar PNG
+            </button>
+            <button type="button" class="btn-secondary-app" id="btnCopyLinkModal"
+                    data-clipboard-target="#qrUrlLabel">
+              📋 Copiar link
+            </button>
+          </div>
+
+          <p class="mt-3 mb-0" style="font-size:.75rem;color:rgba(26,31,54,.4)">
+            Escaneie com a câmera do celular
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODAL: CONFIRMAR EXCLUSÃO ──────────────────────────────────── -->
+  <div class="modal fade" id="modalDelete" tabindex="-1"
+       aria-labelledby="modalDeleteTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content gm-modal">
+
+        <div class="modal-header gm-modal__header">
+          <h5 class="modal-title" id="modalDeleteTitle">Excluir link</h5>
+          <button type="button" class="gm-modal__close"
+                  data-dismiss="modal" aria-label="Fechar">&times;</button>
+        </div>
+
+        <div class="modal-body gm-modal__body">
+          <p class="mb-0">
+            Tem certeza que deseja excluir
+            <strong id="deleteLinkName">"este link"</strong>?
+            Esta ação não pode ser desfeita.
+          </p>
+        </div>
+
+        <div class="modal-footer gm-modal__footer">
+          <button type="button" class="btn-secondary-app"
+                  data-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn-danger-app" id="btnConfirmDelete">
+            Excluir
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/lib/jquery.min.js"></script>
+  <script src="/lib/bootstrap.bundle.min.js"></script>
+  <script src="/lib/qr-code-styling.min.js"></script>
+  <script src="/lib/clipboard.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics-compat.js"></script>
+  <script src="/js/config.js"></script>
+  <script>firebase.initializeApp(firebaseConfig);</script>
+  <script src="/js/analytics.js"></script>
+  <script src="/admin/js/admin-links.js"></script>
+  <script>
+    /* ── QR Code + Clipboard ─────────────────────────────────────────── */
+    var qrInstance = null;
+
+    function getProfileUrl() {
+      return window.gmProfileUrl || 'https://getmi.ai';
+    }
+
+    $('#btnShowQr, #btnCopyLink').on('click', function () {
+      var isQr = this.id === 'btnShowQr';
+      var url  = getProfileUrl();
+
+      if (!url || url === 'https://getmi.ai') {
+        alert('Configure seu username em Configurações para gerar o QR Code.');
+        return;
+      }
+
+      if (!isQr) return; /* clipboard handles copy via ClipboardJS below */
+
+      $('#qrUrlLabel').text(url);
+      $('#qrContainer').empty();
+      qrInstance = null;
+
+      $('#modalQr').modal('show');
+    });
+
+    $('#modalQr').on('shown.bs.modal', function () {
+      if (qrInstance) return;
+      var url = getProfileUrl();
+
+      qrInstance = new QRCodeStyling({
+        width:  220,
+        height: 220,
+        type:   'canvas',
+        data:   url,
+        image:  '/img/logo-qr.png',
+        dotsOptions: {
+          color: '#1A1F36',
+          type:  'rounded',
+        },
+        backgroundOptions: {
+          color: '#FAFAF8',
+        },
+        imageOptions: {
+          crossOrigin: 'anonymous',
+          margin: 6,
+          imageSize: 0.3,
+        },
+        cornersSquareOptions: {
+          type:  'extra-rounded',
+          color: '#1A1F36',
+        },
+        cornersDotOptions: {
+          type:  'dot',
+          color: '#FF6B4A',
+        },
+      });
+
+      qrInstance.append(document.getElementById('qrContainer'));
+    });
+
+    $('#modalQr').on('hidden.bs.modal', function () {
+      qrInstance = null;
+      $('#qrContainer').empty();
+    });
+
+    $('#btnDownloadQr').on('click', function () {
+      if (!qrInstance) return;
+      qrInstance.download({ name: 'getmi-qrcode', extension: 'png' });
+    });
+
+    /* Clipboard.js — botão "Copiar link" no header e no modal */
+    var clipboard = new ClipboardJS('#btnCopyLink, #btnCopyLinkModal', {
+      text: function () { return getProfileUrl(); },
+    });
+
+    clipboard.on('success', function (e) {
+      var $btn = $(e.trigger);
+      var orig = $btn.html();
+      $btn.html('✓ Copiado!');
+      setTimeout(function () { $btn.html(orig); }, 2000);
+      e.clearSelection();
+    });
+
+    clipboard.on('error', function () {
+      alert('Não foi possível copiar. Copie manualmente: ' + getProfileUrl());
+    });
+  </script>
+  <script src="/js/sw-register.js"></script>
+</body>
+</html>

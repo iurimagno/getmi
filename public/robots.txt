@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+# Bloquear área administrativa
+Disallow: /admin/
+
+# Bloquear arquivos de configuração
+Disallow: /js/config.js
+Disallow: /sw.js
+
+# Sitemap (gerado dinamicamente — ver README)
+# Sitemap: https://getmi.ai/sitemap.xml
+
+# Crawl-delay recomendado
+Crawl-delay: 2

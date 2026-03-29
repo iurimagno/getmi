@@ -1,0 +1,193 @@
+/* ─── getmi.ai Design System v1.0 — tokens.css ──────────────────────────────
+   Linkar SEMPRE antes de qualquer outro CSS do projeto.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+:root {
+
+  /* ── Color Scales ──────────────────────────────────────────────────────── */
+
+  /* Coral */
+  --color-coral-50:  #FFF3F0;
+  --color-coral-100: #FFE4DC;
+  --color-coral-200: #FFC4B3;
+  --color-coral-300: #FF9E87;
+  --color-coral-400: #FF845F;
+  --color-coral-500: #FF6B4A;
+  --color-coral-600: #E5502F;
+  --color-coral-700: #C43B1E;
+  --color-coral-800: #9E2A12;
+  --color-coral-900: #7A1B09;
+
+  /* Navy */
+  --color-navy-50:  #F0F1F6;
+  --color-navy-100: #D8DAEA;
+  --color-navy-200: #B0B5D5;
+  --color-navy-300: #8890BF;
+  --color-navy-400: #606BAA;
+  --color-navy-500: #3D4674;
+  --color-navy-600: #2D3560;
+  --color-navy-700: #222849;
+  --color-navy-800: #1A1F36;
+  --color-navy-900: #10132A;
+
+  /* Gray */
+  --color-gray-50:  #FAFAFA;
+  --color-gray-100: #F4F4F5;
+  --color-gray-200: #E4E4E7;
+  --color-gray-300: #D1D1D6;
+  --color-gray-400: #A1A1AA;
+  --color-gray-500: #71717A;
+  --color-gray-600: #52525B;
+  --color-gray-700: #3F3F46;
+  --color-gray-800: #27272A;
+  --color-gray-900: #18181B;
+
+  /* Mint (success) */
+  --color-mint-50:  #ECFDF5;
+  --color-mint-100: #D1FAE5;
+  --color-mint-200: #A7F3D0;
+  --color-mint-300: #6EE7B7;
+  --color-mint-400: #34D399;
+  --color-mint-500: #10B981;
+  --color-mint-600: #059669;
+  --color-mint-700: #047857;
+  --color-mint-800: #065F46;
+  --color-mint-900: #064E3B;
+
+  /* Amber (warning) */
+  --color-amber-50:  #FFFBEB;
+  --color-amber-100: #FEF3C7;
+  --color-amber-200: #FDE68A;
+  --color-amber-300: #FCD34D;
+  --color-amber-400: #FBBF24;
+  --color-amber-500: #F59E0B;
+  --color-amber-600: #D97706;
+  --color-amber-700: #B45309;
+  --color-amber-800: #92400E;
+  --color-amber-900: #78350F;
+
+  /* Red (danger) */
+  --color-red-50:  #FEF2F2;
+  --color-red-100: #FEE2E2;
+  --color-red-200: #FECACA;
+  --color-red-300: #FCA5A5;
+  --color-red-400: #F87171;
+  --color-red-500: #EF4444;
+  --color-red-600: #DC2626;
+  --color-red-700: #B91C1C;
+  --color-red-800: #991B1B;
+  --color-red-900: #7F1D1D;
+
+  /* Blue (info) */
+  --color-blue-50:  #EFF6FF;
+  --color-blue-100: #DBEAFE;
+  --color-blue-200: #BFDBFE;
+  --color-blue-300: #93C5FD;
+  --color-blue-400: #60A5FA;
+  --color-blue-500: #3B82F6;
+  --color-blue-600: #2563EB;
+  --color-blue-700: #1D4ED8;
+  --color-blue-800: #1E40AF;
+  --color-blue-900: #1E3A8A;
+
+  /* Brand neutrals */
+  --color-warm-white: #FAFAF8;
+  --color-cream:      #F5F3EF;
+  --color-white:      #FFFFFF;
+
+  /* ── Semantic Aliases ─────────────────────────────────────────────────── */
+
+  --bg-primary:    var(--color-warm-white);
+  --bg-secondary:  var(--color-cream);
+  --bg-surface:    var(--color-white);
+
+  --text-primary:   var(--color-navy-800);
+  --text-secondary: var(--color-navy-500);
+  --text-tertiary:  var(--color-gray-500);
+  --text-inverse:   var(--color-white);
+
+  --border-default: var(--color-gray-200);
+  --border-strong:  var(--color-gray-300);
+
+  --brand-primary:       var(--color-coral-500);
+  --brand-primary-hover: var(--color-coral-600);
+
+  /* ── Shadows ──────────────────────────────────────────────────────────── */
+
+  --shadow-xs: 0 1px 2px rgba(26,31,54,0.06);
+  --shadow-sm: 0 1px 3px rgba(26,31,54,0.08), 0 1px 2px rgba(26,31,54,0.06);
+  --shadow-md: 0 4px 6px rgba(26,31,54,0.07), 0 2px 4px rgba(26,31,54,0.06);
+  --shadow-lg: 0 10px 15px rgba(26,31,54,0.08), 0 4px 6px rgba(26,31,54,0.05);
+  --shadow-xl: 0 20px 25px rgba(26,31,54,0.10), 0 10px 10px rgba(26,31,54,0.04);
+
+  /* Focus ring — coral (NUNCA navy) */
+  --shadow-focus: 0 0 0 3px rgba(255,107,74,0.25);
+
+  /* ── Border Radius ────────────────────────────────────────────────────── */
+
+  --radius-sm:   6px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-2xl:  20px;
+  --radius-full: 9999px;
+
+  /* ── Spacing (8px grid) ───────────────────────────────────────────────── */
+
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+
+  /* ── Typography ───────────────────────────────────────────────────────── */
+
+  --font-family: 'Poppins', sans-serif;
+
+  --font-weight-light:    300;
+  --font-weight-regular:  400;
+  --font-weight-medium:   500;
+  --font-weight-semibold: 600;
+  --font-weight-bold:     700;
+
+  --font-size-xs:   0.6875rem;  /* 11px */
+  --font-size-sm:   0.8125rem;  /* 13px */
+  --font-size-base: 0.9375rem;  /* 15px */
+  --font-size-md:   1.0625rem;  /* 17px */
+  --font-size-lg:   1.25rem;    /* 20px */
+  --font-size-xl:   1.5rem;     /* 24px */
+  --font-size-2xl:  2rem;       /* 32px */
+  --font-size-3xl:  2.5rem;     /* 40px */
+  --font-size-4xl:  3.5rem;     /* 56px */
+
+  --line-height-tight:  1.25;
+  --line-height-snug:   1.375;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+
+  /* ── Motion ───────────────────────────────────────────────────────────── */
+
+  --duration-fast:   100ms;
+  --duration-normal: 200ms;
+  --duration-slow:   300ms;
+  --ease-default:    cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in:         cubic-bezier(0.4, 0, 1, 1);
+  --ease-out:        cubic-bezier(0, 0, 0.2, 1);
+
+  /* ── Z-Index ──────────────────────────────────────────────────────────── */
+
+  --z-base:     0;
+  --z-raised:   10;
+  --z-dropdown: 100;
+  --z-sticky:   200;
+  --z-overlay:  300;
+  --z-modal:    400;
+  --z-toast:    500;
+
+}

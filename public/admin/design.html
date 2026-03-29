@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design — getmi.ai</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#FF6B4A">
+  <link rel="icon"     type="image/x-icon" href="/img/favicon.ico">
+  <link rel="manifest" href="/manifest.json">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/lib/bootstrap.min.css">
+  <link rel="stylesheet" href="/admin/css/admin.css">
+  <link rel="stylesheet" href="/admin/css/design.css">
+</head>
+<body>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="admin-shell">
+
+    <!-- ── SIDEBAR ───────────────────────────────────────────────────── -->
+    <aside class="admin-sidebar" id="adminSidebar" aria-label="Menu admin">
+      <a href="/admin/" class="sidebar-brand">getmi.ai</a>
+      <nav class="sidebar-nav">
+        <a href="/admin/">          <span class="nav-icon">📊</span> Dashboard</a>
+        <a href="/admin/links.html"><span class="nav-icon">🔗</span> Meus Links</a>
+        <a href="/admin/design.html" class="is-active">
+                                   <span class="nav-icon">🎨</span> Design</a>
+        <a href="/admin/analytics.html"><span class="nav-icon">📈</span> Analytics</a>
+        <a href="/admin/settings.html"><span class="nav-icon">⚙️</span> Configurações</a>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="/" target="_blank">Ver minha página ↗</a>
+        <a href="#" id="btnSignOut">Sair</a>
+      </div>
+    </aside>
+
+    <!-- ── MAIN ───────────────────────────────────────────────────────── -->
+    <div class="admin-main">
+
+      <header class="admin-topbar">
+        <div class="d-flex align-items-center">
+          <button class="btn-hamburger d-md-none" id="btnMenuToggle"
+                  aria-label="Abrir menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+          </button>
+          <span class="topbar-title">Design</span>
+        </div>
+        <div class="topbar-user">
+          <img class="topbar-avatar" id="topbarAvatar"
+               src="/img/avatar-placeholder.png" alt="Avatar">
+          <span id="topbarName"></span>
+        </div>
+      </header>
+
+      <!-- Loading -->
+      <div class="admin-content" id="stateLoading">
+        <div class="state-loading"><div class="spinner-app"></div></div>
+      </div>
+
+      <!-- Design body -->
+      <div class="admin-content design-layout d-none" id="designBody">
+
+        <!-- ── LEFT PANEL ──────────────────────────────────────────── -->
+        <div class="design-panel">
+
+          <!-- Presets -->
+          <section class="admin-card design-card">
+            <div class="design-card__head">
+              <h2 class="design-card__title">Temas</h2>
+            </div>
+            <div class="design-card__body">
+              <div class="preset-list" id="presetList"></div>
+            </div>
+          </section>
+
+          <!-- Avatar -->
+          <section class="admin-card design-card">
+            <div class="design-card__head">
+              <h2 class="design-card__title">Avatar</h2>
+            </div>
+            <div class="design-card__body">
+              <div class="form-group-app">
+                <label class="form-label-app" for="inputAvatarUrl">URL da imagem</label>
+                <input class="form-control-app" type="url" id="inputAvatarUrl"
+                       placeholder="https://exemplo.com/foto.jpg">
+                <span class="field-hint-app">Cole a URL de uma imagem pública.</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Bio -->
+          <section class="admin-card design-card">
+            <div class="design-card__head">
+              <h2 class="design-card__title">Bio</h2>
+            </div>
+            <div class="design-card__body">
+              <div class="form-group-app">
+                <label class="form-label-app" for="inputBio">Descrição</label>
+                <textarea class="form-control-app" id="inputBio"
+                          rows="3" maxlength="150"
+                          placeholder="Conte um pouco sobre você..."></textarea>
+                <span class="field-hint-app char-count" id="bioCharCount">0/150</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Cores -->
+          <section class="admin-card design-card">
+            <div class="design-card__head">
+              <h2 class="design-card__title">Cores</h2>
+            </div>
+            <div class="design-card__body">
+
+              <div class="color-row">
+                <label class="form-label-app" for="inputBgColor">Fundo</label>
+                <div class="color-input-wrap">
+                  <span class="color-preview" id="previewBgColor"></span>
+                  <input class="form-control-app form-control-app--color"
+                         type="color" id="inputBgColor" value="#FAFAF8">
+                </div>
+              </div>
+
+              <div class="color-row">
+                <label class="form-label-app" for="inputTextColor">Texto</label>
+                <div class="color-input-wrap">
+                  <span class="color-preview" id="previewTextColor"></span>
+                  <input class="form-control-app form-control-app--color"
+                         type="color" id="inputTextColor" value="#1A1F36">
+                </div>
+              </div>
+
+              <div class="color-row">
+                <label class="form-label-app" for="inputBtnColor">Botão</label>
+                <div class="color-input-wrap">
+                  <span class="color-preview" id="previewBtnColor"></span>
+                  <input class="form-control-app form-control-app--color"
+                         type="color" id="inputBtnColor" value="#1A1F36">
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          <!-- Estilo do botão -->
+          <section class="admin-card design-card">
+            <div class="design-card__head">
+              <h2 class="design-card__title">Estilo do botão</h2>
+            </div>
+            <div class="design-card__body">
+              <div class="btn-style-group" role="radiogroup" aria-label="Estilo do botão">
+                <label class="btn-style-option">
+                  <input type="radio" name="btnStyle" value="rounded" checked>
+                  <span class="btn-style-sample btn-style-sample--rounded">Aa</span>
+                  <span>Rounded</span>
+                </label>
+                <label class="btn-style-option">
+                  <input type="radio" name="btnStyle" value="pill">
+                  <span class="btn-style-sample btn-style-sample--pill">Aa</span>
+                  <span>Pill</span>
+                </label>
+                <label class="btn-style-option">
+                  <input type="radio" name="btnStyle" value="square">
+                  <span class="btn-style-sample btn-style-sample--square">Aa</span>
+                  <span>Square</span>
+                </label>
+              </div>
+              <!-- hidden select keeps JS compatibility -->
+              <select id="selectBtnStyle" class="d-none" aria-hidden="true">
+                <option value="rounded">Rounded</option>
+                <option value="pill">Pill</option>
+                <option value="square">Square</option>
+              </select>
+            </div>
+          </section>
+
+          <button class="btn-primary-app btn-publish" id="btnPublish" type="button">
+            Publicar alterações
+          </button>
+
+        </div>
+
+        <!-- ── RIGHT PANEL: PREVIEW ────────────────────────────────── -->
+        <div class="design-preview-wrap">
+          <p class="preview-label">Preview ao vivo</p>
+
+          <div class="phone-frame">
+            <div class="phone-frame__screen" id="livePreview">
+
+              <div class="preview-avatar-wrap">
+                <img class="preview-avatar" id="previewAvatar"
+                     src="" alt="Avatar" style="display:none">
+                <div class="preview-avatar-placeholder" id="previewAvatarPlaceholder">👤</div>
+              </div>
+
+              <p class="preview-name" id="previewName">Seu nome</p>
+              <p class="preview-username" id="previewUsername">@username</p>
+              <p class="preview-bio" id="previewBio"></p>
+
+              <div class="preview-links">
+                <button type="button" class="preview-link-btn">Meu link principal</button>
+                <button type="button" class="preview-link-btn">Link secundário</button>
+                <button type="button" class="preview-link-btn">Outro link</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="design-toast" id="designToast" role="status" aria-live="polite"></div>
+
+  <script src="/lib/jquery.min.js"></script>
+  <script src="/lib/bootstrap.bundle.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics-compat.js"></script>
+  <script src="/js/config.js"></script>
+  <script>firebase.initializeApp(firebaseConfig);</script>
+  <script src="/js/analytics.js"></script>
+  <script src="/admin/js/admin-design.js"></script>
+  <script src="/js/sw-register.js"></script>
+  <script>
+    /* Sync radio → hidden select → trigger change */
+    $('input[name="btnStyle"]').on('change', function () {
+      $('#selectBtnStyle').val($(this).val()).trigger('change');
+    });
+  </script>
+</body>
+</html>

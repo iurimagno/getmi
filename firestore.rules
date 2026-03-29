@@ -1,0 +1,57 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── Helpers ───────────────────────────────────────────────────────────────
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // ─── Users ─────────────────────────────────────────────────────────────────
+    // Cada usuário lê/escreve apenas seu próprio perfil.
+    match /users/{uid} {
+      allow read:   if isOwner(uid);
+      allow create: if isOwner(uid);
+      allow update: if isOwner(uid);
+      allow delete: if false;
+    }
+
+    // ─── Usernames (mapeamento username → uid, público para checagem) ──────────
+    // Leitura pública para verificar disponibilidade; escrita apenas no registro.
+    match /usernames/{username} {
+      allow read:   if true;
+      allow create: if isSignedIn()
+                    && request.resource.data.uid == request.auth.uid;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    // ─── Links (subcoleção users/{uid}/links) ─────────────────────────────────
+    // Leitura pública (p.html renderiza sem auth); escrita só do dono.
+    match /users/{uid}/links/{linkId} {
+      allow read:   if true;
+      allow create: if isOwner(uid);
+      allow update: if isOwner(uid);
+      allow delete: if isOwner(uid);
+    }
+
+    // ─── Clicks (subcoleção users/{uid}/links/{linkId}/clicks) ────────────────
+    // Qualquer pessoa pode registrar um clique (write público).
+    // Leitura só do dono.
+    match /users/{uid}/links/{linkId}/clicks/{clickId} {
+      allow read:   if isOwner(uid);
+      allow create: if true;
+      allow update, delete: if false;
+    }
+
+    // ─── Tudo mais: negar por padrão ───────────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

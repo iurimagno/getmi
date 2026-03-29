@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Title e meta dinâmicos — atualizados via linkpage.js -->
+  <title>getmi.ai</title>
+  <meta name="description" content="Página de links no getmi.ai">
+
+  <!-- OG placeholders — sobrescritos via JS -->
+  <meta property="og:type"        content="profile">
+  <meta property="og:site_name"   content="getmi.ai">
+  <meta property="og:title"       content="getmi.ai">
+  <meta property="og:description" content="Página de links no getmi.ai">
+  <meta property="og:image"       content="">
+  <meta name="twitter:card"       content="summary">
+  <meta name="twitter:title"      content="getmi.ai">
+  <meta name="twitter:description" content="Página de links no getmi.ai">
+  <meta name="twitter:image"      content="">
+
+  <link rel="icon"     type="image/x-icon" href="/img/favicon.ico">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#FF6B4A">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/css/linkpage.css">
+</head>
+<body>
+
+  <!-- Loading -->
+  <div id="lpLoading" class="lp-loading" role="status" aria-live="polite">
+    <div class="lp-spinner"></div>
+  </div>
+
+  <!-- Profile page -->
+  <main id="lpProfile" class="lp-page" style="display:none">
+
+    <div class="lp-card">
+
+      <!-- Avatar -->
+      <div class="lp-avatar-wrap">
+        <img id="lpAvatar" class="lp-avatar" src="/img/avatar-placeholder.png" alt="Avatar">
+      </div>
+
+      <!-- Identity -->
+      <h1 id="lpName"   class="lp-name"></h1>
+      <p  id="lpHandle" class="lp-handle"></p>
+      <p  id="lpBio"    class="lp-bio"    style="display:none"></p>
+
+      <!-- Links -->
+      <div id="lpLinks" class="lp-links"></div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer id="lpFooter" class="lp-footer">
+      <a href="https://getmi.ai" target="_blank" rel="noopener">
+        Powered by <strong>getmi.ai</strong>
+      </a>
+    </footer>
+
+  </main>
+
+  <!-- Error state -->
+  <div id="lpError" class="lp-error" style="display:none" role="alert">
+    <div class="lp-error__icon">😕</div>
+    <h2 id="lpErrorTitle" class="lp-error__title">Página não encontrada</h2>
+    <p  id="lpErrorDesc"  class="lp-error__desc"></p>
+    <a href="https://getmi.ai" class="lp-error__link">Crie a sua em getmi.ai</a>
+  </div>
+
+  <script src="/js/sw-register.js"></script>
+
+  <!-- Firebase Compat SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+  <!-- Config + app -->
+  <script src="/js/config.js"></script>
+  <script src="/js/linkpage.js"></script>
+</body>
+</html>
