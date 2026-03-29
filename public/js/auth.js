@@ -50,43 +50,52 @@ $(function () {
   });
 
   /* ── Tabs ────────────────────────────────────────────────────────────── */
-  $('.auth-tab').on('click', function () {
+  $('.g-tab').on('click', function () {
     var target = $(this).data('tab');
-    $('.auth-tab').removeClass('is-active');
-    $(this).addClass('is-active');
-    $('.auth-form').removeClass('is-visible');
+    $('.g-tab').removeClass('is-active').attr('aria-selected', 'false');
+    $(this).addClass('is-active').attr('aria-selected', 'true');
+    $('.g-form').removeClass('is-visible');
     $('#form-' + target).addClass('is-visible');
     clearAlerts();
   });
 
   /* ── Helpers UI ──────────────────────────────────────────────────────── */
   function showAlert(formId, message, type) {
-    var $alert = $('#' + formId + ' .auth-alert');
+    var $alert = $('#' + formId + ' .g-alert');
     $alert
-      .removeClass('auth-alert--error auth-alert--success')
-      .addClass(type === 'error' ? 'auth-alert--error' : 'auth-alert--success')
+      .removeClass('g-alert--error g-alert--success')
+      .addClass(type === 'error' ? 'g-alert--error' : 'g-alert--success')
       .text(message)
       .addClass('is-visible');
   }
 
   function clearAlerts() {
-    $('.auth-alert').removeClass('is-visible').text('');
+    $('.g-alert').removeClass('is-visible').text('');
   }
 
   function setLoading($btn, loading) {
     if (loading) {
-      $btn.prop('disabled', true).data('original-text', $btn.html());
-      $btn.html('<span class="spinner"></span> Aguarde...');
+      $btn.prop('disabled', true).attr('aria-busy', 'true').data('original-html', $btn.html());
+      $btn.html('<span class="g-spinner" aria-hidden="true"></span><span>Aguarde…</span>');
     } else {
-      $btn.prop('disabled', false).html($btn.data('original-text') || $btn.html());
+      $btn.prop('disabled', false).attr('aria-busy', 'false').html($btn.data('original-html') || $btn.html());
     }
+  }
+
+  function showSuccess(formId) {
+    var $form    = $('#' + formId);
+    var successId = 'success-' + formId.replace('form-', '');
+    var $success = $('#' + successId);
+    $form.addClass('is-success');
+    $success.removeAttr('hidden');
+    $form.find('.g-input, .g-btn').prop('disabled', true);
   }
 
   /* ── Verificar disponibilidade de username (debounced) ───────────────── */
   var usernameTimer = null;
 
   $('#reg-username').on('input', function () {
-    var val = $(this).val().trim().toLowerCase();
+    var val     = $(this).val().trim().toLowerCase();
     var $status = $('#username-status');
     var $error  = $('#reg-username-error');
 
@@ -128,7 +137,7 @@ $(function () {
 
     var email    = $('#login-email').val().trim();
     var password = $('#login-password').val();
-    var $btn     = $(this).find('.btn-auth');
+    var $btn     = $(this).find('.g-btn--primary');
 
     if (!email || !password) {
       showAlert('form-login', 'Preencha todos os campos.', 'error');
@@ -138,6 +147,9 @@ $(function () {
     setLoading($btn, true);
 
     auth.signInWithEmailAndPassword(email, password)
+      .then(function () {
+        showSuccess('form-login');
+      })
       .catch(function (err) {
         setLoading($btn, false);
         showAlert('form-login', friendlyError(err.code), 'error');
@@ -153,7 +165,6 @@ $(function () {
     auth.signInWithPopup(provider)
       .then(function (result) {
         var user = result.user;
-        /* Se é primeiro login Google, garante doc em users/ */
         return db.collection('users').doc(user.uid).get()
           .then(function (doc) {
             if (!doc.exists) {
@@ -168,6 +179,9 @@ $(function () {
               });
             }
           });
+      })
+      .then(function () {
+        showSuccess('form-login');
       })
       .catch(function (err) {
         setLoading($btn, false);
@@ -184,9 +198,8 @@ $(function () {
     var email    = $('#reg-email').val().trim();
     var password = $('#reg-password').val();
     var username = $('#reg-username').val().trim().toLowerCase();
-    var $btn     = $(this).find('.btn-auth');
+    var $btn     = $(this).find('.g-btn--primary');
 
-    /* Validações client-side */
     if (!name || !email || !password || !username) {
       showAlert('form-register', 'Preencha todos os campos.', 'error');
       return;
@@ -203,7 +216,6 @@ $(function () {
       return;
     }
 
-    /* Verifica se username já está em uso antes de criar conta */
     setLoading($btn, true);
 
     db.collection('usernames').doc(username).get()
@@ -214,13 +226,11 @@ $(function () {
           return;
         }
 
-        /* Cria usuário no Firebase Auth */
         return auth.createUserWithEmailAndPassword(email, password)
           .then(function (cred) {
             var uid  = cred.user.uid;
             var now  = firebase.firestore.FieldValue.serverTimestamp();
 
-            /* Batch: users/{uid} + usernames/{username} — atômico */
             var batch = db.batch();
 
             batch.set(db.collection('users').doc(uid), {
@@ -240,9 +250,11 @@ $(function () {
 
             return batch.commit()
               .then(function () {
-                /* Atualiza displayName no Auth */
                 return cred.user.updateProfile({ displayName: name });
               });
+          })
+          .then(function () {
+            showSuccess('form-register');
           });
       })
       .catch(function (err) {
@@ -263,8 +275,6 @@ $(function () {
         return db.collection('users').doc(user.uid).get()
           .then(function (doc) {
             if (!doc.exists) {
-              /* Novo usuário via Google: salva perfil sem username
-                 (usuário vai definir o username em /admin/onboarding) */
               return db.collection('users').doc(user.uid).set({
                 uid:       user.uid,
                 name:      user.displayName || '',
@@ -276,6 +286,9 @@ $(function () {
               });
             }
           });
+      })
+      .then(function () {
+        showSuccess('form-register');
       })
       .catch(function (err) {
         setLoading($btn, false);

@@ -18,31 +18,30 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;700&display=swap" rel="stylesheet">
 
-  <!-- Libs locais -->
+  <!-- Design system -->
   <link rel="stylesheet" href="/css/tokens.css">
-  <link rel="stylesheet" href="/lib/bootstrap.min.css">
 
-  <!-- App -->
+  <!-- Auth styles -->
   <link rel="stylesheet" href="/css/auth.css">
 </head>
 <body>
 
-  <main class="auth-page" role="main">
-    <div class="auth-card">
+  <main class="g-auth-page" role="main">
+    <div class="g-card">
 
       <!-- Logo -->
-      <a href="/" class="auth-logo" aria-label="getmi.ai — Página inicial">
-        <img src="/img/getmi-logo-rect6.png" class="auth-logo__img" alt="getmi.ai">
+      <a href="/" class="g-logo" aria-label="getmi.ai — Página inicial">
+        <img src="/img/getmi-logo-rect6.png" class="g-logo__img" alt="getmi.ai">
       </a>
 
       <!-- Tabs -->
-      <div class="auth-tabs" role="tablist">
-        <button class="auth-tab is-active" role="tab"
+      <div class="g-tabs" role="tablist">
+        <button class="g-tab is-active" role="tab"
                 aria-selected="true" aria-controls="form-login"
                 data-tab="login">
           Entrar
         </button>
-        <button class="auth-tab" role="tab"
+        <button class="g-tab" role="tab"
                 aria-selected="false" aria-controls="form-register"
                 data-tab="register">
           Criar conta
@@ -50,103 +49,144 @@
       </div>
 
       <!-- ── FORM LOGIN ──────────────────────────────────────────────── -->
-      <form class="auth-form is-visible" id="form-login"
+      <form class="g-form is-visible" id="form-login"
             role="tabpanel" aria-label="Formulário de login"
             novalidate>
 
-        <div class="auth-alert auth-alert--error" role="alert" aria-live="polite"></div>
-
-        <div class="form-group">
-          <label class="form-label" for="login-email">E-mail</label>
-          <input class="form-control" type="email" id="login-email"
-                 name="email" autocomplete="email"
-                 placeholder="seu@email.com" required>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="login-password">Senha</label>
-          <input class="form-control" type="password" id="login-password"
-                 name="password" autocomplete="current-password"
-                 placeholder="••••••••" required>
-        </div>
-
-        <button type="submit" class="btn-auth">Entrar</button>
-
-        <div class="auth-divider">ou</div>
-
-        <button type="button" class="btn-google" id="btn-google-login">
-          <!-- Google icon -->
-          <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" focusable="false">
-            <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/>
-            <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/>
-            <path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/>
-            <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+        <!-- Estado de sucesso (oculto por padrão) -->
+        <div class="g-success" id="success-login" aria-live="polite" role="status" hidden>
+          <svg class="g-success__icon" xmlns="http://www.w3.org/2000/svg"
+               width="48" height="48" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+               aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="9 12 11 14 15 10"/>
           </svg>
-          Entrar com Google
-        </button>
+          <p class="g-success__text">Login realizado! Redirecionando…</p>
+        </div>
+
+        <!-- Corpo do formulário -->
+        <div class="g-form__body">
+          <div class="g-alert g-alert--error" role="alert" aria-live="polite"></div>
+
+          <div class="g-field">
+            <label class="g-label" for="login-email">E-mail</label>
+            <input class="g-input" type="email" id="login-email"
+                   name="email" autocomplete="email"
+                   placeholder="seu@email.com"
+                   aria-required="true" required>
+          </div>
+
+          <div class="g-field">
+            <label class="g-label" for="login-password">Senha</label>
+            <input class="g-input" type="password" id="login-password"
+                   name="password" autocomplete="current-password"
+                   placeholder="••••••••"
+                   aria-required="true" required>
+          </div>
+
+          <button type="submit" class="g-btn g-btn--primary">Entrar</button>
+
+          <div class="g-divider" aria-hidden="true">ou</div>
+
+          <button type="button" class="g-btn g-btn--google" id="btn-google-login"
+                  aria-label="Entrar com conta Google">
+            <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+              <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/>
+              <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/>
+              <path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/>
+              <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+            </svg>
+            Entrar com Google
+          </button>
+        </div>
 
       </form>
 
       <!-- ── FORM REGISTRO ───────────────────────────────────────────── -->
-      <form class="auth-form" id="form-register"
+      <form class="g-form" id="form-register"
             role="tabpanel" aria-label="Formulário de cadastro"
             novalidate>
 
-        <div class="auth-alert auth-alert--error" role="alert" aria-live="polite"></div>
-
-        <div class="form-group">
-          <label class="form-label" for="reg-name">Nome</label>
-          <input class="form-control" type="text" id="reg-name"
-                 name="name" autocomplete="name"
-                 placeholder="Seu nome" required>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="reg-email">E-mail</label>
-          <input class="form-control" type="email" id="reg-email"
-                 name="email" autocomplete="email"
-                 placeholder="seu@email.com" required>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="reg-username">Username</label>
-          <div class="input-username-wrap">
-            <span class="input-prefix" aria-hidden="true">@</span>
-            <input class="form-control" type="text" id="reg-username"
-                   name="username" autocomplete="username"
-                   placeholder="meu-username"
-                   minlength="3" maxlength="30" required>
-            <span class="username-status" id="username-status" aria-live="polite"></span>
-          </div>
-          <span class="field-hint">3–30 chars · letras minúsculas, números e hífens</span>
-          <span class="field-error" id="reg-username-error" role="alert"></span>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="reg-password">Senha</label>
-          <input class="form-control" type="password" id="reg-password"
-                 name="password" autocomplete="new-password"
-                 placeholder="Mínimo 6 caracteres" required minlength="6">
-        </div>
-
-        <button type="submit" class="btn-auth">Criar conta</button>
-
-        <div class="auth-divider">ou</div>
-
-        <button type="button" class="btn-google" id="btn-google-register">
-          <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" focusable="false">
-            <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/>
-            <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/>
-            <path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/>
-            <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+        <!-- Estado de sucesso (oculto por padrão) -->
+        <div class="g-success" id="success-register" aria-live="polite" role="status" hidden>
+          <svg class="g-success__icon" xmlns="http://www.w3.org/2000/svg"
+               width="48" height="48" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+               aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="9 12 11 14 15 10"/>
           </svg>
-          Registrar com Google
-        </button>
+          <p class="g-success__text">Conta criada! Redirecionando…</p>
+        </div>
+
+        <!-- Corpo do formulário -->
+        <div class="g-form__body">
+          <div class="g-alert g-alert--error" role="alert" aria-live="polite"></div>
+
+          <div class="g-field">
+            <label class="g-label" for="reg-name">Nome</label>
+            <input class="g-input" type="text" id="reg-name"
+                   name="name" autocomplete="name"
+                   placeholder="Seu nome"
+                   aria-required="true" required>
+          </div>
+
+          <div class="g-field">
+            <label class="g-label" for="reg-email">E-mail</label>
+            <input class="g-input" type="email" id="reg-email"
+                   name="email" autocomplete="email"
+                   placeholder="seu@email.com"
+                   aria-required="true" required>
+          </div>
+
+          <div class="g-field">
+            <label class="g-label" for="reg-username">Username</label>
+            <div class="g-input-wrap">
+              <span class="g-input-prefix" aria-hidden="true">@</span>
+              <input class="g-input" type="text" id="reg-username"
+                     name="username" autocomplete="username"
+                     placeholder="meu-username"
+                     minlength="3" maxlength="30"
+                     aria-required="true"
+                     aria-describedby="reg-username-hint reg-username-error"
+                     required>
+              <span class="g-username-status" id="username-status" aria-live="polite"></span>
+            </div>
+            <span class="g-hint" id="reg-username-hint">3–30 chars · letras minúsculas, números e hífens</span>
+            <span class="g-field-error" id="reg-username-error" role="alert"></span>
+          </div>
+
+          <div class="g-field">
+            <label class="g-label" for="reg-password">Senha</label>
+            <input class="g-input" type="password" id="reg-password"
+                   name="password" autocomplete="new-password"
+                   placeholder="Mínimo 6 caracteres"
+                   aria-required="true" required minlength="6">
+          </div>
+
+          <button type="submit" class="g-btn g-btn--primary">Criar conta</button>
+
+          <div class="g-divider" aria-hidden="true">ou</div>
+
+          <button type="button" class="g-btn g-btn--google" id="btn-google-register"
+                  aria-label="Registrar com conta Google">
+            <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+              <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/>
+              <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/>
+              <path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/>
+              <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+            </svg>
+            Registrar com Google
+          </button>
+        </div>
 
       </form>
 
       <!-- Footer do card -->
-      <p class="auth-card__footer">
+      <p class="g-card__footer">
         Ao continuar, você concorda com os
         <a href="/terms.html">Termos de Uso</a> e a
         <a href="/privacy.html">Política de Privacidade</a>.
@@ -155,7 +195,7 @@
     </div>
   </main>
 
-  <footer class="auth-page-footer">
+  <footer class="g-page-footer">
     <a href="/">← Voltar para getmi.ai</a>
     &nbsp;&middot;&nbsp;
     &copy; 2026 getmi.ai
@@ -164,7 +204,6 @@
   <!-- Scripts -->
   <script src="/js/sw-register.js"></script>
   <script src="/lib/jquery.min.js"></script>
-  <script src="/lib/bootstrap.bundle.min.js"></script>
 
   <!-- Firebase Compat SDK (v9 compat layer — funciona sem bundler) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
