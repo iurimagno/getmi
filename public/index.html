@@ -4,350 +4,493 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- SEO -->
-  <title>getmi.ai — One link. Every opportunity.</title>
-  <meta name="description" content="Seu link único para tudo que você cria, vende e compartilha. Monetize, conecte pelo WhatsApp e acompanhe seu crescimento.">
+  <!-- ── SEO ─────────────────────────────────────────────────────────────── -->
+  <title>getmi — Seu link-in-bio, turbinado.</title>
+  <meta name="description" content="A plataforma brasileira feita para criadores e negócios que vendem no WhatsApp. Widgets expressivos, analytics real-time e design de elite.">
 
-  <!-- Open Graph -->
+  <!-- ── Open Graph ──────────────────────────────────────────────────────── -->
   <meta property="og:type"        content="website">
   <meta property="og:url"         content="https://getmi.ai/">
-  <meta property="og:title"       content="getmi.ai — One link. Every opportunity.">
-  <meta property="og:description" content="Seu link único para tudo que você cria, vende e compartilha.">
+  <meta property="og:title"       content="getmi — Seu link-in-bio, turbinado.">
+  <meta property="og:description" content="A plataforma brasileira feita para criadores e negócios que vendem no WhatsApp. Widgets expressivos, analytics real-time e design de elite.">
   <meta property="og:image"       content="https://getmi.ai/img/og-cover.png">
 
-  <!-- Twitter Card -->
+  <!-- ── Twitter Card ────────────────────────────────────────────────────── -->
   <meta name="twitter:card"        content="summary_large_image">
-  <meta name="twitter:title"       content="getmi.ai — One link. Every opportunity.">
-  <meta name="twitter:description" content="Seu link único para tudo que você cria, vende e compartilha.">
+  <meta name="twitter:title"       content="getmi — Seu link-in-bio, turbinado.">
+  <meta name="twitter:description" content="A plataforma brasileira feita para criadores e negócios que vendem no WhatsApp. Widgets expressivos, analytics real-time e design de elite.">
   <meta name="twitter:image"       content="https://getmi.ai/img/og-cover.png">
 
-  <!-- Favicon + PWA -->
+  <!-- ── Favicon + PWA ───────────────────────────────────────────────────── -->
   <link rel="icon"     type="image/x-icon" href="/img/favicon.ico">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#FF6B4A">
 
-  <!-- Google Fonts — única exceção CDN externa -->
+  <!-- ── Google Fonts ────────────────────────────────────────────────────── -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300,0,0&display=swap" rel="stylesheet">
 
-  <!-- Libs locais -->
+  <!-- ── Design tokens + App styles ──────────────────────────────────────── -->
   <link rel="stylesheet" href="/css/tokens.css">
-  <link rel="stylesheet" href="/lib/bootstrap.min.css">
-  <link rel="stylesheet" href="/lib/slick.min.css">
-  <link rel="stylesheet" href="/lib/slick-theme.min.css">
-
-  <!-- App -->
   <link rel="stylesheet" href="/css/landing.css">
 </head>
 <body>
 
-  <!-- ── NAVBAR ─────────────────────────────────────────────────────────── -->
-  <nav class="navbar navbar-expand-md gm-nav" id="mainNav" role="navigation" aria-label="Menu principal">
-    <div class="container">
+  <!-- ══════════════════════════════════════════════════════════════════════
+       NAVBAR — floating glass pill
+  ══════════════════════════════════════════════════════════════════════════ -->
+  <div class="gm-nav-wrapper" id="navWrapper" role="banner">
+    <nav class="gm-nav" aria-label="Menu principal">
 
-      <a class="navbar-brand gm-brand" href="/" aria-label="getmi.ai — Página inicial">
-        <img src="/img/getmi-logo-rect6.png" class="gm-brand__img" alt="getmi.ai">
+      <!-- Brand -->
+      <a class="gm-nav__brand" href="/" aria-label="getmi — Página inicial">
+        <img src="/img/getmi-logo-dark.svg"
+             class="gm-nav__logo-img"
+             alt="getmi"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex'">
+        <!-- Text wordmark fallback (hidden when SVG loads) -->
+        <span class="gm-nav__wordmark" style="display:none">
+          getmi<span class="dot">●</span>
+        </span>
       </a>
 
-      <button class="navbar-toggler" type="button"
-              data-toggle="collapse" data-target="#navMenu"
-              aria-controls="navMenu" aria-expanded="false"
+      <!-- Center links -->
+      <ul class="gm-nav__links" id="navLinks" role="list">
+        <li><a href="#widgets">Recursos</a></li>
+        <li><a href="#widgets">Templates</a></li>
+        <li><a href="#pricing">Preços</a></li>
+      </ul>
+
+      <!-- Right actions -->
+      <div class="gm-nav__actions">
+        <a href="/login.html" class="gm-btn-ghost">Login</a>
+        <a href="/login.html" class="gm-btn-cta" aria-label="Criar meu link grátis">
+          Criar meu link
+        </a>
+      </div>
+
+      <!-- Hamburger (mobile) -->
+      <button class="gm-nav__hamburger"
+              id="navToggle"
+              type="button"
+              aria-expanded="false"
+              aria-controls="navLinks"
               aria-label="Abrir menu">
-        <span class="navbar-toggler-icon"></span>
+        <span></span>
+        <span></span>
+        <span></span>
       </button>
 
-      <div class="collapse navbar-collapse" id="navMenu">
-        <ul class="navbar-nav ml-auto align-items-md-center">
-          <li class="nav-item"><a class="nav-link" href="#features">Funcionalidades</a></li>
-          <li class="nav-item"><a class="nav-link" href="#how-it-works">Como funciona</a></li>
-          <li class="nav-item"><a class="nav-link" href="#pricing">Planos</a></li>
-          <li class="nav-item ml-md-3">
-            <a class="btn gm-btn-outline" href="/login.html">Entrar</a>
-          </li>
-        </ul>
-      </div>
+    </nav>
+  </div>
 
-    </div>
-  </nav>
 
-  <!-- ── HERO ───────────────────────────────────────────────────────────── -->
-  <section class="gm-hero" id="hero">
-    <div class="container">
-      <div class="row align-items-center">
+  <!-- ══════════════════════════════════════════════════════════════════════
+       HERO — 2-column: copy left / phone right
+  ══════════════════════════════════════════════════════════════════════════ -->
+  <section class="gm-hero" id="hero" aria-labelledby="hero-headline">
+    <div class="gm-hero__inner">
 
-        <div class="col-md-6 gm-hero__copy">
-          <h1 class="gm-hero__headline">
-            One link.<br>Every opportunity.
-          </h1>
-          <p class="gm-hero__sub">
-            Seu link único para tudo que você cria,<br class="d-none d-lg-block">
-            vende e compartilha.
-          </p>
-          <a href="/login.html" class="btn gm-btn-cta gm-btn-cta--lg">
-            Comece grátis
+      <!-- ── Left: copy ───────────────────────────────────────────────────── -->
+      <div class="gm-hero__copy">
+
+        <!-- Badge pill -->
+        <span class="gm-hero__badge" aria-label="Novidade">
+          🚀 NOVO: WIDGETS 3D INTERATIVOS
+        </span>
+
+        <!-- Headline -->
+        <h1 class="gm-hero__headline" id="hero-headline">
+          Seu link-in-bio,<br>
+          <span class="highlight">turbinado.</span>
+        </h1>
+
+        <!-- Subtitle -->
+        <p class="gm-hero__sub">
+          A plataforma brasileira feita para criadores e negócios que vendem no WhatsApp.
+          Widgets expressivos, analytics real-time e design de elite.
+        </p>
+
+        <!-- CTA buttons -->
+        <div class="gm-hero__ctas">
+          <a href="/login.html" class="gm-btn-cta gm-btn-cta--lg">
+            Criar perfil grátis
+            <span class="material-symbols-outlined" aria-hidden="true"
+                  style="font-size:1.1em;font-variation-settings:'FILL' 0,'wght' 400">
+              arrow_forward
+            </span>
           </a>
-          <p class="gm-hero__footnote">Sem cartão de crédito.</p>
+          <a href="#widgets" class="gm-btn-outline-coral">
+            Ver exemplos
+          </a>
         </div>
 
-        <div class="col-md-6 gm-hero__visual">
-          <div class="phone-mockup" aria-hidden="true">
-            <div class="phone-screen">
-              <div class="mock-avatar"></div>
-              <span class="mock-handle">@voce</span>
-              <div class="mock-link"></div>
-              <div class="mock-link"></div>
-              <div class="mock-link"></div>
-              <div class="mock-link mock-link--sm"></div>
-            </div>
+        <!-- Social proof -->
+        <div class="gm-hero__proof" aria-label="Prova social">
+          <div class="gm-hero__avatars" aria-hidden="true">
+            <div class="gm-hero__avatar"></div>
+            <div class="gm-hero__avatar"></div>
+            <div class="gm-hero__avatar"></div>
           </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ── FEATURES ───────────────────────────────────────────────────────── -->
-  <section class="gm-section gm-section--cream" id="features">
-    <div class="container">
-      <h2 class="gm-section__title">Tudo o que você precisa</h2>
-      <p class="gm-section__sub">Uma plataforma. Infinitas possibilidades.</p>
-
-      <div class="features-carousel">
-
-        <!-- Monetização -->
-        <div class="feature-card">
-          <div class="feature-card__icon">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
-                 aria-hidden="true" focusable="false">
-              <circle cx="16" cy="16" r="13" stroke="#1A1F36" stroke-width="2"/>
-              <path d="M16 8.5v2m0 11v2M13 14a3 3 0 0 1 3-3h1a2.5 2.5 0 0 1 0 5h-2a2.5 2.5 0 0 0 0 5h1a3 3 0 0 0 3-3"
-                    stroke="#1A1F36" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <h3 class="feature-card__title">Monetização</h3>
-          <p class="feature-card__desc">
-            Venda produtos, serviços e conteúdos digitais diretamente pela sua página — sem intermediários.
-          </p>
-        </div>
-
-        <!-- WhatsApp Direct -->
-        <div class="feature-card">
-          <div class="feature-card__icon">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
-                 aria-hidden="true" focusable="false">
-              <path d="M16 3C9 3 3 8.7 3 15.8c0 2.3.6 4.5 1.7 6.4L3 29l7.3-1.7c1.8.9 3.8 1.4 5.7 1.4 7 0 13-5.7 13-12.9C29 8.7 23 3 16 3z"
-                    stroke="#1A1F36" stroke-width="2" stroke-linejoin="round"/>
-              <path d="M11.5 13c.2.5 1.7 3.3 4 4.8 2.3 1.5 4.3 1.8 5.1 1.5"
-                    stroke="#1A1F36" stroke-width="1.8" stroke-linecap="round"/>
-            </svg>
-          </div>
-          <h3 class="feature-card__title">WhatsApp Direct</h3>
-          <p class="feature-card__desc">
-            Botão de contato integrado. Seus visitantes chegam até você com um clique, sem digitar nada.
-          </p>
-        </div>
-
-        <!-- Analytics -->
-        <div class="feature-card">
-          <div class="feature-card__icon">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
-                 aria-hidden="true" focusable="false">
-              <rect x="4"  y="18" width="6" height="10" rx="2" stroke="#1A1F36" stroke-width="2"/>
-              <rect x="13" y="12" width="6" height="16" rx="2" stroke="#1A1F36" stroke-width="2"/>
-              <rect x="22" y="6"  width="6" height="22" rx="2" stroke="#1A1F36" stroke-width="2"/>
-            </svg>
-          </div>
-          <h3 class="feature-card__title">Analytics</h3>
-          <p class="feature-card__desc">
-            Veja quem visitou sua página, quais links clicaram e de onde vieram. Dados reais para crescer.
+          <p class="gm-hero__proof-text">
+            <strong>+12k criadores</strong>
+            já usam o getmi
           </p>
         </div>
 
       </div>
-    </div>
-  </section>
+      <!-- /copy -->
 
-  <!-- ── COMO FUNCIONA ──────────────────────────────────────────────────── -->
-  <section class="gm-section" id="how-it-works">
-    <div class="container">
-      <h2 class="gm-section__title">Como funciona</h2>
-      <p class="gm-section__sub">Do cadastro ao compartilhamento em minutos.</p>
+      <!-- ── Right: phone mockup ──────────────────────────────────────────── -->
+      <div class="gm-hero__visual" aria-hidden="true">
 
-      <div class="row justify-content-center">
+        <!-- Phone frame -->
+        <div class="phone-frame" role="img" aria-label="Prévia do perfil getmi no celular">
+          <div class="phone-frame__screen">
 
-        <div class="col-md-4 gm-step">
-          <div class="gm-step__number" aria-hidden="true">1</div>
-          <h3 class="gm-step__title">Cadastre</h3>
-          <p class="gm-step__desc">Crie sua conta com e-mail ou Google. É grátis e leva menos de 30 segundos.</p>
+            <!-- Avatar -->
+            <div class="mock-avatar-circle"></div>
+            <p class="mock-name">@thiagocreator</p>
+            <p class="mock-sub">Design &amp; Lifestyle</p>
+
+            <!-- Widget cards inside the phone screen -->
+            <div class="mock-links">
+
+              <!-- Mercado Livre-style product card -->
+              <div class="mock-product-card">
+                <div class="mock-product-img" style="background:#FFF159;"></div>
+                <div>
+                  <p class="mock-product-title">Fone Bluetooth</p>
+                  <p class="mock-product-price">R$ 249</p>
+                </div>
+              </div>
+
+              <!-- Spotify-style music card -->
+              <div class="mock-spotify-card">
+                <div class="mock-album-art"></div>
+                <div>
+                  <p>Ouvindo agora</p>
+                  <p class="mock-song">Save Your Tears</p>
+                </div>
+              </div>
+
+              <!-- WhatsApp CTA -->
+              <div class="mock-whatsapp-btn">
+                <span>💬 Fale Conosco</span>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <!-- /phone frame -->
+
+        <!-- Floating glass cards -->
+        <div class="phone-float-card phone-float-card--likes">
+          <span class="fc-icon">❤️</span>
+          <span class="fc-count">4.8k</span>
         </div>
 
-        <div class="col-md-4 gm-step">
-          <div class="gm-step__number" aria-hidden="true">2</div>
-          <h3 class="gm-step__title">Adicione links</h3>
-          <p class="gm-step__desc">Personalize sua página com seus links, foto, bio e botão do WhatsApp.</p>
-        </div>
-
-        <div class="col-md-4 gm-step">
-          <div class="gm-step__number" aria-hidden="true">3</div>
-          <h3 class="gm-step__title">Compartilhe</h3>
-          <p class="gm-step__desc">Seu link único <strong>getmi.ai/@voce</strong> pronto para Instagram, TikTok e onde quiser.</p>
+        <div class="phone-float-card phone-float-card--fast">
+          <span class="fc-icon">⚡</span>
+          Fast Link Enabled
         </div>
 
       </div>
+      <!-- /visual -->
+
     </div>
   </section>
 
-  <!-- ── PRICING ────────────────────────────────────────────────────────── -->
-  <section class="gm-section gm-section--cream" id="pricing">
-    <div class="container">
-      <h2 class="gm-section__title">Planos simples e transparentes</h2>
-      <p class="gm-section__sub">Comece grátis. Cresça no seu ritmo.</p>
 
-      <div class="row justify-content-center gm-pricing">
+  <!-- ══════════════════════════════════════════════════════════════════════
+       BENTO GRID — widgets showcase
+  ══════════════════════════════════════════════════════════════════════════ -->
+  <section class="gm-bento-section" id="widgets" aria-labelledby="widgets-headline">
+    <div class="gm-bento-section__inner">
 
-        <!-- Free -->
-        <div class="col-lg-4 col-md-6 col-sm-10 gm-price-col">
-          <div class="price-card">
-            <div class="price-card__header">
-              <span class="price-card__plan">Free</span>
-              <div class="price-card__amount">
-                <span class="price-card__currency">R$</span>
-                <span class="price-card__value">0</span>
-                <span class="price-card__period">/mês</span>
-              </div>
-            </div>
-            <ul class="price-card__features" aria-label="Recursos do plano Free">
-              <li>Link único personalizado</li>
-              <li>Até 5 links</li>
-              <li>Botão WhatsApp</li>
-              <li>Analytics básico</li>
-            </ul>
-            <a href="/login.html" class="btn gm-btn-cta w-100">Começar grátis</a>
+      <p class="gm-section-label">O seu ecossistema</p>
+      <h2 class="gm-section-headline" id="widgets-headline">
+        Widgets que convertem mais.
+      </h2>
+
+      <div class="gm-bento" role="list">
+
+        <!-- ── Card 1: Spotify (2-col) ─────────────────────────────────── -->
+        <article class="gm-bento-card gm-bento-card--2col gm-card-spotify"
+                 role="listitem"
+                 aria-label="Widget Spotify">
+          <div class="gm-card-spotify__header">
+            <div class="gm-card-spotify__dot" aria-hidden="true"></div>
+            <span class="gm-card-spotify__service">Spotify</span>
           </div>
-        </div>
 
-        <!-- Pro -->
-        <div class="col-lg-4 col-md-6 col-sm-10 gm-price-col">
-          <div class="price-card price-card--featured">
-            <span class="price-card__badge">Mais popular</span>
-            <div class="price-card__header">
-              <span class="price-card__plan">Pro</span>
-              <div class="price-card__amount">
-                <span class="price-card__currency">R$</span>
-                <span class="price-card__value">19</span>
-                <span class="price-card__period">/mês</span>
-              </div>
+          <div class="gm-card-spotify__body">
+            <div class="gm-card-spotify__art" aria-hidden="true"></div>
+            <div class="gm-card-spotify__info">
+              <p class="gm-card-spotify__song">Midnight City</p>
+              <p class="gm-card-spotify__artist">M83</p>
             </div>
-            <ul class="price-card__features" aria-label="Recursos do plano Pro">
-              <li>Links ilimitados</li>
-              <li>Monetização integrada</li>
-              <li>Analytics completo</li>
-              <li>Domínio personalizado</li>
-              <li>Sem marca d'água</li>
-            </ul>
-            <a href="/login.html" class="btn gm-btn-cta w-100">Assinar Pro</a>
           </div>
-        </div>
 
-        <!-- Business -->
-        <div class="col-lg-4 col-md-6 col-sm-10 gm-price-col">
-          <div class="price-card">
-            <div class="price-card__header">
-              <span class="price-card__plan">Business</span>
-              <div class="price-card__amount">
-                <span class="price-card__currency">R$</span>
-                <span class="price-card__value">49</span>
-                <span class="price-card__period">/mês</span>
+          <div class="gm-card-spotify__controls">
+            <div class="gm-card-spotify__progress">
+              <span class="gm-card-spotify__time">1:42</span>
+              <div class="gm-card-spotify__bar" role="progressbar" aria-valuenow="42" aria-valuemin="0" aria-valuemax="100">
+                <div class="gm-card-spotify__fill"></div>
               </div>
+              <span class="gm-card-spotify__time">4:02</span>
             </div>
-            <ul class="price-card__features" aria-label="Recursos do plano Business">
-              <li>Tudo do Pro</li>
-              <li>Múltiplos perfis</li>
-              <li>Integrações avançadas</li>
-              <li>Suporte prioritário</li>
-              <li>Relatórios exportáveis</li>
-            </ul>
-            <a href="/login.html" class="btn gm-btn-cta w-100">Assinar Business</a>
+            <div class="gm-card-spotify__btns" aria-label="Controles">
+              <span aria-label="Anterior">⏮</span>
+              <div class="gm-card-spotify__play" aria-label="Pausar">▶</div>
+              <span aria-label="Próximo">⏭</span>
+            </div>
           </div>
-        </div>
+        </article>
+
+        <!-- ── Card 2: YouTube Music (2-col) ──────────────────────────── -->
+        <article class="gm-bento-card gm-bento-card--2col gm-card-ytmusic"
+                 role="listitem"
+                 aria-label="Widget YouTube Music">
+          <div class="gm-card-ytmusic__header">
+            <div class="gm-card-ytmusic__dot" aria-hidden="true"></div>
+            <span class="gm-card-ytmusic__service">YouTube Music</span>
+          </div>
+
+          <div class="gm-card-ytmusic__body">
+            <div class="gm-card-ytmusic__art" aria-hidden="true"></div>
+            <div class="gm-card-ytmusic__info">
+              <p class="gm-card-ytmusic__song">Starboy</p>
+              <p class="gm-card-ytmusic__artist">The Weeknd</p>
+            </div>
+          </div>
+
+          <div class="gm-card-ytmusic__controls">
+            <div class="gm-card-ytmusic__progress">
+              <span class="gm-card-ytmusic__time">2:18</span>
+              <div class="gm-card-ytmusic__bar" role="progressbar" aria-valuenow="58" aria-valuemin="0" aria-valuemax="100">
+                <div class="gm-card-ytmusic__fill"></div>
+              </div>
+              <span class="gm-card-ytmusic__time">3:59</span>
+            </div>
+            <div class="gm-card-ytmusic__btns" aria-label="Controles">
+              <span aria-label="Anterior">⏮</span>
+              <div class="gm-card-ytmusic__play" aria-label="Pausar">▶</div>
+              <span aria-label="Próximo">⏭</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- ── Card 3: Amazon product (1-col, tall) ────────────────────── -->
+        <article class="gm-bento-card gm-bento-card--1col gm-bento-card--tall gm-card-amazon"
+                 role="listitem"
+                 aria-label="Widget produto Amazon">
+          <span class="gm-card-amazon__badge">Amazon Prime</span>
+          <div class="gm-card-amazon__art" aria-hidden="true"></div>
+          <p class="gm-card-amazon__title">Kindle Paperwhite</p>
+          <div class="gm-card-amazon__meta">
+            <span class="gm-card-amazon__price">R$ 499</span>
+            <span class="gm-card-amazon__discount">15% OFF</span>
+          </div>
+        </article>
+
+        <!-- ── Card 4: OLX (1-col) ─────────────────────────────────────── -->
+        <article class="gm-bento-card gm-bento-card--1col gm-card-olx"
+                 role="listitem"
+                 aria-label="Widget produto OLX">
+          <span class="gm-card-olx__badge">OLX</span>
+          <div class="gm-card-olx__art" aria-hidden="true"></div>
+          <p class="gm-card-olx__title">MacBook Pro M2</p>
+          <p class="gm-card-olx__price">R$ 8.900</p>
+          <button class="gm-card-olx__btn" type="button">Ver na OLX</button>
+        </article>
+
+        <!-- ── Card 5: Map widget (2-col) ──────────────────────────────── -->
+        <article class="gm-bento-card gm-bento-card--2col gm-card-map"
+                 role="listitem"
+                 aria-label="Widget de localização">
+          <div class="gm-card-map__pin" aria-hidden="true">
+            <div class="gm-card-map__pin-dot"></div>
+          </div>
+          <div class="gm-card-map__overlay">
+            <span class="gm-card-map__icon" aria-hidden="true">📍</span>
+            <div>
+              <p class="gm-card-map__place">Studio getmi</p>
+              <p class="gm-card-map__address">Pinheiros, São Paulo — SP</p>
+            </div>
+          </div>
+        </article>
+
+        <!-- ── Card 6: Verified domain (1-col) ────────────────────────── -->
+        <article class="gm-bento-card gm-bento-card--1col gm-card-domain"
+                 role="listitem"
+                 aria-label="Widget domínio personalizado">
+          <div class="gm-card-domain__check" aria-hidden="true">✓</div>
+          <p class="gm-card-domain__title">Domínio Personalizado</p>
+          <p class="gm-card-domain__sub">Seu perfil no seu próprio endereço.</p>
+          <div class="gm-card-domain__url" aria-label="Exemplo de domínio">
+            voce.com.br
+          </div>
+        </article>
 
       </div>
+      <!-- /bento -->
+
     </div>
   </section>
 
-  <!-- ── FOOTER ─────────────────────────────────────────────────────────── -->
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       CTA SECTION
+  ══════════════════════════════════════════════════════════════════════════ -->
+  <section class="gm-cta-section" id="pricing" aria-labelledby="cta-headline">
+    <div class="gm-cta-section__inner">
+
+      <h2 class="gm-cta-section__headline" id="cta-headline">
+        Pronto para levar seu perfil ao
+        <span>próximo nível?</span>
+      </h2>
+
+      <p class="gm-cta-section__sub">
+        Junte-se a mais de 12.000 criadores e negócios que já usam o getmi
+        para conectar, vender e crescer com um único link.
+      </p>
+
+      <div class="gm-cta-section__actions">
+        <a href="/login.html" class="gm-btn-cta gm-btn-cta--lg">
+          Criar meu perfil agora
+        </a>
+        <a href="#pricing" class="gm-btn-outline-navy">
+          Ver planos premium
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════════════════════════════════════ -->
   <footer class="gm-footer" role="contentinfo">
-    <div class="container">
-      <div class="row align-items-center">
+    <div class="gm-footer__inner">
 
-        <div class="col-md-3 gm-footer__brand">
-          <a href="/" class="gm-brand" aria-label="getmi.ai — Página inicial">
-            <img src="/img/getmi-logo-text3.png" class="gm-brand__img" alt="getmi.ai">
-          </a>
-        </div>
-
-        <nav class="col-md-6 gm-footer__nav" aria-label="Links do rodapé">
-          <a href="#features">Funcionalidades</a>
-          <a href="#how-it-works">Como funciona</a>
-          <a href="#pricing">Planos</a>
-          <a href="/terms.html">Termos</a>
-          <a href="/privacy.html">Privacidade</a>
-        </nav>
-
-        <div class="col-md-3 gm-footer__copy">
-          &copy; 2026 getmi.ai
-        </div>
-
+      <!-- Brand + copyright -->
+      <div class="gm-footer__brand">
+        <a href="/" class="gm-footer__logo" aria-label="getmi — Página inicial">
+          getmi<span class="dot">●</span>
+        </a>
+        <p class="gm-footer__copy">© 2026 getmi. Feito com amor no Brasil.</p>
       </div>
+
+      <!-- Footer nav -->
+      <nav class="gm-footer__nav" aria-label="Links do rodapé">
+        <a href="/terms.html">Termos</a>
+        <a href="/privacy.html">Privacidade</a>
+        <a href="/contact.html">Contato</a>
+        <a href="/blog">Blog</a>
+      </nav>
+
+      <!-- Social icons -->
+      <div class="gm-footer__socials" aria-label="Redes sociais">
+        <a href="https://instagram.com/getmi.ai"
+           class="gm-footer__social-btn"
+           aria-label="Instagram"
+           target="_blank" rel="noopener noreferrer">
+          <span class="material-symbols-outlined" aria-hidden="true"
+                style="font-size:1rem;font-variation-settings:'FILL' 0,'wght' 300">
+            photo_camera
+          </span>
+        </a>
+        <a href="https://twitter.com/getmiai"
+           class="gm-footer__social-btn"
+           aria-label="Twitter / X"
+           target="_blank" rel="noopener noreferrer">
+          <span style="font-size:.875rem;font-weight:700">𝕏</span>
+        </a>
+        <a href="https://linkedin.com/company/getmi"
+           class="gm-footer__social-btn"
+           aria-label="LinkedIn"
+           target="_blank" rel="noopener noreferrer">
+          <span class="material-symbols-outlined" aria-hidden="true"
+                style="font-size:1rem;font-variation-settings:'FILL' 0,'wght' 300">
+            work
+          </span>
+        </a>
+      </div>
+
     </div>
   </footer>
 
-  <!-- ── SCRIPTS ────────────────────────────────────────────────────────── -->
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       SCRIPTS
+  ══════════════════════════════════════════════════════════════════════════ -->
+
+  <!-- jQuery (smooth scroll) -->
   <script src="/lib/jquery.min.js"></script>
-  <script src="/lib/bootstrap.bundle.min.js"></script>
-  <script src="/lib/slick.min.js"></script>
+
+  <!-- Firebase compat SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics-compat.js"></script>
+
+  <!-- App config + analytics -->
   <script src="/js/config.js"></script>
   <script>firebase.initializeApp(firebaseConfig);</script>
   <script src="/js/analytics.js"></script>
   <script src="/js/sw-register.js"></script>
-  <script>
-    $(function () {
 
-      /* Smooth scroll para âncoras */
+  <!-- ── Inline interactions ────────────────────────────────────────────── -->
+  <script>
+    (function () {
+      'use strict';
+
+      /* ── Smooth scroll for anchor links ───────────────────────────────── */
       $(document).on('click', 'a[href^="#"]', function (e) {
         var target = $(this).attr('href');
         if (target.length > 1 && $(target).length) {
           e.preventDefault();
           $('html, body').animate(
-            { scrollTop: $(target).offset().top - 70 },
+            { scrollTop: $(target).offset().top - 80 },
             600,
             'swing'
           );
+          // Close mobile nav if open
+          $('#navLinks').removeClass('is-open');
+          $('#navToggle').removeClass('is-open').attr('aria-expanded', 'false');
         }
       });
 
-      /* Navbar: sombra ao rolar */
+      /* ── Navbar scroll state ──────────────────────────────────────────── */
+      var $wrapper = $('#navWrapper');
+
       $(window).on('scroll.nav', function () {
-        $('#mainNav').toggleClass('gm-nav--scrolled', $(this).scrollTop() > 40);
+        $wrapper.toggleClass('gm-nav-wrapper--scrolled', $(this).scrollTop() > 40);
       });
 
-      /* Slick Carousel — features */
-      $('.features-carousel').slick({
-        slidesToShow: 3,
-        slidesToScroll: 1,
-        dots: true,
-        arrows: false,
-        infinite: true,
-        responsive: [
-          { breakpoint: 992, settings: { slidesToShow: 2 } },
-          { breakpoint: 576, settings: { slidesToShow: 1 } }
-        ]
+      /* ── Mobile hamburger toggle ──────────────────────────────────────── */
+      var $toggle = $('#navToggle');
+      var $links  = $('#navLinks');
+
+      $toggle.on('click', function () {
+        var isOpen = $links.hasClass('is-open');
+        $links.toggleClass('is-open', !isOpen);
+        $toggle.toggleClass('is-open', !isOpen);
+        $toggle.attr('aria-expanded', String(!isOpen));
       });
 
-    });
+      /* Close nav when clicking outside */
+      $(document).on('click', function (e) {
+        if (!$(e.target).closest('.gm-nav').length) {
+          $links.removeClass('is-open');
+          $toggle.removeClass('is-open').attr('aria-expanded', 'false');
+        }
+      });
+
+    }());
   </script>
+
 </body>
 </html>
