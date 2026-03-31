@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Reivindique seu link — getmi</title>
-  <meta name="description" content="Crie sua identidade digital em segundos. Reivindique seu nome antes que alguém o faça.">
+  <title>Criar conta — getmi</title>
+  <meta name="description" content="Crie sua conta getmi e comece a compartilhar seus links.">
   <meta name="robots" content="noindex, nofollow">
 
   <!-- Favicon + PWA -->
@@ -23,296 +23,244 @@
   <link rel="stylesheet" href="/css/tokens.css">
   <link rel="stylesheet" href="/css/auth.css">
 </head>
-<body>
+<body class="reg-page">
 
-  <!-- ── HEADER ─────────────────────────────────────────────────────────── -->
-  <header class="auth-header" role="banner">
-    <nav class="auth-header__inner" aria-label="Menu">
+  <main class="reg-layout" role="main">
 
-      <a href="/" class="auth-header__brand" aria-label="getmi — Página inicial">
-        <img src="/img/getmi-logo-dark.svg"
-             class="auth-header__logo"
-             alt="getmi"
-             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <span class="auth-header__wordmark" style="display:none">
-          getmi<span class="auth-header__dot">●</span>
-        </span>
+    <!-- ── LEFT COLUMN ────────────────────────────────────────────────── -->
+    <section class="reg-layout__left">
+
+      <!-- Back button -->
+      <a href="/claim.html" class="reg-back-btn" aria-label="Voltar para escolha de username">
+        <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
       </a>
 
-      <button class="g-tab-trigger" type="button"
-              data-tab="login"
-              aria-label="Já tenho conta — fazer login">
-        Login
-      </button>
+      <!-- Logo -->
+      <div class="reg-brand" aria-label="getmi">
+        <span class="reg-brand__text">getmi</span><span class="reg-brand__dot" aria-hidden="true">●</span>
+      </div>
 
-    </nav>
-  </header>
+      <!-- Heading — changes between register and login -->
+      <h1 class="reg-heading" id="reg-heading">Agora, crie sua<br>conta.</h1>
+      <p class="reg-subtitle" id="reg-subtitle">
+        O link getmi.app/<strong id="display-username"></strong> é seu!
+      </p>
 
-  <!-- ── MAIN ───────────────────────────────────────────────────────────── -->
-  <main class="auth-layout" role="main">
-    <div class="auth-layout__inner">
+      <!-- Hidden tabs (for auth.js tab-switching logic) -->
+      <div class="g-tabs" aria-hidden="true" style="display:none" role="presentation">
+        <button class="g-tab is-active" role="tab" data-tab="register" tabindex="-1">Criar conta</button>
+        <button class="g-tab"           role="tab" data-tab="login"    tabindex="-1">Entrar</button>
+      </div>
 
-      <!-- ── LEFT: copy + form ──────────────────────────────────────────── -->
-      <section class="auth-layout__form" aria-label="Formulário de acesso">
+      <!-- Hidden fields read by auth.js -->
+      <input type="hidden" id="reg-username" name="username">
+      <input type="hidden" id="reg-name"     name="name">
 
-        <div class="auth-copy">
-          <h1 class="auth-copy__headline">Seu link único<br>começa aqui.</h1>
-          <p class="auth-copy__sub">
-            Crie sua identidade digital em segundos.<br>
-            Reivindique seu nome antes que alguém o faça.
-          </p>
+      <!-- ── REGISTER FORM ─────────────────────────────────────────── -->
+      <form class="g-form reg-form is-visible" id="form-register" novalidate>
+
+        <div class="g-success" id="success-register" aria-live="polite" role="status" hidden>
+          <svg class="g-success__icon" xmlns="http://www.w3.org/2000/svg"
+               width="48" height="48" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+               aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="9 12 11 14 15 10"/>
+          </svg>
+          <p class="g-success__text">Conta criada! Redirecionando…</p>
         </div>
 
-        <!-- Card com os formulários -->
-        <div class="g-card">
+        <div class="g-form__body">
+          <div class="g-alert g-alert--error" role="alert" aria-live="polite"></div>
 
-          <!-- Tabs -->
-          <div class="g-tabs" role="tablist">
-            <button class="g-tab" role="tab"
-                    aria-selected="false" aria-controls="form-login"
-                    data-tab="login">
-              Entrar
-            </button>
-            <button class="g-tab is-active" role="tab"
-                    aria-selected="true" aria-controls="form-register"
-                    data-tab="register">
-              Criar conta
-            </button>
+          <!-- E-mail -->
+          <div class="g-field">
+            <label class="g-label" for="reg-email">E-mail</label>
+            <input class="g-input" type="email" id="reg-email"
+                   name="email" autocomplete="email"
+                   placeholder="seu@email.com"
+                   aria-required="true" required>
           </div>
 
-          <!-- ── FORM LOGIN ──────────────────────────────────────────────── -->
-          <form class="g-form" id="form-login"
-                role="tabpanel" aria-label="Formulário de login"
-                novalidate>
-
-            <div class="g-success" id="success-login" aria-live="polite" role="status" hidden>
-              <svg class="g-success__icon" xmlns="http://www.w3.org/2000/svg"
-                   width="48" height="48" viewBox="0 0 24 24"
-                   fill="none" stroke="currentColor"
-                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                   aria-hidden="true" focusable="false">
-                <circle cx="12" cy="12" r="10"/>
-                <polyline points="9 12 11 14 15 10"/>
-              </svg>
-              <p class="g-success__text">Login realizado! Redirecionando…</p>
+          <!-- Senha -->
+          <div class="g-field">
+            <label class="g-label" for="reg-password">Senha</label>
+            <div class="reg-pwd-wrap">
+              <input class="g-input" type="password" id="reg-password"
+                     name="password" autocomplete="new-password"
+                     placeholder="Mínimo 8 caracteres"
+                     aria-required="true" required minlength="6">
+              <button type="button" class="reg-show-pwd" aria-label="Mostrar senha"
+                      data-target="reg-password">SHOW</button>
             </div>
+          </div>
 
-            <div class="g-form__body">
-              <div class="g-alert g-alert--error" role="alert" aria-live="polite"></div>
+          <button type="submit" class="g-btn g-btn--primary" style="margin-top:.25rem">
+            Criar conta
+          </button>
 
-              <div class="g-field">
-                <label class="g-label" for="login-email">E-mail</label>
-                <input class="g-input" type="email" id="login-email"
-                       name="email" autocomplete="email"
-                       placeholder="seu@email.com"
-                       aria-required="true" required>
-              </div>
+          <div class="g-divider" aria-hidden="true">ou</div>
 
-              <div class="g-field">
-                <label class="g-label" for="login-password">Senha</label>
-                <input class="g-input" type="password" id="login-password"
-                       name="password" autocomplete="current-password"
-                       placeholder="••••••••"
-                       aria-required="true" required>
-              </div>
-
-              <button type="submit" class="g-btn g-btn--primary">Entrar</button>
-
-              <div class="g-divider" aria-hidden="true">ou</div>
-
-              <button type="button" class="g-btn g-btn--google" id="btn-google-login"
-                      aria-label="Entrar com conta Google">
-                <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" focusable="false">
-                  <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/>
-                  <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/>
-                  <path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/>
-                  <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
-                </svg>
-                Entrar com Google
-              </button>
-            </div>
-
-          </form>
-
-          <!-- ── FORM REGISTRO ──────────────────────────────────────────── -->
-          <form class="g-form is-visible" id="form-register"
-                role="tabpanel" aria-label="Formulário de cadastro"
-                novalidate>
-
-            <div class="g-success" id="success-register" aria-live="polite" role="status" hidden>
-              <svg class="g-success__icon" xmlns="http://www.w3.org/2000/svg"
-                   width="48" height="48" viewBox="0 0 24 24"
-                   fill="none" stroke="currentColor"
-                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                   aria-hidden="true" focusable="false">
-                <circle cx="12" cy="12" r="10"/>
-                <polyline points="9 12 11 14 15 10"/>
-              </svg>
-              <p class="g-success__text">Conta criada! Redirecionando…</p>
-            </div>
-
-            <div class="g-form__body">
-              <div class="g-alert g-alert--error" role="alert" aria-live="polite"></div>
-
-              <!-- Username em destaque — como no reference -->
-              <div class="g-field g-field--username-hero">
-                <label class="g-label" for="reg-username">Escolha seu nome de usuário</label>
-                <div class="g-input-wrap g-input-wrap--hero">
-                  <span class="g-input-prefix" aria-hidden="true">getmi.app/</span>
-                  <input class="g-input" type="text" id="reg-username"
-                         name="username" autocomplete="username"
-                         placeholder="seu-nome"
-                         minlength="3" maxlength="30"
-                         aria-required="true"
-                         aria-describedby="reg-username-hint reg-username-error"
-                         required>
-                  <span class="g-username-status" id="username-status" aria-live="polite"></span>
-                </div>
-                <span class="g-hint" id="reg-username-hint">3–30 chars · letras minúsculas, números e hífens</span>
-                <span class="g-field-error" id="reg-username-error" role="alert"></span>
-              </div>
-
-              <div class="g-field">
-                <label class="g-label" for="reg-name">Nome</label>
-                <input class="g-input" type="text" id="reg-name"
-                       name="name" autocomplete="name"
-                       placeholder="Seu nome completo"
-                       aria-required="true" required>
-              </div>
-
-              <div class="g-field">
-                <label class="g-label" for="reg-email">E-mail</label>
-                <input class="g-input" type="email" id="reg-email"
-                       name="email" autocomplete="email"
-                       placeholder="seu@email.com"
-                       aria-required="true" required>
-              </div>
-
-              <div class="g-field">
-                <label class="g-label" for="reg-password">Senha</label>
-                <input class="g-input" type="password" id="reg-password"
-                       name="password" autocomplete="new-password"
-                       placeholder="Mínimo 6 caracteres"
-                       aria-required="true" required minlength="6">
-              </div>
-
-              <button type="submit" class="g-btn g-btn--primary">
-                Garanta meu Link
-              </button>
-
-              <div class="g-divider" aria-hidden="true">ou</div>
-
-              <button type="button" class="g-btn g-btn--google" id="btn-google-register"
-                      aria-label="Registrar com conta Google">
-                <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" focusable="false">
-                  <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/>
-                  <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/>
-                  <path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/>
-                  <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
-                </svg>
-                Continuar com Google
-              </button>
-
-              <p class="g-card__footer">
-                Grátis para sempre. Nenhuma configuração complexa necessária.
-              </p>
-            </div>
-
-          </form>
-
+          <button type="button" class="g-btn g-btn--google" id="btn-google-register"
+                  aria-label="Cadastrar com conta Google">
+            <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+              <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/>
+              <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/>
+              <path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/>
+              <path fill="#EA4335" d="M9 3.58c1.62 0 3.06.56 4.21 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+            </svg>
+            Cadastrar com Google
+          </button>
         </div>
-        <!-- /g-card -->
 
-        <p class="auth-terms">
-          Ao continuar, você concorda com os
-          <a href="/terms.html">Termos de Uso</a> e a
-          <a href="/privacy.html">Política de Privacidade</a>.
-        </p>
+      </form>
 
-      </section>
-      <!-- /left -->
+      <!-- ── LOGIN FORM ─────────────────────────────────────────────── -->
+      <form class="g-form reg-form" id="form-login" novalidate>
 
-      <!-- ── RIGHT: visual showcase (desktop only) ──────────────────────── -->
-      <aside class="auth-visual" aria-hidden="true">
+        <div class="g-success" id="success-login" aria-live="polite" role="status" hidden>
+          <svg class="g-success__icon" xmlns="http://www.w3.org/2000/svg"
+               width="48" height="48" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+               aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="9 12 11 14 15 10"/>
+          </svg>
+          <p class="g-success__text">Login realizado! Redirecionando…</p>
+        </div>
 
-        <!-- Coral glow blob -->
-        <div class="auth-visual__glow"></div>
+        <div class="g-form__body">
+          <div class="g-alert g-alert--error" role="alert" aria-live="polite"></div>
 
-        <!-- Floating Spotify card — top-left, tilted -6deg -->
-        <div class="auth-visual__float auth-visual__float--spotify">
-          <div class="auth-visual__spotify-top">
-            <div class="auth-visual__spotify-icon">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <circle cx="12" cy="12" r="11" fill="#1DB954"/>
-                <path d="M7 14.5c2.5-1 5.5-.8 8 .8M6.5 11.5c3-1.2 7-.9 10 1M7.5 8.5c2.8-1 6.5-.7 9.5 1.2"
-                      stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
-              </svg>
-            </div>
-            <div>
-              <p class="auth-visual__float-label">Tocando agora</p>
-              <p class="auth-visual__float-track">Noite de Verão — Alok</p>
-            </div>
+          <div class="g-field">
+            <label class="g-label" for="login-email">E-mail</label>
+            <input class="g-input" type="email" id="login-email"
+                   name="email" autocomplete="email"
+                   placeholder="seu@email.com"
+                   aria-required="true" required>
           </div>
-          <div class="auth-visual__spotify-bar">
-            <div class="auth-visual__spotify-fill"></div>
+
+          <div class="g-field">
+            <label class="g-label" for="login-password">Senha</label>
+            <input class="g-input" type="password" id="login-password"
+                   name="password" autocomplete="current-password"
+                   placeholder="••••••••"
+                   aria-required="true" required>
+          </div>
+
+          <button type="submit" class="g-btn g-btn--primary" style="margin-top:.25rem">
+            Entrar
+          </button>
+
+          <div class="g-divider" aria-hidden="true">ou</div>
+
+          <button type="button" class="g-btn g-btn--google" id="btn-google-login"
+                  aria-label="Entrar com conta Google">
+            <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+              <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/>
+              <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/>
+              <path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/>
+              <path fill="#EA4335" d="M9 3.58c1.62 0 3.06.56 4.21 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+            </svg>
+            Entrar com Google
+          </button>
+        </div>
+
+      </form>
+
+      <!-- Toggle link between register / login -->
+      <p class="reg-toggle-text" id="reg-toggle-text">
+        Já tem uma conta? <a href="#" id="to-login-link">Entrar</a>
+      </p>
+
+    </section>
+    <!-- /left -->
+
+    <!-- ── RIGHT COLUMN: Bento Visual ─────────────────────────────────── -->
+    <section class="reg-layout__right" aria-hidden="true">
+
+      <!-- Decorative blobs -->
+      <div class="reg-blob reg-blob--coral"></div>
+      <div class="reg-blob reg-blob--indigo"></div>
+
+      <!-- Bento Grid -->
+      <div class="reg-bento">
+
+        <!-- Col 1, Row 1: Avatar circle -->
+        <div class="reg-bento__cell reg-bento__avatar-cell">
+          <div class="reg-avatar-circle"></div>
+        </div>
+
+        <!-- Col 2, Row 1: Spotify art -->
+        <div class="reg-bento__cell reg-bento__art-cell">
+          <div class="reg-spotify-art">
+            <span class="material-symbols-outlined reg-play-icon"
+                  style="font-variation-settings:'FILL' 0">play_circle</span>
           </div>
         </div>
 
-        <!-- Main profile card — center -->
-        <div class="auth-visual__main">
-          <div class="auth-visual__avatar-wrap">
-            <div class="auth-visual__avatar"></div>
-            <span class="auth-visual__online-dot"></span>
+        <!-- Cols 3-4, Row 1: empty -->
+        <div class="reg-bento__cell reg-bento__spacer"></div>
+
+        <!-- Cols 1-3, Row 2: Spotify player -->
+        <div class="reg-bento__cell reg-bento__player">
+          <div class="reg-player__icon">
+            <span class="material-symbols-outlined"
+                  style="font-variation-settings:'FILL' 1;color:#FF6B4A">graphic_eq</span>
           </div>
-          <h3 class="auth-visual__name">Marina Costa</h3>
-          <p class="auth-visual__role">Criadora de Conteúdo Digital</p>
-          <div class="auth-visual__actions">
-            <div class="auth-visual__action auth-visual__action--wa">
-              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="20" height="20">
+          <div class="reg-player__info">
+            <p class="reg-player__label">LISTENING TO</p>
+            <p class="reg-player__track">Daydreaming — Radiohead</p>
+          </div>
+          <div class="reg-player__controls">
+            <span class="material-symbols-outlined reg-ctrl">skip_previous</span>
+            <span class="material-symbols-outlined reg-ctrl reg-ctrl--main">pause_circle</span>
+            <span class="material-symbols-outlined reg-ctrl">skip_next</span>
+          </div>
+        </div>
+
+        <!-- Col 4, Row 2: Premium badge -->
+        <div class="reg-bento__cell reg-bento__premium-cell">
+          <div class="reg-premium-badge">
+            <span class="material-symbols-outlined reg-premium-icon"
+                  style="font-variation-settings:'FILL' 1">auto_awesome</span>
+            PREMIUM
+          </div>
+        </div>
+
+        <!-- Cols 2-3, Row 3: WhatsApp link card -->
+        <div class="reg-bento__cell reg-bento__wa-cell">
+          <div class="reg-wa-card">
+            <div class="reg-wa-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22" aria-hidden="true">
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.937 3.659 1.432 5.628 1.433h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
               </svg>
             </div>
-            <div class="auth-visual__action auth-visual__action--coral">
-              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="20" height="20">
-                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-              </svg>
+            <div class="reg-wa-info">
+              <p class="reg-wa-title">WhatsApp</p>
+              <p class="reg-wa-sub">Falar com suporte</p>
             </div>
+            <span class="material-symbols-outlined reg-wa-chevron">chevron_right</span>
           </div>
         </div>
 
-        <!-- Floating Instagram grid — bottom-right, tilted +3deg -->
-        <div class="auth-visual__float auth-visual__float--instagram">
-          <div class="auth-visual__ig-header">
-            <span class="auth-visual__ig-title">Instagram</span>
-            <span class="auth-visual__ig-handle">@marinacosta</span>
-          </div>
-          <div class="auth-visual__ig-grid">
-            <div class="auth-visual__ig-thumb auth-visual__ig-thumb--1"></div>
-            <div class="auth-visual__ig-thumb auth-visual__ig-thumb--2"></div>
-            <div class="auth-visual__ig-thumb auth-visual__ig-thumb--3"></div>
+        <!-- Col 1, Row 4: CRIADOR tag -->
+        <div class="reg-bento__cell reg-bento__tag-cell">
+          <div class="reg-criador-tag">
+            <span class="reg-criador-dot"></span>
+            CRIADOR
           </div>
         </div>
 
-        <!-- White blur behind all cards -->
-        <div class="auth-visual__blur"></div>
+      </div>
+      <!-- /reg-bento -->
 
-      </aside>
-      <!-- /right -->
+    </section>
+    <!-- /right -->
 
-    </div>
   </main>
-
-  <!-- ── FOOTER ─────────────────────────────────────────────────────────── -->
-  <footer class="auth-footer" role="contentinfo">
-    <div class="auth-footer__inner">
-      <span>© 2026 getmi · link-in-bio para criadores brasileiros</span>
-      <nav class="auth-footer__links" aria-label="Links do rodapé">
-        <a href="/terms.html">Termos</a>
-        <a href="/privacy.html">Privacidade</a>
-        <a href="#">Ajuda</a>
-      </nav>
-    </div>
-  </footer>
 
   <!-- ── SCRIPTS ────────────────────────────────────────────────────────── -->
   <script src="/js/sw-register.js"></script>
@@ -326,14 +274,67 @@
   <script>firebase.initializeApp(firebaseConfig);</script>
   <script src="/js/auth.js"></script>
 
-  <!-- Header "Login" button triggers the login tab -->
   <script>
-    document.querySelector('.g-tab-trigger[data-tab="login"]').addEventListener('click', function () {
-      var $loginTab = $('.g-tab[data-tab="login"]');
-      if ($loginTab.length) $loginTab.trigger('click');
-      var card = document.querySelector('.g-card');
-      if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  (function () {
+
+    /* ── Populate username from URL param ─────────────────────────────── */
+    var username = new URLSearchParams(window.location.search).get('username') || '';
+    if (username) {
+      document.getElementById('reg-username').value = username;
+      document.getElementById('reg-name').value     = username;
+      document.getElementById('display-username').textContent = username;
+    } else {
+      // No username — subtitle shows generic text
+      document.getElementById('reg-subtitle').textContent = 'Crie sua identidade digital em segundos.';
+    }
+
+    /* ── SHOW / HIDE password ─────────────────────────────────────────── */
+    document.querySelector('.reg-show-pwd').addEventListener('click', function () {
+      var input = document.getElementById(this.dataset.target);
+      if (input.type === 'password') {
+        input.type = 'text';
+        this.textContent = 'HIDE';
+      } else {
+        input.type = 'password';
+        this.textContent = 'SHOW';
+      }
     });
+
+    /* ── Toggle between register and login views ──────────────────────── */
+    function setView(view) {
+      var isRegister = view === 'register';
+      document.getElementById('reg-heading').innerHTML = isRegister
+        ? 'Agora, crie sua<br>conta.'
+        : 'Bem-vindo<br>de volta.';
+      document.getElementById('reg-subtitle').textContent = isRegister
+        ? (username ? 'O link getmi.app/' + username + ' é seu!' : 'Crie sua identidade digital em segundos.')
+        : 'Entre na sua conta getmi.';
+      document.getElementById('reg-toggle-text').innerHTML = isRegister
+        ? 'Já tem uma conta? <a href="#" id="to-login-link">Entrar</a>'
+        : 'Não tem conta? <a href="#" id="to-login-link">Criar conta</a>';
+
+      // trigger the hidden tab button (auth.js listens to .g-tab clicks)
+      document.querySelector('.g-tab[data-tab="' + view + '"]').click();
+
+      // re-bind toggle link
+      document.getElementById('to-login-link').addEventListener('click', function (e) {
+        e.preventDefault();
+        setView(isRegister ? 'login' : 'register');
+      });
+    }
+
+    // Initial toggle binding
+    document.getElementById('to-login-link').addEventListener('click', function (e) {
+      e.preventDefault();
+      setView('login');
+    });
+
+    /* ── If URL has ?view=login, start on login ───────────────────────── */
+    if (new URLSearchParams(window.location.search).get('view') === 'login') {
+      setView('login');
+    }
+
+  })();
   </script>
 
 </body>

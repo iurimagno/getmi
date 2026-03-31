@@ -42,6 +42,15 @@ $(function () {
   const db        = firebase.firestore();
   const provider  = new firebase.auth.GoogleAuthProvider();
 
+  /* ── Pré-popula username/name a partir do param de URL ───────────────── */
+  var claimedUsername = new URLSearchParams(window.location.search).get('username') || '';
+  if (claimedUsername) {
+    var $u = $('#reg-username');
+    var $n = $('#reg-name');
+    if ($u.length && !$u.val()) $u.val(claimedUsername);
+    if ($n.length && !$n.val()) $n.val(claimedUsername);
+  }
+
   /* ── Redireciona se já logado ────────────────────────────────────────── */
   auth.onAuthStateChanged(function (user) {
     if (user) {

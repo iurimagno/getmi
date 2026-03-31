@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Reivindique seu link — getmi</title>
+  <meta name="description" content="Crie sua identidade digital em segundos. Reivindique seu nome antes que alguém o faça.">
+  <meta name="robots" content="noindex, nofollow">
+
+  <!-- Favicon + PWA -->
+  <link rel="icon"     type="image/x-icon" href="/img/favicon.ico">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#FF6B4A">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300,0,0&display=swap" rel="stylesheet">
+
+  <!-- Design system + Auth styles -->
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body>
+
+  <!-- ── HEADER ─────────────────────────────────────────────────────────── -->
+  <header class="auth-header" role="banner">
+    <nav class="auth-header__inner" aria-label="Menu">
+
+      <a href="/" class="auth-header__brand" aria-label="getmi — Página inicial">
+        <img src="/img/getmi-logo-dark.svg"
+             class="auth-header__logo"
+             alt="getmi"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <span class="auth-header__wordmark" style="display:none">
+          getmi<span class="auth-header__dot">●</span>
+        </span>
+      </a>
+
+      <a href="/login.html" class="g-tab-trigger" aria-label="Já tenho conta — fazer login">
+        Login
+      </a>
+
+    </nav>
+  </header>
+
+  <!-- ── MAIN ───────────────────────────────────────────────────────────── -->
+  <main class="auth-layout" role="main">
+    <div class="auth-layout__inner">
+
+      <!-- ── LEFT: copy + form ──────────────────────────────────────────── -->
+      <section class="auth-layout__form" aria-label="Reivindique seu username">
+
+        <div class="auth-copy">
+          <h1 class="auth-copy__headline">Seu link único<br>começa aqui.</h1>
+          <p class="auth-copy__sub">
+            Crie sua identidade digital em segundos.<br>
+            Reivindique seu nome antes que alguém o faça.
+          </p>
+        </div>
+
+        <!-- Card da reivindicação -->
+        <div class="g-card">
+
+          <form id="form-claim" novalidate>
+
+            <!-- Alerta de erro -->
+            <div class="g-alert g-alert--error" id="claim-alert" role="alert" aria-live="polite"></div>
+
+            <!-- Username em destaque -->
+            <div class="g-field g-field--username-hero">
+              <label class="g-label" for="claim-username">Escolha seu nome de usuário</label>
+              <div class="g-input-wrap g-input-wrap--hero">
+                <span class="g-input-prefix" aria-hidden="true">getmi.app/</span>
+                <input class="g-input" type="text" id="claim-username"
+                       name="username" autocomplete="username"
+                       placeholder="seu-nome"
+                       minlength="3" maxlength="30"
+                       aria-required="true"
+                       aria-describedby="claim-hint claim-error"
+                       required>
+                <span class="g-username-status" id="claim-status" aria-live="polite"></span>
+              </div>
+              <span class="g-hint" id="claim-hint">3–30 chars · letras minúsculas, números e hífens</span>
+              <span class="g-field-error" id="claim-error" role="alert"></span>
+            </div>
+
+            <button type="submit" class="g-btn g-btn--primary">
+              Continuar
+            </button>
+
+          </form>
+
+          <p class="g-card__footer" style="margin-top:1.25rem">
+            Grátis para sempre. Sem cartão de crédito.
+          </p>
+
+        </div>
+        <!-- /g-card -->
+
+        <p class="auth-terms">
+          Ao continuar, você concorda com os
+          <a href="/terms.html">Termos de Uso</a> e a
+          <a href="/privacy.html">Política de Privacidade</a>.
+        </p>
+
+      </section>
+      <!-- /left -->
+
+      <!-- ── RIGHT: visual showcase (desktop only) ──────────────────────── -->
+      <aside class="auth-visual" aria-hidden="true">
+
+        <!-- Coral glow blob -->
+        <div class="auth-visual__glow"></div>
+
+        <!-- Floating Spotify card — top-left, tilted -6deg -->
+        <div class="auth-visual__float auth-visual__float--spotify">
+          <div class="auth-visual__spotify-top">
+            <div class="auth-visual__spotify-icon">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="12" r="11" fill="#1DB954"/>
+                <path d="M7 14.5c2.5-1 5.5-.8 8 .8M6.5 11.5c3-1.2 7-.9 10 1M7.5 8.5c2.8-1 6.5-.7 9.5 1.2"
+                      stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div>
+              <p class="auth-visual__float-label">Tocando agora</p>
+              <p class="auth-visual__float-track">Noite de Verão — Alok</p>
+            </div>
+          </div>
+          <div class="auth-visual__spotify-bar">
+            <div class="auth-visual__spotify-fill"></div>
+          </div>
+        </div>
+
+        <!-- Main profile card — center -->
+        <div class="auth-visual__main">
+          <div class="auth-visual__avatar-wrap">
+            <div class="auth-visual__avatar"></div>
+            <span class="auth-visual__online-dot"></span>
+          </div>
+          <h3 class="auth-visual__name">Marina Costa</h3>
+          <p class="auth-visual__role">Criadora de Conteúdo Digital</p>
+          <div class="auth-visual__actions">
+            <div class="auth-visual__action auth-visual__action--wa">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="20" height="20">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.937 3.659 1.432 5.628 1.433h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+              </svg>
+            </div>
+            <div class="auth-visual__action auth-visual__action--coral">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="20" height="20">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floating Instagram grid — bottom-right, tilted +3deg -->
+        <div class="auth-visual__float auth-visual__float--instagram">
+          <div class="auth-visual__ig-header">
+            <span class="auth-visual__ig-title">Instagram</span>
+            <span class="auth-visual__ig-handle">@marinacosta</span>
+          </div>
+          <div class="auth-visual__ig-grid">
+            <div class="auth-visual__ig-thumb auth-visual__ig-thumb--1"></div>
+            <div class="auth-visual__ig-thumb auth-visual__ig-thumb--2"></div>
+            <div class="auth-visual__ig-thumb auth-visual__ig-thumb--3"></div>
+          </div>
+        </div>
+
+        <!-- White blur behind all cards -->
+        <div class="auth-visual__blur"></div>
+
+      </aside>
+      <!-- /right -->
+
+    </div>
+  </main>
+
+  <!-- ── FOOTER ─────────────────────────────────────────────────────────── -->
+  <footer class="auth-footer" role="contentinfo">
+    <div class="auth-footer__inner">
+      <span>© 2026 getmi · link-in-bio para criadores brasileiros</span>
+      <nav class="auth-footer__links" aria-label="Links do rodapé">
+        <a href="/terms.html">Termos</a>
+        <a href="/privacy.html">Privacidade</a>
+        <a href="#">Ajuda</a>
+      </nav>
+    </div>
+  </footer>
+
+  <!-- ── SCRIPTS ────────────────────────────────────────────────────────── -->
+  <script src="/js/sw-register.js"></script>
+  <script src="/lib/jquery.min.js"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+  <script src="/js/config.js"></script>
+  <script>firebase.initializeApp(firebaseConfig);</script>
+
+  <script>
+  (function () {
+    var auth = firebase.auth();
+    var db   = firebase.firestore();
+
+    /* Redireciona se já logado */
+    auth.onAuthStateChanged(function (user) {
+      if (user) window.location.replace('/admin/');
+    });
+
+    var USERNAME_REGEX    = /^[a-z0-9][a-z0-9-]{1,28}[a-z0-9]$|^[a-z0-9]{3}$/;
+    var USERNAME_RESERVED = ['admin','login','register','api','app','getmi','www','mail','support','claim'];
+
+    function validateUsername(val) {
+      if (!val || val.length < 3)          return 'Username deve ter pelo menos 3 caracteres.';
+      if (val.length > 30)                 return 'Username deve ter no máximo 30 caracteres.';
+      if (!USERNAME_REGEX.test(val))       return 'Apenas letras minúsculas, números e hífens. Não pode começar ou terminar com hífen.';
+      if (USERNAME_RESERVED.includes(val)) return 'Este username é reservado.';
+      return null;
+    }
+
+    var checkTimer = null;
+
+    $('#claim-username').on('input', function () {
+      var val = $(this).val().trim().toLowerCase();
+      $(this).val(val);
+
+      clearTimeout(checkTimer);
+      $('#claim-status').text('').removeClass('is-checking is-available is-taken');
+      $('#claim-error').removeClass('is-visible').text('');
+      $('#claim-alert').removeClass('is-visible').text('');
+
+      var err = validateUsername(val);
+      if (err) {
+        $('#claim-error').text(err).addClass('is-visible');
+        return;
+      }
+
+      $('#claim-status').text('verificando...').addClass('is-checking');
+
+      checkTimer = setTimeout(function () {
+        db.collection('usernames').doc(val).get()
+          .then(function (doc) {
+            $('#claim-status').removeClass('is-checking');
+            if (doc.exists) {
+              $('#claim-status').text('indisponível').addClass('is-taken');
+              $('#claim-error').text('Este username já está em uso.').addClass('is-visible');
+            } else {
+              $('#claim-status').text('disponível ✓').addClass('is-available');
+            }
+          })
+          .catch(function () {
+            $('#claim-status').text('').removeClass('is-checking');
+          });
+      }, 500);
+    });
+
+    $('#form-claim').on('submit', function (e) {
+      e.preventDefault();
+
+      var val = $('#claim-username').val().trim().toLowerCase();
+      var err = validateUsername(val);
+
+      if (err) {
+        $('#claim-error').text(err).addClass('is-visible');
+        return;
+      }
+
+      if ($('#claim-status').hasClass('is-taken')) return;
+
+      var $btn = $(this).find('.g-btn--primary');
+      $btn.prop('disabled', true).html('<span class="g-spinner" aria-hidden="true"></span><span>Verificando…</span>');
+
+      db.collection('usernames').doc(val).get()
+        .then(function (doc) {
+          if (doc.exists) {
+            $btn.prop('disabled', false).html('Continuar');
+            $('#claim-status').removeClass('is-available is-checking').addClass('is-taken').text('indisponível');
+            $('#claim-error').text('Este username já está em uso.').addClass('is-visible');
+          } else {
+            window.location.href = '/login.html?username=' + encodeURIComponent(val);
+          }
+        })
+        .catch(function () {
+          $btn.prop('disabled', false).html('Continuar');
+          $('#claim-alert')
+            .addClass('is-visible')
+            .text('Erro ao verificar. Tente novamente.');
+        });
+    });
+  })();
+  </script>
+
+</body>
+</html>
