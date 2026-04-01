@@ -176,6 +176,21 @@ p { margin: 0; }
   flex-shrink: 0;
 }
 
+.gm-auth-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: .375rem .85rem;
+  border-radius: var(--radius-full);
+  background: rgba(26, 31, 54, .06);
+  color: var(--navy);
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: .8125rem;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
 /* Ghost login button */
 .gm-btn-ghost {
   display: inline-block;

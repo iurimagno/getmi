@@ -3,9 +3,16 @@
     "public": "public",
     "cleanUrls": true,
     "trailingSlash": false,
+    "redirects": [
+      {
+        "source": "/@:slug",
+        "destination": "/:slug",
+        "type": 301
+      }
+    ],
     "rewrites": [
       {
-        "source": "/@**",
+        "source": "**",
         "destination": "/p.html"
       }
     ],
@@ -56,6 +63,11 @@
         ]
       }
     ]
+  },
+  "emulators": {
+    "hosting": {
+      "port": 8080
+    }
   },
   "firestore": {
     "rules": "firestore.rules",

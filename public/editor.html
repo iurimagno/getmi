@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editor — getmi.app</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#FF6B4A">
+  <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+  <link rel="manifest" href="/manifest.json">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/css/editor.css">
+</head>
+<body>
+  <div class="editor-loading" id="editorLoading" role="status" aria-live="polite">
+    <div class="editor-loading__spinner"></div>
+  </div>
+
+  <div class="editor-shell" id="editorShell" hidden>
+    <header class="top">
+      <div class="top__brand">
+        <img src="/img/getmi-logo-dark.svg" alt="getmi.app" class="top__logo">
+        <div class="top__brand-copy">
+          <strong>getmi<i>.ai</i></strong>
+          <span class="top__meta" id="topUsername">/username</span>
+        </div>
+      </div>
+
+      <div class="top__status">
+        <span class="top__pill" id="saveStatus">Carregando...</span>
+        <span class="top__pill top__pill--muted" id="planBadge">Plano free</span>
+      </div>
+
+      <div class="top__actions">
+        <a href="/" class="top__link" target="_blank" rel="noopener">Ver home</a>
+        <button type="button" class="top__icon-btn" id="btnSignOut" aria-label="Sair">
+          <span class="material-symbols-outlined" aria-hidden="true">logout</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="board">
+      <div class="arena-wrap" id="arenaWrap">
+        <section class="profile" aria-label="Perfil">
+          <label class="pf-avatar" aria-label="Avatar">
+            <div class="pf-avatar-empty" id="pfEmpty">
+              <span>Adicionar avatar</span>
+            </div>
+            <img id="pfImg" class="pf-avatar-img" src="" alt="Avatar" hidden>
+            <input id="pfAvatarInput" type="file" accept="image/*">
+            <button type="button" class="pf-avatar-rm" id="pfRm" aria-label="Remover avatar">
+              <span class="material-symbols-outlined" aria-hidden="true">close</span>
+            </button>
+          </label>
+
+          <input
+            id="pfName"
+            class="pf-name"
+            type="text"
+            maxlength="40"
+            placeholder="Your name"
+            autocomplete="name"
+          >
+          <textarea
+            id="pfBio"
+            class="pf-bio"
+            maxlength="200"
+            placeholder="Your bio..."
+            rows="2"
+          ></textarea>
+
+        </section>
+
+        <section class="arena" id="arena" aria-label="Whiteboard editor"></section>
+      </div>
+    </main>
+
+    <button type="button" class="fab" id="btnAddWidget" aria-label="Adicionar widget">
+      <span class="material-symbols-outlined" aria-hidden="true">add</span>
+    </button>
+
+    <nav class="bb" aria-label="Barra de ações do editor">
+      <div class="bb__cluster">
+        <button type="button" class="bb__icon-btn" id="btnSettings" aria-label="Abrir configurações">
+          <span class="material-symbols-outlined" aria-hidden="true">tune</span>
+        </button>
+        <a href="/" class="bb__link">Community</a>
+        <a href="/" class="bb__link">Explore</a>
+      </div>
+
+      <button type="button" class="bb__share" id="btnShare">
+        <span class="material-symbols-outlined" aria-hidden="true">ios_share</span>
+        Compartilhar getmi
+      </button>
+
+      <div class="bb__cluster bb__cluster--right">
+        <span class="bb__saving" id="savePulse">Salvo</span>
+        <div class="bb__toggle" role="tablist" aria-label="Modo de visualização">
+          <button type="button" class="bb__toggle-btn on" id="tD" data-view="desktop">Desktop</button>
+          <button type="button" class="bb__toggle-btn" id="tM" data-view="mobile">Mobile</button>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <div class="settings-popover" id="settingsPopover" hidden>
+    <div class="settings-popover__card">
+      <button type="button" class="settings-row settings-row--action" id="btnSettingsUsername">
+        <div class="settings-row__copy">
+          <span class="settings-row__label">Seu link getmi</span>
+          <span class="settings-row__value" id="settingsUsernameValue">Defina um username</span>
+        </div>
+        <span class="material-symbols-outlined settings-row__icon" aria-hidden="true">chevron_right</span>
+      </button>
+
+      <div class="settings-row">
+        <div class="settings-row__copy">
+          <span class="settings-row__label">E-mail da conta</span>
+          <span class="settings-row__value" id="settingsEmailValue">-</span>
+        </div>
+      </div>
+
+      <button type="button" class="settings-row settings-row--action" id="btnSettingsOpenProfile">
+        <div class="settings-row__copy">
+          <span class="settings-row__label">Abrir página pública</span>
+          <span class="settings-row__value">Ver seu link ao vivo</span>
+        </div>
+        <span class="material-symbols-outlined settings-row__icon" aria-hidden="true">open_in_new</span>
+      </button>
+
+      <button type="button" class="settings-row settings-row--action settings-row--danger" id="btnSettingsLogout">
+        <div class="settings-row__copy">
+          <span class="settings-row__label">Sair da conta</span>
+          <span class="settings-row__value">Encerrar esta sessão</span>
+        </div>
+        <span class="material-symbols-outlined settings-row__icon" aria-hidden="true">logout</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="dialog-backdrop" id="dialogBackdrop" hidden></div>
+
+  <section class="username-dialog" id="usernameDialog" hidden role="dialog" aria-modal="true" aria-labelledby="usernameDialogTitle">
+    <div class="username-dialog__panel" id="usernameDialogForm">
+      <button type="button" class="username-dialog__close" id="btnUsernameDialogClose" aria-label="Fechar">
+        <span class="material-symbols-outlined" aria-hidden="true">close</span>
+      </button>
+
+      <div class="username-dialog__badge">
+        <span class="material-symbols-outlined" aria-hidden="true">alternate_email</span>
+      </div>
+
+      <h2 class="username-dialog__title" id="usernameDialogTitle">Alterar link público</h2>
+      <p class="username-dialog__copy">Defina o username que vai aparecer na URL pública do seu getmi.</p>
+
+      <label class="username-field" for="settingsUsernameInput">
+        <span class="username-field__prefix">getmi.app/</span>
+        <input type="text" id="settingsUsernameInput" maxlength="30" autocomplete="off" spellcheck="false" placeholder="seu-username">
+        <span class="username-field__check material-symbols-outlined" id="settingsUsernameCheck" aria-hidden="true">check_circle</span>
+      </label>
+
+      <p class="username-dialog__status" id="settingsUsernameStatus">Use letras minúsculas, números e hífen.</p>
+
+      <button type="button" class="username-dialog__submit" id="btnUsernameSubmit" disabled>Salvar meu link</button>
+    </div>
+
+    <div class="username-dialog__panel username-dialog__panel--success" id="usernameSuccessPanel" hidden>
+      <div class="username-dialog__success-mark">
+        <span class="material-symbols-outlined" aria-hidden="true">check</span>
+      </div>
+      <h2 class="username-dialog__title">Seu novo link está pronto</h2>
+      <p class="username-dialog__copy">Atualizamos seu username com sucesso. Agora é só compartilhar.</p>
+      <div class="username-dialog__result" id="settingsUsernameResult">getmi.app/username</div>
+      <button type="button" class="username-dialog__submit username-dialog__submit--mint" id="btnUsernameCopy">Copiar meu link</button>
+      <p class="username-dialog__foot">O link já está ativo na sua página pública.</p>
+    </div>
+  </section>
+
+  <div class="editor-toast" id="editorToast" role="status" aria-live="polite"></div>
+  <div class="editor-confetti" id="editorConfetti" aria-hidden="true"></div>
+
+  <script src="/lib/jquery.min.js"></script>
+  <script src="/lib/bootstrap.bundle.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
+  <script src="/js/config.js"></script>
+  <script>
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+  </script>
+  <script src="/js/editor.js"></script>
+  <script src="/js/sw-register.js"></script>
+</body>
+</html>

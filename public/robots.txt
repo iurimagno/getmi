@@ -3,6 +3,7 @@ Allow: /
 
 # Bloquear área administrativa
 Disallow: /admin/
+Disallow: /editor
 
 # Bloquear arquivos de configuração
 Disallow: /js/config.js

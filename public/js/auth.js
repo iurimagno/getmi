@@ -41,6 +41,11 @@ $(function () {
   const auth      = firebase.auth();
   const db        = firebase.firestore();
   const provider  = new firebase.auth.GoogleAuthProvider();
+  const $page     = $('body.reg-page');
+
+  function revealAuthPage() {
+    $page.removeClass('auth-pending');
+  }
 
   /* ── Pré-popula username/name a partir do param de URL ───────────────── */
   var claimedUsername = new URLSearchParams(window.location.search).get('username') || '';
@@ -54,8 +59,10 @@ $(function () {
   /* ── Redireciona se já logado ────────────────────────────────────────── */
   auth.onAuthStateChanged(function (user) {
     if (user) {
-      window.location.replace('/admin/');
+      window.location.replace('/editor');
+      return;
     }
+    revealAuthPage();
   });
 
   /* ── Tabs ────────────────────────────────────────────────────────────── */
@@ -81,7 +88,7 @@ $(function () {
       $h.html('Agora, crie sua<br>conta.');
       if ($s.length) {
         $s.html(uname
-          ? 'O link getmi.ai/<strong>' + uname + '</strong> é seu!'
+          ? 'O link getmi.app/<strong>' + uname + '</strong> é seu!'
           : 'Crie sua conta getmi.');
       }
     }
@@ -201,15 +208,35 @@ $(function () {
         return db.collection('users').doc(user.uid).get()
           .then(function (doc) {
             if (!doc.exists) {
-              return db.collection('users').doc(user.uid).set({
+              var now = firebase.firestore.FieldValue.serverTimestamp();
+              var batch = db.batch();
+
+              batch.set(db.collection('users').doc(user.uid), {
                 uid:         user.uid,
+                displayName: user.displayName || '',
                 name:        user.displayName || '',
                 email:       user.email,
+                avatarUrl:   user.photoURL || '',
                 photoURL:    user.photoURL || '',
                 username:    null,
                 plan:        'free',
-                createdAt:   firebase.firestore.FieldValue.serverTimestamp(),
+                createdAt:   now,
               });
+
+              batch.set(db.collection('publicProfiles').doc(user.uid), {
+                uid:         user.uid,
+                username:    null,
+                displayName: user.displayName || '',
+                name:        user.displayName || '',
+                bio:         '',
+                avatarUrl:   user.photoURL || '',
+                photoURL:    user.photoURL || '',
+                plan:        'free',
+                theme:       { bg: '#FAFAF8', text: '#1A1F36', btn: '#1A1F36', style: 'rounded' },
+                createdAt:   now,
+              });
+
+              return batch.commit();
             }
           });
       })
@@ -268,12 +295,27 @@ $(function () {
 
             batch.set(db.collection('users').doc(uid), {
               uid:       uid,
+              displayName: name,
               name:      name,
               email:     email,
+              avatarUrl: '',
               photoURL:  '',
               username:  username,
               plan:      'free',
               createdAt: now,
+            });
+
+            batch.set(db.collection('publicProfiles').doc(uid), {
+              uid:         uid,
+              username:    username,
+              displayName: name,
+              name:        name,
+              bio:         '',
+              avatarUrl:   '',
+              photoURL:    '',
+              plan:        'free',
+              theme:       { bg: '#FAFAF8', text: '#1A1F36', btn: '#1A1F36', style: 'rounded' },
+              createdAt:   now,
             });
 
             batch.set(db.collection('usernames').doc(username), {
@@ -308,15 +350,35 @@ $(function () {
         return db.collection('users').doc(user.uid).get()
           .then(function (doc) {
             if (!doc.exists) {
-              return db.collection('users').doc(user.uid).set({
-                uid:       user.uid,
-                name:      user.displayName || '',
-                email:     user.email,
-                photoURL:  user.photoURL || '',
-                username:  null,
-                plan:      'free',
-                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+              var now = firebase.firestore.FieldValue.serverTimestamp();
+              var batch = db.batch();
+
+              batch.set(db.collection('users').doc(user.uid), {
+                uid:         user.uid,
+                displayName: user.displayName || '',
+                name:        user.displayName || '',
+                email:       user.email,
+                avatarUrl:   user.photoURL || '',
+                photoURL:    user.photoURL || '',
+                username:    null,
+                plan:        'free',
+                createdAt:   now,
               });
+
+              batch.set(db.collection('publicProfiles').doc(user.uid), {
+                uid:         user.uid,
+                username:    null,
+                displayName: user.displayName || '',
+                name:        user.displayName || '',
+                bio:         '',
+                avatarUrl:   user.photoURL || '',
+                photoURL:    user.photoURL || '',
+                plan:        'free',
+                theme:       { bg: '#FAFAF8', text: '#1A1F36', btn: '#1A1F36', style: 'rounded' },
+                createdAt:   now,
+              });
+
+              return batch.commit();
             }
           });
       })

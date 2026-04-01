@@ -25,6 +25,15 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
+    // ─── Public Profiles ───────────────────────────────────────────────────────
+    // Espelho público do perfil usado na página /@username.
+    match /publicProfiles/{uid} {
+      allow read:   if true;
+      allow create: if isOwner(uid);
+      allow update: if isOwner(uid) || isAdmin();
+      allow delete: if isOwner(uid) || isAdmin();
+    }
+
     // ─── Usernames (mapeamento username → uid, público para checagem) ──────────
     // Leitura pública para verificar disponibilidade; escrita apenas no registro.
     match /usernames/{username} {
@@ -32,12 +41,22 @@ service cloud.firestore {
       allow create: if isSignedIn()
                     && request.resource.data.uid == request.auth.uid;
       allow update: if false;
-      allow delete: if false;
+      allow delete: if isSignedIn()
+                    && resource.data.uid == request.auth.uid;
     }
 
     // ─── Links (subcoleção users/{uid}/links) ─────────────────────────────────
     // Leitura pública (p.html renderiza sem auth); escrita só do dono.
     match /users/{uid}/links/{linkId} {
+      allow read:   if true;
+      allow create: if isOwner(uid);
+      allow update: if isOwner(uid);
+      allow delete: if isOwner(uid);
+    }
+
+    // ─── Widgets (subcoleção users/{uid}/widgets) ────────────────────────────
+    // Leitura pública para a página /@username; escrita só do dono.
+    match /users/{uid}/widgets/{widgetId} {
       allow read:   if true;
       allow create: if isOwner(uid);
       allow update: if isOwner(uid);

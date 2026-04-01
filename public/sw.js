@@ -6,7 +6,7 @@
  * Bump CACHE_VERSION ao fazer deploy com breaking changes nos assets.
  */
 
-const CACHE_VERSION  = 'v1';
+const CACHE_VERSION  = 'v9';
 const CACHE_NAME     = 'getmi-' + CACHE_VERSION;
 const CACHE_OFFLINE  = 'getmi-offline-' + CACHE_VERSION;
 
@@ -25,19 +25,20 @@ const PRECACHE_ASSETS = [
   '/css/landing.css',
   '/css/auth.css',
   '/css/linkpage.css',
+  '/css/editor.css',
   '/admin/css/admin.css',
-  '/admin/css/links.css',
   '/admin/css/design.css',
   /* App JS */
   '/js/sw-register.js',
   '/js/analytics.js',
   '/js/auth.js',
+  '/js/editor.js',
   '/js/linkpage.js',
-  '/admin/js/admin-links.js',
   '/admin/js/admin-design.js',
+  /* Editor */
+  '/editor.html',
   /* HTML admin (offline-first) */
   '/admin/',
-  '/admin/links.html',
   '/admin/design.html',
   /* Fallback pages */
   '/login.html',
@@ -109,6 +110,7 @@ self.addEventListener('fetch', function (e) {
   if (req.destination === 'document' ||
       path.endsWith('.html') ||
       path === '/' ||
+      path === '/editor' ||
       path.endsWith('/admin/') ||
       path.endsWith('/admin')) {
     e.respondWith(networkFirst(req));

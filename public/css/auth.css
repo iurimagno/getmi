@@ -892,6 +892,11 @@ a:hover { opacity: .7; }
   background-color: #FAFAF8;
 }
 
+.reg-page.auth-pending .reg-layout {
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* Full-viewport 2-col grid */
 .reg-layout {
   width: 100%;

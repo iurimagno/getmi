@@ -2,7 +2,7 @@
   "name": "getmi.ai",
   "short_name": "getmi",
   "description": "Seu link único para tudo que você cria, vende e compartilha.",
-  "start_url": "/admin/",
+  "start_url": "/editor",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
@@ -24,13 +24,13 @@
   ],
   "shortcuts": [
     {
-      "name": "Meus Links",
-      "url": "/admin/links.html",
+      "name": "Editor",
+      "url": "/editor",
       "icons": [{ "src": "/img/icon-192.png", "sizes": "192x192" }]
     },
     {
-      "name": "Design",
-      "url": "/admin/design.html",
+      "name": "Página Pública",
+      "url": "/",
       "icons": [{ "src": "/img/icon-192.png", "sizes": "192x192" }]
     }
   ],

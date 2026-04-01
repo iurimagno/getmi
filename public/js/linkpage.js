@@ -1,7 +1,7 @@
 /**
  * getmi.ai — linkpage.js
  * Renderiza a página pública de um criador em p.html
- * URL: getmi.ai/@username (rewrite firebase.json /@** → /p.html)
+ * URL: getmi.ai/slug (mantém compatibilidade com /@slug)
  */
 
 (function () {
@@ -10,14 +10,30 @@
   /* ─── FIREBASE ─────────────────────────────────────────────────────────── */
   firebase.initializeApp(firebaseConfig);
   var db = firebase.firestore();
+  var PROVIDERS = {
+    spotify: {
+      sizes: {
+        compact: 80,
+        standard: 152,
+        wide: 152,
+        tall: 352,
+        large: 352
+      }
+    }
+  };
 
   /* ─── EXTRACT USERNAME ─────────────────────────────────────────────────── */
-  var rawPath  = window.location.pathname; // /@username  or  /@username/
-  var username = rawPath.replace(/^\/@/, '').replace(/\/$/, '').toLowerCase();
+  var rawPath = window.location.pathname.replace(/^\/+|\/+$/g, '');
+  var pathParts = rawPath ? rawPath.split('/').filter(Boolean) : [];
+  var username = pathParts.length === 1 ? pathParts[0].replace(/^@/, '').toLowerCase() : '';
 
   if (!username) {
     showError('404');
     return;
+  }
+
+  if (window.location.pathname !== '/' + username) {
+    window.history.replaceState({}, '', '/' + username + window.location.search + window.location.hash);
   }
 
   /* ─── FETCH & RENDER ───────────────────────────────────────────────────── */
@@ -31,29 +47,39 @@
       var uid = usernameDoc.data().uid;
 
       return Promise.all([
-        db.collection('users').doc(uid).get(),
+        db.collection('publicProfiles').doc(uid).get(),
+        db.collection('users').doc(uid).collection('widgets')
+          .orderBy('order')
+          .get(),
         db.collection('users').doc(uid).collection('links')
           .where('active', '==', true)
           .orderBy('order')
           .get(),
       ]).then(function (results) {
-        var userDoc  = results[0];
-        var linksSnap = results[1];
+        var profileDoc = results[0];
+        var widgetsSnap = results[1];
+        var linksSnap = results[2];
 
-        if (!userDoc.exists) {
+        if (!profileDoc.exists) {
           showError('404');
           return;
         }
 
-        var profile = userDoc.data();
+        var profile = profileDoc.data();
+        var widgets = [];
         var links   = [];
+
+        widgetsSnap.forEach(function (doc) {
+          widgets.push(Object.assign({ id: doc.id }, doc.data()));
+        });
+
         linksSnap.forEach(function (doc) {
           links.push(Object.assign({ id: doc.id }, doc.data()));
         });
 
         applyTheme(profile.theme || {});
         renderProfile(profile);
-        renderLinks(links, uid);
+        renderContent(widgets, links, uid);
         setMetaTags(profile);
         hideLoading();
       });
@@ -84,20 +110,23 @@
   function renderProfile(profile) {
     /* Avatar */
     var $avatar = document.getElementById('lpAvatar');
-    if (profile.photoURL) {
-      $avatar.src = profile.photoURL;
-      $avatar.alt = profile.name || username;
+    var avatar = profile.avatarUrl || profile.photoURL;
+    var displayName = profile.displayName || profile.name;
+
+    if (avatar) {
+      $avatar.src = avatar;
+      $avatar.alt = displayName || username;
     } else {
       $avatar.src = '/img/avatar-placeholder.png';
-      $avatar.alt = profile.name || username;
+      $avatar.alt = displayName || username;
     }
 
     /* Name */
     document.getElementById('lpName').textContent =
-      profile.name || '@' + username;
+      displayName || username;
 
-    /* Username handle */
-    document.getElementById('lpHandle').textContent = '@' + username;
+    /* Public slug */
+    document.getElementById('lpHandle').textContent = getPublicProfileLabel(username);
 
     /* Bio */
     var bioEl = document.getElementById('lpBio');
@@ -113,6 +142,39 @@
       var footer = document.getElementById('lpFooter');
       if (footer) footer.style.display = 'none';
     }
+  }
+
+  function renderContent(widgets, links, uid) {
+    if (widgets && widgets.length) {
+      renderWidgets(widgets);
+      return;
+    }
+
+    renderLinks(links, uid);
+  }
+
+  function renderWidgets(widgets) {
+    var $container = document.getElementById('lpLinks');
+    $container.innerHTML = '';
+
+    widgets.forEach(function (widget) {
+      var el = buildWidgetEl(widget);
+      $container.appendChild(el);
+    });
+  }
+
+  function buildWidgetEl(widget) {
+    var wrap = document.createElement('div');
+    wrap.className = 'lp-widget';
+
+    var provider = PROVIDERS[widget.provider || 'spotify'];
+    var theme = widget.theme === 'dark' ? '&theme=0' : '';
+    var size = widget.size || 'standard';
+    var height = provider && provider.sizes[size] ? provider.sizes[size] : 152;
+    var src = 'https://open.spotify.com/embed/' + widget.contentType + '/' + widget.contentId + '?utm_source=getmi-public' + theme;
+
+    wrap.innerHTML = '<iframe src="' + src + '" style="height:' + height + 'px" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>';
+    return wrap;
   }
 
   /* ─── RENDER LINKS ─────────────────────────────────────────────────────── */
@@ -141,7 +203,7 @@
     /* WhatsApp: deep link */
     if (type === 'whatsapp') {
       var phone = link.url.replace(/\D/g, '');
-      var msg   = encodeURIComponent(link.whatsappMessage || 'Olá, vim pelo getmi.ai!');
+      var msg   = encodeURIComponent(link.whatsappMessage || 'Olá, vim pelo getmi.app!');
       a.href = 'https://wa.me/' + phone + '?text=' + msg;
     } else {
       a.href = link.url || '#';
@@ -201,21 +263,22 @@
 
   /* ─── META TAGS ────────────────────────────────────────────────────────── */
   function setMetaTags(profile) {
-    var name = profile.name || ('@' + username);
-    var bio  = profile.bio  || (name + ' no getmi.ai');
+    var name = profile.displayName || profile.name || username;
+    var bio  = profile.bio  || (name + ' no getmi.app');
 
-    document.title = name + ' | getmi.ai';
+    document.title = name + ' | getmi.app';
 
     setMeta('name',      'description',    bio);
-    setMeta('property',  'og:title',       name + ' | getmi.ai');
+    setMeta('property',  'og:title',       name + ' | getmi.app');
     setMeta('property',  'og:description', bio);
     setMeta('property',  'og:url',         window.location.href);
-    setMeta('name',      'twitter:title',  name + ' | getmi.ai');
+    setMeta('name',      'twitter:title',  name + ' | getmi.app');
     setMeta('name',      'twitter:description', bio);
 
-    if (profile.photoURL) {
-      setMeta('property', 'og:image',     profile.photoURL);
-      setMeta('name',     'twitter:image', profile.photoURL);
+    var avatar = profile.avatarUrl || profile.photoURL;
+    if (avatar) {
+      setMeta('property', 'og:image',     avatar);
+      setMeta('name',     'twitter:image', avatar);
     }
   }
 
@@ -241,7 +304,7 @@
     if (type === '404') {
       document.getElementById('lpErrorTitle').textContent = 'Página não encontrada';
       document.getElementById('lpErrorDesc').textContent  =
-        'O usuário @' + username + ' não existe ou desativou sua página.';
+        'O link getmi.app/' + username + ' não existe ou desativou sua página.';
     } else {
       document.getElementById('lpErrorTitle').textContent = 'Algo deu errado';
       document.getElementById('lpErrorDesc').textContent  =
@@ -264,6 +327,14 @@
     var g = parseInt(c.substr(2,2),16);
     var b = parseInt(c.substr(4,2),16);
     return (0.299*r + 0.587*g + 0.114*b)/255 > 0.55 ? '#1A1F36' : '#FFFFFF';
+  }
+
+  function getPublicProfileUrl(slug) {
+    return 'https://getmi.app/' + slug;
+  }
+
+  function getPublicProfileLabel(slug) {
+    return 'getmi.app/' + slug;
   }
 
 })();

@@ -65,8 +65,24 @@
 
       <!-- Right actions -->
       <div class="gm-nav__actions">
-        <a href="/login.html?view=login" class="gm-btn-ghost">Login</a>
-        <a href="/claim.html" class="gm-btn-cta" aria-label="Criar meu link grátis">
+        <span class="gm-auth-badge" id="navAuthBadge" hidden>Você está logado</span>
+        <a
+          href="/login.html?view=login"
+          class="gm-btn-ghost"
+          id="navLoginBtn"
+          data-auth-aware="true"
+          data-default-href="/login.html?view=login"
+          data-auth-href="/editor"
+        >Login</a>
+        <a
+          href="/claim.html"
+          class="gm-btn-cta"
+          id="navPrimaryBtn"
+          data-auth-aware="true"
+          data-default-href="/claim.html"
+          data-auth-href="/editor"
+          aria-label="Criar meu link grátis"
+        >
           Criar meu link
         </a>
       </div>
@@ -434,6 +450,7 @@
 
   <!-- Firebase compat SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics-compat.js"></script>
 
   <!-- App config + analytics -->
@@ -487,6 +504,61 @@
           $links.removeClass('is-open');
           $toggle.removeClass('is-open').attr('aria-expanded', 'false');
         }
+      });
+
+      /* ── Auth-aware navbar actions ───────────────────────────────────── */
+      var auth = firebase.auth();
+      var authResolved = false;
+      var pendingNavTarget = null;
+      var $navAuthBadge = $('#navAuthBadge');
+      var $navLoginBtn = $('#navLoginBtn');
+      var $navPrimaryBtn = $('#navPrimaryBtn');
+
+      function firstName(user) {
+        if (!user || !user.displayName) return '';
+        return user.displayName.trim().split(/\s+/)[0] || '';
+      }
+
+      function updateNavForUser(user) {
+        if (user) {
+          var name = firstName(user);
+          $navAuthBadge.text(name ? 'Logado como ' + name : 'Você está logado').prop('hidden', false);
+          $navLoginBtn.attr('href', '/editor').text('Editor');
+          $navPrimaryBtn.attr('href', '/editor').text('Abrir editor');
+          return;
+        }
+
+        $navAuthBadge.prop('hidden', true);
+        $navLoginBtn.attr('href', $navLoginBtn.data('default-href')).text('Login');
+        $navPrimaryBtn.attr('href', $navPrimaryBtn.data('default-href')).text('Criar meu link');
+      }
+
+      $(document).on('click', '[data-auth-aware="true"]', function (e) {
+        var $link = $(this);
+        var defaultHref = $link.data('default-href') || $link.attr('href');
+        var authHref = $link.data('auth-href') || '/editor';
+
+        if (authResolved) {
+          if (auth.currentUser) {
+            e.preventDefault();
+            window.location.assign(authHref);
+          }
+          return;
+        }
+
+        e.preventDefault();
+        pendingNavTarget = auth.currentUser ? authHref : defaultHref;
+      });
+
+      auth.onAuthStateChanged(function (user) {
+        authResolved = true;
+        updateNavForUser(user);
+
+        if (!pendingNavTarget) return;
+
+        var target = user ? '/editor' : pendingNavTarget;
+        pendingNavTarget = null;
+        window.location.assign(target);
       });
 
     }());
