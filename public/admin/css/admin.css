@@ -373,3 +373,27 @@ a:hover { opacity: .72; }
   }
   .sidebar-overlay.is-visible { display: block; }
 }
+
+/* ── Toast global ────────────────────────────────────────────────────────── */
+.gm-toast {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background: var(--navy);
+  color: #fff;
+  padding: .75rem 1.25rem;
+  border-radius: 10px;
+  font-size: .875rem;
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(26,31,54,.2);
+  transform: translateY(120%);
+  opacity: 0;
+  transition: transform .25s ease, opacity .25s ease;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.gm-toast.is-visible {
+  transform: translateY(0);
+  opacity: 1;
+}

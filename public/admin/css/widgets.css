@@ -1,0 +1,352 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   getmi.ai — widgets.css  (Widget Management admin page)
+───────────────────────────────────────────────────────────────────────── */
+
+/* ── Page label ──────────────────────────────────────────────────────────── */
+.wgt-label {
+  font-size: .6875rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--coral);
+  margin: 0 0 .25rem;
+}
+
+/* ── Stat cards row ──────────────────────────────────────────────────────── */
+.wgt-stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+@media (max-width: 900px) {
+  .wgt-stats-row { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 500px) {
+  .wgt-stats-row { grid-template-columns: 1fr; }
+}
+
+.wgt-stat-card {
+  background: var(--warm-white);
+  border: 1px solid var(--navy-10);
+  border-radius: var(--radius-card);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.wgt-stat-card__icon {
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+.wgt-stat-card__value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1.1;
+}
+
+.wgt-stat-card__label {
+  font-size: .75rem;
+  color: var(--navy-60);
+  margin-top: .125rem;
+}
+
+/* ── Filter bar ──────────────────────────────────────────────────────────── */
+.wgt-filter-bar {
+  display: flex;
+  gap: .75rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.25rem;
+}
+
+.wgt-search {
+  flex: 1;
+  min-width: 180px;
+}
+
+.wgt-cat-select {
+  width: auto;
+  min-width: 150px;
+}
+
+/* ── Table ───────────────────────────────────────────────────────────────── */
+.wgt-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .875rem;
+}
+
+.wgt-table thead tr {
+  border-bottom: 2px solid var(--navy-10);
+}
+
+.wgt-table th {
+  padding: .75rem 1rem;
+  text-align: left;
+  font-size: .75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--navy-60);
+  white-space: nowrap;
+}
+
+.wgt-table td {
+  padding: .875rem 1rem;
+  border-bottom: 1px solid var(--navy-07);
+  vertical-align: middle;
+}
+
+.wgt-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.wgt-table tbody tr:hover td {
+  background: var(--navy-07);
+}
+
+/* Widget cell */
+.wgt-cell-widget {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+
+.wgt-icon-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.wgt-cell-widget__name {
+  font-weight: 600;
+  color: var(--navy);
+  display: block;
+}
+
+.wgt-cell-widget__version {
+  font-size: .7rem;
+  color: var(--navy-60);
+}
+
+/* Category badge */
+.wgt-badge-cat {
+  display: inline-block;
+  padding: .2rem .6rem;
+  border-radius: var(--radius-full);
+  font-size: .7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  background: var(--navy-07);
+  color: var(--navy-60);
+}
+
+.wgt-badge-cat--essentials { background: #F0EDE8; color: #4A5068; }
+.wgt-badge-cat--whatsapp   { background: #E8F8EE; color: #25D366; }
+.wgt-badge-cat--media      { background: #EEF2FF; color: #4F46E5; }
+.wgt-badge-cat--social     { background: #FEF3C7; color: #D97706; }
+.wgt-badge-cat--utilities  { background: #F0F9FF; color: #0284C7; }
+.wgt-badge-cat--monetization { background: #FFF1F2; color: #E11D48; }
+
+/* Size pills */
+.wgt-sizes {
+  display: flex;
+  gap: .25rem;
+  flex-wrap: wrap;
+}
+
+.wgt-pill-size {
+  display: inline-block;
+  padding: .15rem .5rem;
+  border-radius: var(--radius-sm);
+  font-size: .7rem;
+  font-weight: 600;
+  background: var(--navy-07);
+  color: var(--navy);
+  font-family: monospace;
+}
+
+/* API badge */
+.wgt-badge-api {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  font-size: .75rem;
+  color: var(--navy-60);
+}
+
+.wgt-badge-api--ok { color: var(--success); }
+.wgt-badge-api--none { color: var(--navy-30); }
+
+/* Tier badge */
+.wgt-badge-tier {
+  display: inline-block;
+  padding: .2rem .6rem;
+  border-radius: var(--radius-full);
+  font-size: .7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.wgt-badge-tier--free     { background: #F0FDF4; color: #16A34A; border: 1px solid #BBF7D0; }
+.wgt-badge-tier--pro      { background: #FFF7ED; color: #C2410C; border: 1px solid #FED7AA; }
+.wgt-badge-tier--business { background: #1A1F36; color: #fff; }
+
+/* Status toggle */
+.wgt-toggle-wrap {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: .75rem;
+  color: var(--navy-60);
+}
+
+.wgt-toggle {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+}
+
+.wgt-toggle input { opacity: 0; width: 0; height: 0; }
+
+.wgt-toggle__slider {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background: var(--navy-10);
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.wgt-toggle__slider::before {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  left: 3px;
+  top: 3px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform var(--transition);
+}
+
+.wgt-toggle input:checked + .wgt-toggle__slider {
+  background: var(--success);
+}
+
+.wgt-toggle input:checked + .wgt-toggle__slider::before {
+  transform: translateX(16px);
+}
+
+/* Actions menu */
+.wgt-actions {
+  display: flex;
+  gap: .25rem;
+}
+
+.wgt-btn-action {
+  background: none;
+  border: 1px solid var(--navy-10);
+  border-radius: var(--radius-btn);
+  padding: .3rem .6rem;
+  font-size: .75rem;
+  cursor: pointer;
+  color: var(--navy);
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.wgt-btn-action:hover {
+  background: var(--navy-07);
+  border-color: var(--navy-30);
+}
+
+.wgt-btn-action--danger:hover {
+  background: var(--danger-bg);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+/* ── Pagination ──────────────────────────────────────────────────────────── */
+.wgt-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: .375rem;
+  padding: 1rem 1rem .5rem;
+}
+
+.wgt-page-btn {
+  background: none;
+  border: 1px solid var(--navy-10);
+  border-radius: var(--radius-btn);
+  padding: .3rem .65rem;
+  font-size: .8125rem;
+  cursor: pointer;
+  color: var(--navy);
+  transition: background var(--transition);
+}
+
+.wgt-page-btn:hover,
+.wgt-page-btn.is-active {
+  background: var(--navy);
+  color: #fff;
+  border-color: var(--navy);
+}
+
+/* ── API Status section ──────────────────────────────────────────────────── */
+.wgt-api-status-card { padding: 1.25rem 1.5rem; }
+
+.wgt-api-status__title {
+  font-size: .875rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0 0 1rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.wgt-api-status-list {
+  display: flex;
+  flex-direction: column;
+  gap: .625rem;
+}
+
+.wgt-api-status-item {
+  display: flex;
+  align-items: center;
+  gap: .625rem;
+  font-size: .875rem;
+  color: var(--navy);
+}
+
+.wgt-api-status-item__status {
+  margin-left: auto;
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--navy-60);
+}
+
+.wgt-api-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.wgt-api-dot--ok  { background: var(--success); }
+.wgt-api-dot--err { background: var(--danger); }

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Widgets — getmi.ai</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#FF6B4A">
+  <link rel="icon"     type="image/x-icon" href="/img/favicon.ico">
+  <link rel="manifest" href="/manifest.json">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/lib/bootstrap.min.css">
+  <link rel="stylesheet" href="/admin/css/admin.css">
+  <link rel="stylesheet" href="/admin/css/widgets.css">
+</head>
+<body>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="admin-shell">
+
+    <!-- ── SIDEBAR ───────────────────────────────────────────────────── -->
+    <aside class="admin-sidebar" id="adminSidebar" aria-label="Menu admin">
+      <a href="/admin/" class="sidebar-brand" aria-label="getmi.ai — Admin">
+        <img src="/img/getmi-logo-text3.png" class="sidebar-brand__img" alt="getmi.ai">
+      </a>
+      <nav class="sidebar-nav">
+        <a href="/admin/" class="nav-item">
+          <span class="nav-icon">📊</span> Dashboard
+        </a>
+        <a href="/admin/links.html" class="nav-item">
+          <span class="nav-icon">🔗</span> Meus Links
+        </a>
+        <a href="/admin/widgets.html" class="nav-item is-active">
+          <span class="nav-icon">🧩</span> Widgets
+        </a>
+        <a href="/admin/design.html" class="nav-item">
+          <span class="nav-icon">🎨</span> Design
+        </a>
+        <a href="/admin/analytics.html" class="nav-item">
+          <span class="nav-icon">📈</span> Analytics
+        </a>
+        <a href="/admin/settings.html" class="nav-item">
+          <span class="nav-icon">⚙️</span> Configurações
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="/" target="_blank">Ver minha página ↗</a>
+        <a href="#" id="btnSignOut">Sair</a>
+      </div>
+    </aside>
+
+    <!-- ── MAIN ───────────────────────────────────────────────────────── -->
+    <div class="admin-main">
+
+      <header class="admin-topbar">
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn-hamburger d-md-none" id="btnMenuToggle"
+                  aria-label="Abrir menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+          </button>
+          <span class="topbar-title">Widgets</span>
+        </div>
+        <div class="topbar-user">
+          <img class="topbar-avatar" id="topbarAvatar"
+               src="/img/avatar-placeholder.png" alt="Avatar">
+          <span id="topbarName"></span>
+        </div>
+      </header>
+
+      <main class="admin-content">
+
+        <!-- Page header -->
+        <div class="page-header">
+          <div>
+            <p class="wgt-label">CENTRAL DE CONTROLE</p>
+            <h1 class="page-title">Administração de Widgets</h1>
+          </div>
+          <a href="/admin/widget-studio.html" class="btn-primary-app">
+            + Novo Widget
+          </a>
+        </div>
+
+        <!-- Stat cards -->
+        <div class="wgt-stats-row">
+          <div class="wgt-stat-card">
+            <div class="wgt-stat-card__icon">🧩</div>
+            <div>
+              <div class="wgt-stat-card__value" id="statTotal">—</div>
+              <div class="wgt-stat-card__label">Total Widgets</div>
+            </div>
+          </div>
+          <div class="wgt-stat-card">
+            <div class="wgt-stat-card__icon">🔌</div>
+            <div>
+              <div class="wgt-stat-card__value" id="statApis">—</div>
+              <div class="wgt-stat-card__label">APIs Ativas</div>
+            </div>
+          </div>
+          <div class="wgt-stat-card">
+            <div class="wgt-stat-card__icon">⭐</div>
+            <div>
+              <div class="wgt-stat-card__value" id="statPro">—</div>
+              <div class="wgt-stat-card__label">Widgets Pro</div>
+            </div>
+          </div>
+          <div class="wgt-stat-card">
+            <div class="wgt-stat-card__icon">👆</div>
+            <div>
+              <div class="wgt-stat-card__value" id="statClicks">—</div>
+              <div class="wgt-stat-card__label">Total Cliques</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Search + filter bar -->
+        <div class="admin-card wgt-filter-bar">
+          <input class="form-control-app wgt-search" type="search"
+                 id="wgtSearch" placeholder="Buscar widgets…">
+          <select class="form-control-app wgt-cat-select" id="wgtCatFilter">
+            <option value="">Todas Categorias</option>
+            <option value="essentials">Essentials</option>
+            <option value="whatsapp">WhatsApp</option>
+            <option value="media">Media</option>
+            <option value="social">Social</option>
+            <option value="utilities">Utilities</option>
+            <option value="monetization">Monetização</option>
+          </select>
+          <select class="form-control-app wgt-cat-select" id="wgtStatusFilter">
+            <option value="">Todos os Status</option>
+            <option value="active">Ativo</option>
+            <option value="draft">Rascunho</option>
+            <option value="archived">Arquivado</option>
+          </select>
+        </div>
+
+        <!-- Widgets table card -->
+        <div class="admin-card">
+
+          <div class="state-loading" id="stateLoading">
+            <div class="spinner-app"></div>
+          </div>
+
+          <div class="state-empty d-none" id="stateEmpty">
+            <div class="state-empty__icon">🧩</div>
+            <p class="state-empty__title">Nenhum widget cadastrado</p>
+            <p class="state-empty__desc">Crie seu primeiro widget no Widget Studio.</p>
+            <a href="/admin/widget-studio.html" class="btn-primary-app state-empty__cta">
+              + Criar Primeiro Widget
+            </a>
+          </div>
+
+          <div id="wgtTableWrap" class="d-none">
+            <table class="wgt-table">
+              <thead>
+                <tr>
+                  <th>Widget</th>
+                  <th>Categoria</th>
+                  <th>Formatos</th>
+                  <th>API Config</th>
+                  <th>Acesso</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="wgtTableBody"></tbody>
+            </table>
+
+            <!-- Pagination -->
+            <div class="wgt-pagination" id="wgtPagination"></div>
+          </div>
+
+        </div>
+
+        <!-- API Status section -->
+        <div class="admin-card wgt-api-status-card">
+          <h2 class="wgt-api-status__title">Status das APIs</h2>
+          <div class="wgt-api-status-list" id="apiStatusList">
+            <div class="wgt-api-status-item">
+              <span class="wgt-api-dot wgt-api-dot--ok"></span>
+              <span>WhatsApp API</span>
+              <span class="wgt-api-status-item__status">Operacional</span>
+            </div>
+            <div class="wgt-api-status-item">
+              <span class="wgt-api-dot wgt-api-dot--ok"></span>
+              <span>Spotify Embed</span>
+              <span class="wgt-api-status-item__status">Operacional</span>
+            </div>
+            <div class="wgt-api-status-item">
+              <span class="wgt-api-dot wgt-api-dot--ok"></span>
+              <span>YouTube Embed</span>
+              <span class="wgt-api-status-item__status">Operacional</span>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ── MODAL: CONFIRMAR EXCLUSÃO ─────────────────────────────────── -->
+  <div class="modal fade" id="modalDeleteWidget" tabindex="-1"
+       aria-labelledby="modalDeleteWidgetTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content gm-modal">
+        <div class="modal-header gm-modal__header">
+          <h5 class="modal-title" id="modalDeleteWidgetTitle">Excluir widget</h5>
+          <button type="button" class="gm-modal__close"
+                  data-dismiss="modal" aria-label="Fechar">&times;</button>
+        </div>
+        <div class="modal-body gm-modal__body">
+          <p class="mb-0">
+            Tem certeza que deseja excluir
+            <strong id="deleteWidgetName">"este widget"</strong>?
+            Esta ação não pode ser desfeita.
+          </p>
+        </div>
+        <div class="modal-footer gm-modal__footer">
+          <button type="button" class="btn-secondary-app"
+                  data-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn-danger-app" id="btnConfirmDeleteWidget">
+            Excluir
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/lib/jquery.min.js"></script>
+  <script src="/lib/bootstrap.bundle.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics-compat.js"></script>
+  <script src="/js/config.js"></script>
+  <script>firebase.initializeApp(firebaseConfig);</script>
+  <script src="/js/analytics.js"></script>
+  <script src="/admin/js/admin-widgets.js"></script>
+  <script src="/js/sw-register.js"></script>
+</body>
+</html>

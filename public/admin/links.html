@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="/lib/bootstrap.min.css">
   <link rel="stylesheet" href="/admin/css/admin.css">
   <link rel="stylesheet" href="/admin/css/links.css">
+  <link rel="stylesheet" href="/css/widget-library.css">
 </head>
 <body>
 
@@ -37,6 +38,9 @@
         </a>
         <a href="/admin/links.html" class="nav-item is-active">
           <span class="nav-icon">🔗</span> Meus Links
+        </a>
+        <a href="/admin/widgets.html" class="nav-item">
+          <span class="nav-icon">🧩</span> Widgets
         </a>
         <a href="/admin/design.html" class="nav-item">
           <span class="nav-icon">🎨</span> Design
@@ -126,6 +130,9 @@
           <ul class="link-list" id="linkList" role="list" aria-label="Lista de links"></ul>
 
         </div>
+
+        <!-- ── Widget Library inline section ─────────────────────────── -->
+        <div id="wgtPanelSection"></div>
 
       </main>
     </div>
@@ -303,7 +310,13 @@
   <script>firebase.initializeApp(firebaseConfig);</script>
   <script src="/js/analytics.js"></script>
   <script src="/admin/js/admin-links.js"></script>
+  <script src="/js/widget-renderer.js"></script>
+  <script src="/js/widget-config-modal.js"></script>
+  <script src="/js/widget-library.js"></script>
   <script>
+    /* ── Widget Library ──────────────────────────────────────────────── */
+    WidgetLibrary.init();
+
     /* ── Empty state CTA ────────────────────────────────────────────── */
     $('#btnEmptyAddLink').on('click', function () {
       $('#btnAddLink').trigger('click');

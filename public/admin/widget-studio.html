@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Widget Studio — getmi.ai</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#FF6B4A">
+  <link rel="icon"     type="image/x-icon" href="/img/favicon.ico">
+  <link rel="manifest" href="/manifest.json">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/lib/bootstrap.min.css">
+  <link rel="stylesheet" href="/admin/css/admin.css">
+  <link rel="stylesheet" href="/admin/css/widget-studio.css">
+</head>
+<body>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="admin-shell">
+
+    <!-- ── SIDEBAR (Widget Studio mode) ──────────────────────────────── -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <a href="/admin/" class="sidebar-brand">
+        <img src="/img/getmi-logo-text3.png" class="sidebar-brand__img" alt="getmi.ai">
+        <span class="studio-badge">WIDGET STUDIO</span>
+      </a>
+      <nav class="sidebar-nav">
+        <a href="/admin/widget-studio.html" class="nav-item is-active">
+          <span class="nav-icon">✏️</span> Editor
+        </a>
+        <a href="/admin/widgets.html" class="nav-item">
+          <span class="nav-icon">📚</span> Widget Library
+        </a>
+        <a href="/admin/settings.html" class="nav-item">
+          <span class="nav-icon">⚙️</span> API Config
+        </a>
+        <a href="/admin/analytics.html" class="nav-item">
+          <span class="nav-icon">📈</span> Analytics
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="/admin/">← Voltar ao Admin</a>
+        <a href="#" id="btnSignOut">Sair</a>
+      </div>
+    </aside>
+
+    <!-- ── MAIN ───────────────────────────────────────────────────────── -->
+    <div class="admin-main">
+
+      <header class="admin-topbar">
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn-hamburger d-md-none" id="btnMenuToggle"
+                  aria-label="Abrir menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+          </button>
+          <span class="topbar-title" id="studioTitle">Novo Widget</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn-secondary-app" id="btnImportSeed" type="button"
+                  title="Importar 7 widgets iniciais">
+            📦 Importar Seed
+          </button>
+          <button class="btn-secondary-app" id="btnSaveDraft" type="button">
+            Salvar Rascunho
+          </button>
+          <button class="btn-primary-app" id="btnPublish" type="button">
+            🚀 Publicar Widget
+          </button>
+          <div class="topbar-user">
+            <img class="topbar-avatar" id="topbarAvatar"
+                 src="/img/avatar-placeholder.png" alt="Avatar">
+          </div>
+        </div>
+      </header>
+
+      <!-- Split panel -->
+      <div class="studio-split">
+
+        <!-- ── LEFT: Form ────────────────────────────────────────────── -->
+        <div class="studio-panel studio-panel--form" id="studioForm">
+
+          <!-- Identidade -->
+          <section class="studio-section">
+            <h2 class="studio-section__title">Identidade</h2>
+
+            <div class="form-group-app">
+              <label class="form-label-app" for="wgtName">Nome do Widget</label>
+              <input class="form-control-app" type="text" id="wgtName"
+                     placeholder="Ex: WhatsApp CTA" maxlength="60">
+            </div>
+
+            <div class="form-row-app">
+              <div class="form-group-app form-group-app--flex">
+                <label class="form-label-app" for="wgtCategory">Categoria</label>
+                <select class="form-control-app" id="wgtCategory">
+                  <option value="essentials">Essentials</option>
+                  <option value="whatsapp">WhatsApp</option>
+                  <option value="media">Media</option>
+                  <option value="social">Social</option>
+                  <option value="utilities">Utilities</option>
+                  <option value="monetization">Monetização</option>
+                </select>
+              </div>
+              <div class="form-group-app form-group-app--flex">
+                <label class="form-label-app" for="wgtTier">Acesso</label>
+                <select class="form-control-app" id="wgtTier">
+                  <option value="free">Free</option>
+                  <option value="pro">Pro</option>
+                  <option value="business">Business</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group-app">
+              <label class="form-label-app" for="wgtDesc">Descrição curta</label>
+              <input class="form-control-app" type="text" id="wgtDesc"
+                     placeholder="Ex: Botão verde com mensagem pré-formatada" maxlength="100">
+            </div>
+
+            <div class="form-row-app">
+              <div class="form-group-app form-group-app--flex">
+                <label class="form-label-app" for="wgtVersion">Versão</label>
+                <input class="form-control-app" type="text" id="wgtVersion"
+                       placeholder="1.0.0" value="1.0.0">
+              </div>
+              <div class="form-group-app form-group-app--flex">
+                <label class="form-label-app" for="wgtStatus">Status</label>
+                <select class="form-control-app" id="wgtStatus">
+                  <option value="active">Ativo</option>
+                  <option value="draft">Rascunho</option>
+                  <option value="archived">Arquivado</option>
+                </select>
+              </div>
+            </div>
+          </section>
+
+          <!-- Tamanhos -->
+          <section class="studio-section">
+            <h2 class="studio-section__title">Tamanhos suportados</h2>
+            <div class="studio-size-group" id="wgtSizes">
+              <label class="studio-size-pill">
+                <input type="checkbox" value="1x1"> 1×1
+              </label>
+              <label class="studio-size-pill">
+                <input type="checkbox" value="2x1" checked> 2×1
+              </label>
+              <label class="studio-size-pill">
+                <input type="checkbox" value="2x2"> 2×2
+              </label>
+              <label class="studio-size-pill">
+                <input type="checkbox" value="2x3"> 2×3
+              </label>
+              <label class="studio-size-pill">
+                <input type="checkbox" value="4x1"> 4×1
+              </label>
+            </div>
+            <div class="form-group-app" style="margin-top:.75rem">
+              <label class="form-label-app" for="wgtDefaultSize">Tamanho padrão</label>
+              <select class="form-control-app" id="wgtDefaultSize">
+                <option value="1x1">1×1</option>
+                <option value="2x1" selected>2×1</option>
+                <option value="2x2">2×2</option>
+                <option value="2x3">2×3</option>
+                <option value="4x1">4×1</option>
+              </select>
+            </div>
+          </section>
+
+          <!-- Visual -->
+          <section class="studio-section">
+            <h2 class="studio-section__title">Visual</h2>
+            <div class="form-row-app">
+              <div class="form-group-app form-group-app--flex">
+                <label class="form-label-app" for="wgtIconBg">Cor do ícone (fundo)</label>
+                <div class="studio-color-row">
+                  <input type="color" class="studio-color-swatch" id="wgtIconBg" value="#F0EDE8">
+                  <input class="form-control-app" type="text" id="wgtIconBgHex"
+                         value="#F0EDE8" maxlength="7" placeholder="#F0EDE8">
+                </div>
+              </div>
+              <div class="form-group-app form-group-app--flex">
+                <label class="form-label-app" for="wgtIconColor">Cor do ícone (texto)</label>
+                <div class="studio-color-row">
+                  <input type="color" class="studio-color-swatch" id="wgtIconColor" value="#4A5068">
+                  <input class="form-control-app" type="text" id="wgtIconColorHex"
+                         value="#4A5068" maxlength="7" placeholder="#4A5068">
+                </div>
+              </div>
+            </div>
+            <div class="form-group-app">
+              <label class="form-label-app" for="wgtIcon">Ícone (emoji ou Material Symbol)</label>
+              <input class="form-control-app" type="text" id="wgtIcon"
+                     placeholder="link, chat, music_note, 🎵..." maxlength="40">
+            </div>
+          </section>
+
+          <!-- Config Schema -->
+          <section class="studio-section">
+            <h2 class="studio-section__title">
+              Config Schema
+              <button type="button" class="btn-secondary-app studio-btn-sm" id="btnAddField">
+                + Campo
+              </button>
+            </h2>
+            <div id="schemaBuilder" class="studio-schema-list"></div>
+            <p class="studio-schema-empty" id="schemaEmpty">
+              Nenhum campo de configuração. Clique em "+ Campo" para adicionar.
+            </p>
+          </section>
+
+          <!-- API Config -->
+          <section class="studio-section">
+            <h2 class="studio-section__title">API Config <small>(opcional)</small></h2>
+            <div class="form-group-app">
+              <label class="form-label-app" for="wgtApiService">Serviço</label>
+              <input class="form-control-app" type="text" id="wgtApiService"
+                     placeholder="Ex: whatsapp, spotify, youtube">
+            </div>
+            <div class="form-group-app">
+              <label class="form-label-app" for="wgtApiEndpoint">Endpoint Pattern</label>
+              <input class="form-control-app" type="text" id="wgtApiEndpoint"
+                     placeholder="Ex: https://wa.me/{{phone}}?text={{message}}">
+            </div>
+          </section>
+
+          <!-- Render Template -->
+          <section class="studio-section">
+            <h2 class="studio-section__title">Render Template (HTML)</h2>
+            <div class="form-group-app">
+              <textarea class="form-control-app studio-code-area" id="wgtRenderTemplate"
+                        rows="8" placeholder="<div class='g-wgt'>{{title}}</div>"></textarea>
+              <p class="studio-hint">Use <code>{{campo}}</code> para inserir valores do Config Schema.</p>
+            </div>
+          </section>
+
+          <!-- Render CSS -->
+          <section class="studio-section">
+            <h2 class="studio-section__title">Render CSS <small>(opcional)</small></h2>
+            <div class="form-group-app">
+              <textarea class="form-control-app studio-code-area" id="wgtRenderCSS"
+                        rows="6" placeholder=".g-wgt { ... }"></textarea>
+            </div>
+          </section>
+
+        </div>
+
+        <!-- ── RIGHT: Preview ────────────────────────────────────────── -->
+        <div class="studio-panel studio-panel--preview">
+          <div class="studio-preview-wrap">
+            <div class="studio-browser-bar">
+              <span class="studio-browser-dot"></span>
+              <span class="studio-browser-dot"></span>
+              <span class="studio-browser-dot"></span>
+              <span class="studio-browser-url">getmi.ai/@preview</span>
+            </div>
+            <div class="studio-preview-body" id="studioPreviewBody">
+              <p class="studio-preview-placeholder">Preencha o template HTML ao lado para ver o preview ao vivo.</p>
+            </div>
+          </div>
+
+          <!-- Info cards -->
+          <div class="studio-info-cards">
+            <div class="studio-info-card">
+              <div class="studio-info-card__icon">⚡</div>
+              <div>
+                <div class="studio-info-card__title">Performance</div>
+                <div class="studio-info-card__desc">Template puro CSS+HTML. Zero JS no render.</div>
+              </div>
+            </div>
+            <div class="studio-info-card">
+              <div class="studio-info-card__icon">🔒</div>
+              <div>
+                <div class="studio-info-card__title">Segurança</div>
+                <div class="studio-info-card__desc">HTML sanitizado via DOMPurify antes de renderizar.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /studio-split -->
+    </div><!-- /admin-main -->
+  </div><!-- /admin-shell -->
+
+  <script src="/lib/jquery.min.js"></script>
+  <script src="/lib/bootstrap.bundle.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics-compat.js"></script>
+  <script src="/js/config.js"></script>
+  <script>firebase.initializeApp(firebaseConfig);</script>
+  <script src="/js/analytics.js"></script>
+  <script src="/admin/js/admin-studio.js"></script>
+  <script src="/js/sw-register.js"></script>
+</body>
+</html>
