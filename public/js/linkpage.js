@@ -36,15 +36,9 @@
           .where('active', '==', true)
           .orderBy('order')
           .get(),
-        db.collection('widget_instances')
-          .where('userId', '==', uid)
-          .where('active', '==', true)
-          .orderBy('order')
-          .get(),
       ]).then(function (results) {
-        var userDoc      = results[0];
-        var linksSnap    = results[1];
-        var widgetsSnap  = results[2];
+        var userDoc  = results[0];
+        var linksSnap = results[1];
 
         if (!userDoc.exists) {
           showError('404');
@@ -57,20 +51,11 @@
           links.push(Object.assign({ id: doc.id }, doc.data()));
         });
 
-        var widgetInstances = [];
-        widgetsSnap.forEach(function (doc) {
-          widgetInstances.push(Object.assign({ id: doc.id }, doc.data()));
-        });
-
         applyTheme(profile.theme || {});
         renderProfile(profile);
         renderLinks(links, uid);
         setMetaTags(profile);
         hideLoading();
-
-        if (widgetInstances.length) {
-          loadAndRenderWidgets(widgetInstances);
-        }
       });
     })
     .catch(function (err) {
@@ -269,39 +254,6 @@
     if (loader) loader.style.display = 'none';
     var profile = document.getElementById('lpProfile');
     if (profile) profile.style.display = 'block';
-  }
-
-  /* ─── RENDER WIDGETS ──────────────────────────────────────────────────── */
-  function loadAndRenderWidgets(instances) {
-    var container = document.getElementById('lpWidgets');
-    if (!container || !window.WidgetRenderer) return;
-
-    // Buscar todos os templates únicos referenciados pelas instâncias
-    var templateIds = instances
-      .map(function (i) { return i.templateId; })
-      .filter(function (id, idx, arr) { return id && arr.indexOf(id) === idx; });
-
-    var fetches = templateIds.map(function (id) {
-      return db.collection('widget_templates').doc(id).get()
-        .then(function (doc) {
-          return doc.exists ? Object.assign({ id: doc.id }, doc.data()) : null;
-        });
-    });
-
-    Promise.all(fetches)
-      .then(function (templates) {
-        var tplMap = {};
-        templates.forEach(function (t) { if (t) tplMap[t.id] = t; });
-
-        var enriched = instances.map(function (inst) {
-          return Object.assign({}, inst, { template: tplMap[inst.templateId] || null });
-        }).filter(function (inst) { return inst.template; });
-
-        WidgetRenderer.renderWidgets(enriched, container);
-      })
-      .catch(function (err) {
-        console.warn('Erro ao carregar widgets:', err);
-      });
   }
 
   /* ─── HELPERS ──────────────────────────────────────────────────────────── */

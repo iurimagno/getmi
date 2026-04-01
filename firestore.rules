@@ -53,21 +53,6 @@ service cloud.firestore {
       allow update, delete: if false;
     }
 
-    // ─── Widget Templates (admin cria, público lê) ─────────────────────────────
-    match /widget_templates/{templateId} {
-      allow read:  if true;
-      allow write: if isAdmin();
-    }
-
-    // ─── Widget Instances (user configura os próprios) ──────────────────────────
-    match /widget_instances/{instanceId} {
-      allow read:   if true;
-      allow create: if isSignedIn()
-                    && request.resource.data.userId == request.auth.uid;
-      allow update, delete: if isSignedIn()
-                            && resource.data.userId == request.auth.uid;
-    }
-
     // ─── Tudo mais: negar por padrão ───────────────────────────────────────────
     match /{document=**} {
       allow read, write: if false;
