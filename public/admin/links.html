@@ -117,6 +117,9 @@
             <div class="state-empty__icon">🔗</div>
             <p class="state-empty__title">Nenhum link ainda</p>
             <p class="state-empty__desc">Adicione seu primeiro link para começar.</p>
+            <button type="button" class="btn-primary-app state-empty__cta" id="btnEmptyAddLink">
+              + Adicionar primeiro link
+            </button>
           </div>
 
           <!-- List -->
@@ -301,6 +304,11 @@
   <script src="/js/analytics.js"></script>
   <script src="/admin/js/admin-links.js"></script>
   <script>
+    /* ── Empty state CTA ────────────────────────────────────────────── */
+    $('#btnEmptyAddLink').on('click', function () {
+      $('#btnAddLink').trigger('click');
+    });
+
     /* ── QR Code + Clipboard ─────────────────────────────────────────── */
     var qrInstance = null;
 

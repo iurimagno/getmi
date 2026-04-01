@@ -186,16 +186,34 @@
   background-color: var(--navy);
   border-radius: 36px;
   padding: 10px;
+  padding-top: 0;
   box-shadow:
     0 24px 56px rgba(26,31,54,.2),
     0 8px 20px rgba(26,31,54,.1);
+}
+
+/* Notch / câmera */
+.phone-frame__notch {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 20px;
+  padding-bottom: 2px;
+}
+
+.phone-frame__camera {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgba(255,255,255,.18);
+  border: 1px solid rgba(255,255,255,.08);
 }
 
 .phone-frame__screen {
   background-color: #FAFAF8;
   border-radius: 28px;
   min-height: 520px;
-  padding: 28px 16px 24px;
+  padding: 20px 16px 24px;
   display: flex;
   flex-direction: column;
   align-items: center;

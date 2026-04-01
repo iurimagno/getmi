@@ -333,6 +333,7 @@ a:hover { opacity: .72; }
 .state-empty__icon { font-size: 2.5rem; margin-bottom: .875rem; }
 .state-empty__title { font-size: 1rem; font-weight: 700; margin-bottom: .375rem; }
 .state-empty__desc { font-size: .875rem; }
+.state-empty__cta { margin-top: 1.25rem; }
 
 .spinner-app {
   display: inline-block;

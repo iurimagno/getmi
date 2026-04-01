@@ -218,6 +218,26 @@ a:hover { opacity: .7; }
   margin: 0;
 }
 
+/* "Já tem conta?" line — above terms */
+.auth-existing-account {
+  font-size: .875rem;
+  color: var(--g-navy-60);
+  margin: 0;
+  text-align: center;
+}
+
+.auth-existing-account a {
+  color: var(--g-coral);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.auth-existing-account a:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  opacity: 1;
+}
+
 /* Terms line */
 .auth-terms {
   font-size: .78rem;
