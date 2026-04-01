@@ -66,7 +66,31 @@ $(function () {
     $('.g-form').removeClass('is-visible');
     $('#form-' + target).addClass('is-visible');
     clearAlerts();
+    updateHeading(target);
   });
+
+  function updateHeading(tab) {
+    var $h = $('#reg-heading');
+    var $s = $('#reg-subtitle');
+    if (!$h.length) return;
+    if (tab === 'login') {
+      $h.html('Bem-vindo<br>de volta.');
+      if ($s.length) $s.text('Entre com sua conta getmi.');
+    } else {
+      var uname = $('#reg-username').val() || '';
+      $h.html('Agora, crie sua<br>conta.');
+      if ($s.length) {
+        $s.html(uname
+          ? 'O link getmi.ai/<strong>' + uname + '</strong> é seu!'
+          : 'Crie sua conta getmi.');
+      }
+    }
+  }
+
+  /* ── Ativa tab via ?view=login na URL ────────────────────────────────── */
+  if (new URLSearchParams(window.location.search).get('view') === 'login') {
+    $('[data-tab="login"]').trigger('click');
+  }
 
   /* ── Helpers UI ──────────────────────────────────────────────────────── */
   function showAlert(formId, message, type) {
