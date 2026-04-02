@@ -236,6 +236,14 @@ a {
   color: var(--editor-gray-300);
 }
 
+.pf-name:-webkit-autofill,
+.pf-name:-webkit-autofill:hover,
+.pf-name:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px transparent inset;
+  -webkit-text-fill-color: var(--editor-navy);
+  transition: background-color 9999s ease-in-out;
+}
+
 .pf-bio {
   width: 100%;
   min-height: 24px;
@@ -379,12 +387,8 @@ a {
 }
 
 .top__logo {
-  width: 34px;
-  height: 34px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, .72);
-  padding: 6px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .85);
+  height: 22px;
+  width: auto;
 }
 
 .top__brand-copy strong {
@@ -1407,6 +1411,7 @@ body.mob .arena {
   flex-direction: column;
   padding: 22px 18px 26px;
   border-radius: 40px;
+  overflow: hidden;
   background: linear-gradient(180deg, rgba(255, 255, 255, .92), rgba(255, 255, 255, .76));
   border: 1px solid rgba(255, 255, 255, .82);
   box-shadow:
@@ -1435,11 +1440,12 @@ body.mob .arena::after {
 }
 
 body.mob .wd {
-  position: static;
+  position: static !important;
   width: 100% !important;
   left: auto !important;
   top: auto !important;
   margin-bottom: 14px;
+  display: block;
 }
 
 body.mob .wd.c1,
@@ -1448,11 +1454,51 @@ body.mob .wd.c2 {
 }
 
 body.mob .mv {
-  display: none;
+  display: none !important;
+}
+
+/* Hide desktop-only edit overlays in mobile preview */
+body.mob .hv {
+  display: none !important;
+}
+
+body.mob .tba {
+  display: none !important;
 }
 
 body.mob .wa iframe {
   height: 152px !important;
+}
+
+/* Mobile add-widget nudge (shown inside phone frame when widgets exist) */
+.mob-add-hint {
+  display: none;
+}
+
+body.mob .mob-add-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 4px;
+  padding: 10px 0;
+  border: 1.5px dashed rgba(26, 31, 54, .18);
+  border-radius: 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(26, 31, 54, .45);
+  cursor: pointer;
+  transition: border-color .15s, color .15s;
+}
+
+body.mob .mob-add-hint:hover {
+  border-color: var(--editor-coral);
+  color: var(--editor-coral);
+}
+
+body.mob .mob-add-hint span {
+  font-size: 16px;
+  line-height: 1;
 }
 
 @media (max-width: 1024px) {
@@ -1527,3 +1573,1441 @@ body.mob .wa iframe {
     height: 58px;
   }
 }
+
+
+/* ── Widget Drawer ───────────────────────────────────────────────────── */
+
+.wdr-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(200, 200, 198, .55);
+  z-index: 200;
+  opacity: 0;
+  transition: opacity .22s ease;
+}
+
+.wdr-overlay.open {
+  opacity: 1;
+}
+
+.wdr-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 340px;
+  background: #fff;
+  z-index: 201;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform: translateX(100%);
+  transition: transform .28s cubic-bezier(.32, .72, 0, 1);
+  box-shadow: -12px 0 48px rgba(26, 31, 54, .12);
+}
+
+.wdr-panel.open {
+  transform: translateX(0);
+}
+
+.wdr-head {
+  padding: 20px 20px 0;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--editor-gray-100);
+}
+
+.wdr-toprow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.wdr-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--editor-navy);
+  letter-spacing: -.3px;
+}
+
+.wdr-close {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--editor-gray-50);
+  border: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--editor-gray-400);
+  flex-shrink: 0;
+  transition: background .15s ease, color .15s ease;
+}
+
+.wdr-close:hover {
+  background: var(--editor-gray-100);
+  color: var(--editor-navy);
+}
+
+.wdr-close svg {
+  width: 11px;
+  height: 11px;
+  stroke: currentColor;
+}
+
+.wdr-link {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: var(--editor-gray-50);
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  cursor: text;
+  transition: background .15s ease;
+}
+
+.wdr-link:focus-within {
+  background: var(--editor-gray-100);
+}
+
+.wdr-link svg {
+  width: 14px;
+  height: 14px;
+  stroke: var(--editor-gray-300);
+  flex-shrink: 0;
+}
+
+.wdr-link-input {
+  flex: 1;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--editor-navy);
+  caret-color: var(--editor-coral);
+}
+
+.wdr-link-input::placeholder {
+  color: var(--editor-gray-400);
+}
+
+.wdr-tabs {
+  display: flex;
+  gap: 6px;
+  padding-bottom: 14px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.wdr-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.wdr-tab {
+  padding: 6px 14px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 0;
+  outline: 0;
+  background: var(--editor-gray-50);
+  color: var(--editor-gray-400);
+  flex-shrink: 0;
+  transition: background .15s ease, color .15s ease;
+}
+
+.wdr-tab.on {
+  background: var(--editor-navy);
+  color: #fff;
+}
+
+.wdr-tab:hover:not(.on) {
+  background: var(--editor-gray-100);
+  color: var(--editor-gray-500);
+}
+
+.wdr-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px 24px;
+  scrollbar-width: none;
+}
+
+.wdr-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.wdr-section {
+  display: none;
+}
+
+.wdr-section.on {
+  display: block;
+}
+
+.wdr-sect-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--editor-gray-300);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+/* Grid 2-col for card widgets */
+.wdr-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.wdr-grid--light {
+  grid-template-columns: 1fr 1fr;
+}
+
+/* Cards */
+.wdr-card {
+  border-radius: 14px;
+  padding: 14px;
+  cursor: pointer;
+  transition: transform .15s ease;
+  position: relative;
+  overflow: hidden;
+  min-height: 90px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.wdr-card:hover {
+  transform: scale(1.02);
+}
+
+.wdr-card--light {
+  background: var(--editor-gray-50);
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  min-height: 76px;
+}
+
+.wdr-card--light:hover {
+  background: var(--editor-gray-100);
+}
+
+.wdr-ic {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.wdr-card-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--editor-navy);
+}
+
+.wdr-card-label--white {
+  color: #fff;
+}
+
+.wdr-card-sub {
+  font-size: 11px;
+  color: var(--editor-gray-400);
+  margin-top: 2px;
+}
+
+.wdr-card-sub--white {
+  color: rgba(255, 255, 255, .55);
+}
+
+.wdr-br-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  background: #FFE8E3;
+  color: #CC3A1A;
+  border-radius: 99px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+/* Dark card (Imagem) */
+.wdr-card--dark {
+  background: var(--editor-navy);
+}
+
+.wdr-dark-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .04);
+}
+
+/* Note card */
+.wdr-card--note {
+  background: #5B9CF6;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.wdr-note-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.3;
+}
+
+.wdr-note-foot {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, .6);
+}
+
+/* Map card */
+.wdr-card--map {
+  background: #D4EAD0;
+}
+
+.wdr-map-pin {
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 12px;
+  background: #4CAF50;
+  border-radius: 50%;
+  border: 2.5px solid #fff;
+}
+
+/* Section card */
+.wdr-card--section {
+  background: var(--editor-gray-50);
+  flex-direction: column;
+  gap: 8px;
+  justify-content: center;
+}
+
+.wdr-card--section:hover {
+  background: var(--editor-gray-100);
+}
+
+.wdr-section-line {
+  height: 5px;
+  background: var(--editor-gray-200);
+  border-radius: 3px;
+  width: 55%;
+}
+
+/* 2-col row for small cards */
+.wdr-row2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+/* Small cards */
+.wdr-sm {
+  background: var(--editor-gray-50);
+  border-radius: 14px;
+  padding: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: transform .15s ease, background .15s ease;
+}
+
+.wdr-sm:hover {
+  transform: scale(1.02);
+  background: var(--editor-gray-100);
+}
+
+.wdr-sm-ic {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.wdr-sm-nm {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--editor-navy);
+}
+
+.wdr-sm-ds {
+  font-size: 10px;
+  color: var(--editor-gray-400);
+}
+
+/* Tip box */
+.wdr-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #FFFBF0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-top: 16px;
+}
+
+.wdr-tip svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.wdr-tip span {
+  font-size: 11px;
+  color: #8A7A50;
+  line-height: 1.5;
+}
+
+/* Coming-soon state for unimplemented cards */
+.wdr-sm.wdr-soon,
+.wdr-card.wdr-soon {
+  opacity: .45;
+  cursor: default;
+}
+
+.wdr-sm.wdr-soon:hover,
+.wdr-card.wdr-soon:hover {
+  transform: none;
+  background: var(--editor-gray-50);
+}
+
+/* ── Em breve overlay ────────────────────────────────────────────────── */
+
+.wdr-soon {
+  pointer-events: none;
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+}
+
+.wdr-soon::after {
+  content: 'Em breve';
+  position: absolute;
+  inset: 0;
+  background: rgba(250, 250, 248, .78);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: 'Poppins', system-ui, sans-serif;
+  color: #AAAAAA;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  border-radius: inherit;
+}
+
+/* ── Featured provider card ──────────────────────────────────────────── */
+
+.wdr-featured-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wdr-featured {
+  width: 100%;
+  background: var(--editor-gray-50);
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform .15s ease, background .15s ease;
+}
+
+.wdr-featured:hover {
+  transform: scale(1.01);
+  background: var(--editor-gray-100);
+}
+
+/* Spotify compact player mockup */
+.wdr-sp-mock {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: #191414;
+  border-radius: 10px 10px 0 0;
+  height: 76px;
+  overflow: hidden;
+  padding-right: 14px;
+}
+
+.wdr-sp-mock-art {
+  width: 76px;
+  height: 76px;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #2a2a2a 0%, #3d3d3d 50%, #2a2a2a 100%);
+  position: relative;
+}
+
+.wdr-sp-mock-art::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(255,255,255,.03) 0px,
+    rgba(255,255,255,.03) 1px,
+    transparent 1px,
+    transparent 8px
+  );
+}
+
+.wdr-sp-mock-info {
+  flex: 1;
+  padding: 0 12px;
+  min-width: 0;
+}
+
+.wdr-sp-mock-title {
+  height: 9px;
+  width: 80px;
+  background: rgba(255,255,255,.85);
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+.wdr-sp-mock-artist {
+  height: 7px;
+  width: 54px;
+  background: rgba(255,255,255,.35);
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.wdr-sp-mock-bar {
+  height: 3px;
+  background: rgba(255,255,255,.15);
+  border-radius: 2px;
+  position: relative;
+  overflow: visible;
+}
+
+.wdr-sp-mock-prog {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 3px;
+  width: 42%;
+  background: #1DB954;
+  border-radius: 2px;
+}
+
+.wdr-sp-mock-prog::after {
+  content: '';
+  position: absolute;
+  right: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 9px;
+  height: 9px;
+  background: #fff;
+  border-radius: 50%;
+}
+
+.wdr-sp-mock-logo {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  opacity: .9;
+}
+
+/* Featured card footer */
+.wdr-featured-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+}
+
+.wdr-featured-add {
+  font-size: 11px;
+  font-weight: 700;
+  color: #1DB954;
+  white-space: nowrap;
+}
+
+/* ── Spotify player mockup (refined) ────────────────────────────────── */
+
+.wdr-sp-player {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #282828;
+  border-radius: 12px 12px 0 0;
+  height: 80px;
+  overflow: hidden;
+  gap: 0;
+}
+
+.wdr-sp-art {
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+  /* warm album-art gradient simulating real photo */
+  background:
+    radial-gradient(ellipse at 38% 32%, rgba(175, 115, 58, .95) 0%, transparent 52%),
+    radial-gradient(ellipse at 68% 72%, rgba(95, 48, 18, .8) 0%, transparent 44%),
+    radial-gradient(ellipse at 55% 50%, rgba(140, 85, 35, .4) 0%, transparent 60%),
+    linear-gradient(158deg, #6B4828 0%, #3A2010 48%, #241206 100%);
+}
+
+/* subtle texture overlay on art */
+.wdr-sp-art::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(0,0,0,.04) 0,
+    rgba(0,0,0,.04) 1px,
+    transparent 1px,
+    transparent 6px
+  );
+}
+
+.wdr-sp-body {
+  flex: 1;
+  padding: 0 10px 0 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  min-width: 0;
+}
+
+.wdr-sp-track {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.25;
+  letter-spacing: -.1px;
+}
+
+.wdr-sp-artist {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, .55);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.25;
+}
+
+.wdr-sp-controls {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 6px;
+}
+
+.wdr-sp-time {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #fff;
+  letter-spacing: .01em;
+  margin-right: 2px;
+}
+
+.wdr-sp-pill {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, .28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, .65);
+  flex-shrink: 0;
+}
+
+.wdr-sp-pill svg {
+  width: 10px;
+  height: 10px;
+}
+
+.wdr-sp-badge {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  margin-right: 12px;
+  opacity: .95;
+  align-self: flex-start;
+  margin-top: 10px;
+}
+
+.wdr-sp-play {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 14px;
+}
+
+.wdr-sp-play svg {
+  width: 14px;
+  height: 14px;
+  color: #191414;
+  margin-left: 2px;
+}
+
+/* Override old mock styles */
+.wdr-sp-mock,
+.wdr-sp-mock-art,
+.wdr-sp-mock-info,
+.wdr-sp-mock-title,
+.wdr-sp-mock-artist,
+.wdr-sp-mock-bar,
+.wdr-sp-mock-prog,
+.wdr-sp-mock-logo {
+  display: none;
+}
+
+/* ── Spotify mockup v3 (from design file) ────────────────────────────── */
+
+.wdr-sp-player {
+  width: 100%;
+  height: 80px;
+  background: #121212;
+  border-radius: 12px 12px 0 0;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.wdr-sp-art {
+  width: 54px;
+  height: 54px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+  background: #1e3a5f;
+}
+
+.wdr-sp-art-img {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1e3a5f 0%, #2d6a4f 50%, #1a1a2e 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.wdr-sp-art-img::before {
+  content: '';
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .06);
+  top: -8px;
+  right: -8px;
+}
+
+.wdr-sp-art-img::after {
+  content: '';
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .04);
+  bottom: -6px;
+  left: -6px;
+}
+
+.wdr-sp-art-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, .5);
+  position: relative;
+  z-index: 1;
+  letter-spacing: -.5px;
+}
+
+.wdr-sp-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wdr-sp-track {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.wdr-sp-artist {
+  font-size: 11px;
+  font-weight: 400;
+  color: #B3B3B3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wdr-sp-progress-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 6px;
+}
+
+.wdr-sp-bar {
+  flex: 1;
+  height: 3px;
+  background: #535353;
+  border-radius: 2px;
+  position: relative;
+}
+
+.wdr-sp-bar-fill {
+  height: 100%;
+  width: 38%;
+  background: #B3B3B3;
+  border-radius: 2px;
+}
+
+.wdr-sp-time {
+  font-size: 9px;
+  font-weight: 400;
+  color: #B3B3B3;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.wdr-sp-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.wdr-sp-btn-add {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wdr-sp-btn-add svg {
+  width: 18px;
+  height: 18px;
+  stroke: #B3B3B3;
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+.wdr-sp-btn-more {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wdr-sp-btn-more svg {
+  width: 16px;
+  height: 16px;
+}
+
+.wdr-sp-play {
+  width: 32px;
+  height: 32px;
+  background: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.wdr-sp-play svg {
+  width: 13px;
+  height: 13px;
+  fill: #000;
+  margin-left: 2px;
+}
+
+.wdr-sp-logo {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  opacity: .6;
+}
+
+.wdr-sp-logo svg {
+  width: 14px;
+  height: 14px;
+  fill: #1DB954;
+  display: block;
+}
+
+/* ── Spotify mockup final (fiel ao arquivo mockup-spotify-compact.html) ── */
+
+.wdr-sp-player {
+  width: 100%;
+  height: 80px;
+  background: #121212;
+  border-radius: 12px 12px 0 0;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.wdr-sp-art {
+  width: 54px;
+  height: 54px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+  background: #1e3a5f;
+}
+
+.wdr-sp-art-img {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1e3a5f 0%, #2d6a4f 50%, #1a1a2e 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wdr-sp-art-img::before {
+  content: '';
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .06);
+  top: -8px;
+  right: -8px;
+}
+
+.wdr-sp-art-img::after {
+  content: '';
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .04);
+  bottom: -6px;
+  left: -6px;
+}
+
+.wdr-sp-art-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, .5);
+  position: relative;
+  z-index: 1;
+}
+
+.wdr-sp-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wdr-sp-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.wdr-sp-artist {
+  font-size: 11px;
+  color: #B3B3B3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wdr-sp-progress-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 6px;
+}
+
+.wdr-sp-bar {
+  flex: 1;
+  height: 3px;
+  background: #535353;
+  border-radius: 2px;
+}
+
+.wdr-sp-bar-fill {
+  height: 100%;
+  width: 38%;
+  background: #B3B3B3;
+  border-radius: 2px;
+}
+
+.wdr-sp-time {
+  font-size: 9px;
+  color: #B3B3B3;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.wdr-sp-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.wdr-sp-btn {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wdr-sp-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: #B3B3B3;
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+.wdr-sp-btn.more svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2;
+}
+
+.wdr-sp-play {
+  width: 32px;
+  height: 32px;
+  background: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.wdr-sp-play svg {
+  width: 13px;
+  height: 13px;
+  fill: #000;
+  margin-left: 2px;
+}
+
+.wdr-sp-logo {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  opacity: .6;
+}
+
+.wdr-sp-logo svg {
+  width: 14px;
+  height: 14px;
+  fill: #1DB954;
+  display: block;
+}
+
+/* ── WhatsApp Widget ──────────────────────────────────────────────── */
+
+/* Shared active wrapper */
+.wa--wa {
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* ─ Retangular (compact · cols:2 · h:80px) ─ */
+.wwa-rect {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  height: 100%;
+  padding: 0 16px;
+  text-decoration: none;
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+  transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s;
+}
+.wwa-rect:hover { transform: scale(1.015); box-shadow: 0 12px 40px rgba(37,211,102,.3); }
+.wwa-rect::before {
+  content: ''; position: absolute;
+  width: 140px; height: 140px; border-radius: 50%;
+  background: rgba(255,255,255,.06);
+  top: -40px; right: -30px;
+}
+.wwa-rect::after {
+  content: ''; position: absolute;
+  width: 80px; height: 80px; border-radius: 50%;
+  background: rgba(255,255,255,.04);
+  bottom: -30px; left: 60px;
+}
+.wwa-rect-icon {
+  width: 44px; height: 44px;
+  background: rgba(255,255,255,.15);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; position: relative; z-index: 1;
+}
+.wwa-rect-icon svg { width: 26px; height: 26px; }
+.wwa-rect-info { flex: 1; min-width: 0; position: relative; z-index: 1; }
+.wwa-rect-name { font-size: 14px; font-weight: 700; color: #fff; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wwa-rect-phone { font-size: 11px; color: rgba(255,255,255,.75); margin-top: 2px; font-weight: 300; }
+.wwa-rect-btn {
+  padding: 8px 18px;
+  background: rgba(255,255,255,.2);
+  border: 1.5px solid rgba(255,255,255,.35);
+  border-radius: 99px;
+  font-size: 11px; font-weight: 700; color: #fff;
+  white-space: nowrap; flex-shrink: 0;
+  position: relative; z-index: 1;
+  transition: background .15s;
+  font-family: inherit;
+}
+.wwa-rect:hover .wwa-rect-btn { background: rgba(255,255,255,.3); }
+
+.wwa-rect--mini { gap: 10px; padding: 0 14px; border-radius: 14px; }
+.wwa-rect-icon--sm { width: 36px; height: 36px; }
+.wwa-rect-icon--sm svg { width: 20px; height: 20px; }
+.wwa-rect-btn--sm { padding: 7px 13px; font-size: 10px; }
+
+/* ─ Quadrado (standard · cols:1 · h:220px) ─ */
+.wwa-square {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  text-decoration: none;
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s;
+}
+.wwa-square:hover { transform: scale(1.02); box-shadow: 0 16px 48px rgba(37,211,102,.3); }
+.wwa-square::before {
+  content: ''; position: absolute;
+  width: 180px; height: 180px; border-radius: 50%;
+  background: rgba(255,255,255,.07);
+  top: -60px; right: -50px;
+}
+.wwa-square::after {
+  content: ''; position: absolute;
+  width: 120px; height: 120px; border-radius: 50%;
+  background: rgba(255,255,255,.04);
+  bottom: -40px; left: -30px;
+}
+.wwa-sq-icon {
+  width: 56px; height: 56px;
+  background: rgba(255,255,255,.18);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; z-index: 1;
+}
+.wwa-sq-icon svg { width: 32px; height: 32px; }
+.wwa-sq-info { text-align: center; position: relative; z-index: 1; }
+.wwa-sq-name { font-size: 15px; font-weight: 700; color: #fff; line-height: 1.2; }
+.wwa-sq-phone { font-size: 11px; color: rgba(255,255,255,.7); margin-top: 4px; font-weight: 300; }
+.wwa-sq-btn {
+  padding: 9px 22px;
+  background: rgba(255,255,255,.2);
+  border: 1.5px solid rgba(255,255,255,.35);
+  border-radius: 99px;
+  font-size: 12px; font-weight: 700; color: #fff;
+  position: relative; z-index: 1;
+  transition: background .15s;
+  font-family: inherit;
+}
+.wwa-square:hover .wwa-sq-btn { background: rgba(255,255,255,.3); }
+
+/* ─ Grande (large · cols:2 · h:280px) ─ */
+.wwa-large {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  width: 100%;
+  height: 100%;
+  padding: 28px;
+  text-decoration: none;
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  border-radius: 28px;
+  position: relative;
+  overflow: hidden;
+  transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s;
+}
+.wwa-large:hover { transform: scale(1.01); box-shadow: 0 20px 60px rgba(37,211,102,.25); }
+.wwa-large::before {
+  content: ''; position: absolute;
+  width: 260px; height: 260px; border-radius: 50%;
+  background: rgba(255,255,255,.06);
+  top: -80px; right: -60px;
+}
+.wwa-large::after {
+  content: ''; position: absolute;
+  width: 180px; height: 180px; border-radius: 50%;
+  background: rgba(255,255,255,.04);
+  bottom: -60px; left: -40px;
+}
+.wwa-lg-top {
+  display: flex; align-items: center; gap: 14px;
+  position: relative; z-index: 1; width: 100%;
+}
+.wwa-lg-icon {
+  width: 52px; height: 52px;
+  background: rgba(255,255,255,.18);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.wwa-lg-icon svg { width: 30px; height: 30px; }
+.wwa-lg-tname { font-size: 18px; font-weight: 700; color: #fff; letter-spacing: -.3px; }
+.wwa-lg-tagline { font-size: 11px; color: rgba(255,255,255,.7); margin-top: 3px; font-weight: 300; }
+.wwa-lg-divider {
+  width: 100%; height: 1px;
+  background: rgba(255,255,255,.15);
+  position: relative; z-index: 1;
+}
+.wwa-lg-mid {
+  display: flex; align-items: center; gap: 20px;
+  position: relative; z-index: 1; width: 100%;
+}
+.wwa-qr {
+  width: 64px; height: 64px;
+  background: rgba(255,255,255,.12);
+  border-radius: 10px;
+  padding: 6px;
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 2px;
+}
+.wwa-qr-cell { border-radius: 1px; }
+.wwa-lg-minfo { flex: 1; }
+.wwa-lg-phone {
+  font-size: 16px; font-weight: 700; color: #fff;
+  letter-spacing: .5px; font-family: monospace;
+  line-height: 1.3;
+}
+.wwa-lg-status {
+  font-size: 10px; color: rgba(255,255,255,.65); margin-top: 3px;
+  display: flex; align-items: center; gap: 5px;
+}
+.wwa-lg-status::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%; background: #A8F0C6;
+}
+.wwa-lg-btn {
+  width: 100%;
+  padding: 13px 0;
+  background: rgba(255,255,255,.18);
+  border: 1.5px solid rgba(255,255,255,.3);
+  border-radius: 14px;
+  font-size: 13px; font-weight: 700; color: #fff;
+  text-align: center;
+  position: relative; z-index: 1;
+  transition: background .15s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: inherit;
+}
+.wwa-large:hover .wwa-lg-btn { background: rgba(255,255,255,.28); }
+.wwa-lg-btn svg { width: 16px; height: 16px; }
+
+/* Avatar no ícone do WhatsApp */
+.wwa-icon-wrap { position: relative; flex-shrink: 0; }
+.wwa-has-avatar { overflow: hidden; background: transparent !important; }
+.wwa-avatar { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
+.wwa-badge {
+  position: absolute; bottom: -2px; right: -2px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,.25);
+  display: flex; align-items: center; justify-content: center;
+  padding: 2px;
+}
+.wwa-badge svg { display: block; }
+
+/* Setup form — phone row */
+.ws-ic--wa { background: #25D366 !important; display: flex; align-items: center; justify-content: center; }
+.ws-ic--wa svg { display: block; }
+.ws-wa-row { display: flex; gap: 6px; align-items: center; margin: 8px 0 0; }
+.ws-wa-cc {
+  flex-shrink: 0;
+  height: 36px;
+  padding: 0 8px;
+  border: 1.5px solid var(--editor-gray-200);
+  border-radius: 8px;
+  background: var(--editor-gray-50);
+  color: var(--editor-navy);
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+}
+.ws-wa-cc:focus { border-color: #25D366; }
+.ws-wa-nr { flex: 1; margin: 0 !important; }
+
+/* Foto opcional no setup do WhatsApp */
+.ws-wa-photo-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--editor-gray-100);
+}
+.ws-wa-photo-circle {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1.5px dashed var(--editor-gray-300);
+  background: var(--editor-gray-50);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0;
+  position: relative; overflow: visible;
+  transition: border-color .15s;
+}
+.ws-wa-photo-circle:hover { border-color: #25D366; }
+.ws-wa-photo-circle.has-photo { border: none; }
+.ws-wa-ph-img {
+  width: 40px; height: 40px;
+  object-fit: cover; border-radius: 50%;
+  display: block; position: absolute; inset: 0;
+}
+.ws-wa-photo-plus { color: var(--editor-gray-400); display: flex; align-items: center; pointer-events: none; }
+.ws-wa-photo-rm {
+  position: absolute; top: -2px; right: -2px;
+  width: 16px; height: 16px;
+  background: #EF4444; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 8px; color: #fff; font-weight: 700;
+  cursor: pointer; z-index: 3;
+  line-height: 1;
+}
+.ws-wa-photo-title { font-size: 11px; font-weight: 600; color: var(--editor-navy); }
+.ws-wa-photo-sub   { font-size: 10px; color: var(--editor-gray-400); margin-top: 1px; }
+
+/* Drawer — WhatsApp featured mockup */
+.wdr-featured--wa { background: #f0fdf4; border: 1.5px solid #bbf7d0; }
+.wdr-wa-preview { padding: 14px 12px 10px; }
+.wdr-wa-mock-cta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  border-radius: 10px;
+  padding: 10px 12px;
+  pointer-events: none;
+}
+.wdr-wa-mock-icon { flex-shrink: 0; display: flex; align-items: center; }
+.wdr-wa-mock-text { flex: 1; min-width: 0; }
+.wdr-wa-mock-lbl { font-size: 12px; font-weight: 600; color: #fff; }
+.wdr-wa-mock-num { font-size: 10px; color: rgba(255,255,255,.75); margin-top: 2px; }
+.wdr-wa-mock-arr { flex-shrink: 0; display: flex; align-items: center; }
+
+/* ── YouTube Music Widget (drawer mockup) ──────────────────────────── */
+.wdr-yt-player {
+  width: 100%; height: 80px;
+  background: #0f0f0f;
+  border-radius: 12px 12px 0 0;
+  display: flex; align-items: center;
+  padding: 0 12px; gap: 12px;
+  position: relative; overflow: hidden;
+}
+.wdr-yt-art {
+  width: 54px; height: 54px;
+  border-radius: 4px; flex-shrink: 0;
+  overflow: hidden; position: relative;
+  background: #1a1a1a;
+}
+.wdr-yt-art-img {
+  width: 100%; height: 100%;
+  background: linear-gradient(135deg, #1a0000 0%, #3d0000 50%, #1a1a1a 100%);
+  display: flex; align-items: center; justify-content: center;
+}
+.wdr-yt-art-label {
+  font-size: 16px; font-weight: 700;
+  color: rgba(255,255,255,.5);
+  position: relative; z-index: 1;
+}
+.wdr-yt-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.wdr-yt-title { font-size: 13px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
+.wdr-yt-artist { font-size: 11px; color: #aaa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wdr-yt-progress-row { display: flex; align-items: center; gap: 7px; margin-top: 6px; }
+.wdr-yt-bar { flex: 1; height: 3px; background: #333; border-radius: 2px; }
+.wdr-yt-bar-fill { height: 100%; width: 42%; background: #FF0000; border-radius: 2px; }
+.wdr-yt-time { font-size: 9px; color: #aaa; white-space: nowrap; flex-shrink: 0; }
+.wdr-yt-play {
+  width: 32px; height: 32px;
+  background: #FF0000; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.wdr-yt-play svg { width: 12px; height: 12px; fill: #fff; margin-left: 2px; }
+.wdr-yt-logo { position: absolute; top: 10px; right: 12px; opacity: .7; }
+.wdr-yt-logo svg { display: block; }

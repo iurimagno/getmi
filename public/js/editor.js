@@ -15,6 +15,10 @@
     episode: 'Episódio'
   };
 
+  var YOUTUBE_VIDEO_REGEX = /(?:(?:music\.)?youtube\.com\/(?:watch[?&](?:[^#]*&)?v=|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i;
+  var YOUTUBE_LIST_REGEX  = /(?:(?:music\.)?youtube\.com)\/(?:watch|playlist)[?&#].*?list=([a-zA-Z0-9_-]+)/i;
+  var YOUTUBE_LABELS = { video: 'Vídeo', playlist: 'Playlist' };
+
   var PROVIDERS = {
     spotify: {
       name: 'Spotify',
@@ -26,6 +30,29 @@
         { key: 'wide', label: 'Wide', cols: 2, h: 152, icon: { vb: '0 0 30 14', x: 1, y: 1, w: 28, h: 12, rx: 2 } },
         { key: 'tall', label: 'Tall', cols: 1, h: 352, icon: { vb: '0 0 12 28', x: 1, y: 1, w: 10, h: 26, rx: 2 } },
         { key: 'large', label: 'Large', cols: 2, h: 352, icon: { vb: '0 0 24 22', x: 1, y: 1, w: 22, h: 20, rx: 2 } }
+      ]
+    },
+    whatsapp: {
+      name: 'WhatsApp',
+      color: '#25D366',
+      defaultSize: 'compact',
+      sizes: [
+        { key: 'mini',     label: 'Meia',       cols: 1, h: 80,  icon: { vb: '0 0 14 10', x: 1, y: 1, w: 12, h: 8,  rx: 2 } },
+        { key: 'compact',  label: 'Retangular', cols: 2, h: 80,  icon: { vb: '0 0 30 10', x: 1, y: 1, w: 28, h: 8,  rx: 2 } },
+        { key: 'standard', label: 'Quadrado',   cols: 1, h: 220, icon: { vb: '0 0 14 14', x: 1, y: 1, w: 12, h: 12, rx: 2 } },
+        { key: 'large',    label: 'Grande',     cols: 2, h: 280, icon: { vb: '0 0 28 20', x: 1, y: 1, w: 26, h: 18, rx: 2 } }
+      ]
+    },
+    youtube: {
+      name: 'YouTube',
+      color: '#FF0000',
+      defaultSize: 'standard',
+      sizes: [
+        { key: 'compact',  label: 'Compact', cols: 1, h: 80,  icon: { vb: '0 0 30 10', x: 1, y: 1, w: 28, h: 8,  rx: 2 } },
+        { key: 'standard', label: 'Padrão',  cols: 1, h: 152, icon: { vb: '0 0 16 16', x: 1, y: 1, w: 14, h: 14, rx: 2 } },
+        { key: 'wide',     label: 'Wide',    cols: 2, h: 152, icon: { vb: '0 0 30 14', x: 1, y: 1, w: 28, h: 12, rx: 2 } },
+        { key: 'tall',     label: 'Tall',    cols: 1, h: 352, icon: { vb: '0 0 12 28', x: 1, y: 1, w: 10, h: 26, rx: 2 } },
+        { key: 'large',    label: 'Large',   cols: 2, h: 352, icon: { vb: '0 0 24 22', x: 1, y: 1, w: 22, h: 20, rx: 2 } }
       ]
     }
   };
@@ -100,7 +127,7 @@
   }
 
   function bindPageEvents() {
-    $('#btnAddWidget').on('click', addWidget);
+    $('#btnAddWidget').on('click', openWidgetDrawer);
     $('#btnSignOut').on('click', signOut);
     $('#btnShare').on('click', shareProfile);
     $('#btnSettings').on('click', function (event) {
@@ -225,7 +252,10 @@
         provider: data.provider || 'spotify',
         state: 'active',
         url: data.url || '',
-        parsed: { type: data.contentType, id: data.contentId },
+        parsed: data.provider === 'whatsapp'
+          ? { phone: data.contentId }
+          : { type: data.contentType, id: data.contentId },
+        customPhoto: data.customPhoto || null,
         size: sizeKey,
         dark: data.theme === 'dark',
         x: normalizeToGrid(data.position && data.position.x, 28),
@@ -312,6 +342,118 @@
     renderWidget(id);
   }
 
+  // ── Widget Drawer ──────────────────────────────────────────────────────
+
+  var SPOTIFY_REGEX_DRAWER = /open\.spotify\.com\/(track|album|playlist|artist|show|episode)\/([A-Za-z0-9]+)/;
+
+  function openWidgetDrawer() {
+    closeAllToolbars();
+    var overlay = document.getElementById('wdrOverlay');
+    var panel   = document.getElementById('wdrPanel');
+    if (!overlay || !panel) return;
+    overlay.hidden = false;
+    panel.hidden   = false;
+    requestAnimationFrame(function () {
+      overlay.classList.add('open');
+      panel.classList.add('open');
+    });
+    document.getElementById('wdrLinkInput').value = '';
+
+    overlay.onclick = closeWidgetDrawer;
+    document.getElementById('wdrClose').onclick = closeWidgetDrawer;
+
+    document.getElementById('wdrTabs').onclick = function (e) {
+      var tab = e.target.closest('.wdr-tab');
+      if (!tab) return;
+      document.querySelectorAll('.wdr-tab').forEach(function (t) { t.classList.remove('on'); });
+      document.querySelectorAll('.wdr-section').forEach(function (s) { s.classList.remove('on'); });
+      tab.classList.add('on');
+      var section = document.getElementById('wds-' + tab.dataset.s);
+      if (section) section.classList.add('on');
+    };
+
+    panel.querySelector('.wdr-scroll').onclick = function (e) {
+      var el = e.target.closest('[data-available]');
+      if (!el) return;
+      var provider = el.dataset.provider;
+      if (provider === 'spotify') {
+        closeWidgetDrawer();
+        addWidgetInSetup('spotify');
+      } else if (provider === 'whatsapp') {
+        closeWidgetDrawer();
+        addWidgetInSetup('whatsapp');
+      } else if (provider === 'youtube') {
+        closeWidgetDrawer();
+        addWidgetInSetup('youtube');
+      }
+    };
+
+    document.getElementById('wdrLinkInput').addEventListener('paste', onDrawerLinkPaste, { once: true });
+  }
+
+  function closeWidgetDrawer() {
+    var overlay = document.getElementById('wdrOverlay');
+    var panel   = document.getElementById('wdrPanel');
+    if (!overlay || !panel) return;
+    overlay.classList.remove('open');
+    panel.classList.remove('open');
+    setTimeout(function () {
+      overlay.hidden = true;
+      panel.hidden   = true;
+    }, 280);
+  }
+
+  function addWidgetInSetup(providerKey) {
+    providerKey = providerKey || 'spotify';
+    var provider    = PROVIDERS[providerKey];
+    var defaultSize = provider.defaultSize;
+    var id          = 'widget-' + Date.now() + '-' + state.widgetSeq++;
+    var pos         = findFreePos(defaultSize, null);
+
+    state.widgets[id] = {
+      id: id,
+      provider: providerKey,
+      state: 'setup',
+      url: '',
+      parsed: null,
+      size: defaultSize,
+      dark: false,
+      customPhoto: null,
+      x: pos.x,
+      y: pos.y,
+      order: nextWidgetOrder(),
+      isPersisted: false,
+      createdAt: null
+    };
+
+    createWidgetElement(id);
+    renderWidget(id);
+  }
+
+  function onDrawerLinkPaste(e) {
+    var value = (e.clipboardData || window.clipboardData).getData('text').trim();
+    if (!value) return;
+    var match = value.match(SPOTIFY_REGEX_DRAWER);
+    if (match) {
+      closeWidgetDrawer();
+      var provider    = PROVIDERS.spotify;
+      var defaultSize = provider.defaultSize;
+      var id          = 'widget-' + Date.now() + '-' + state.widgetSeq++;
+      var pos         = findFreePos(defaultSize, null);
+      state.widgets[id] = {
+        id: id, provider: 'spotify', state: 'setup',
+        url: value, parsed: { type: match[1].toLowerCase(), id: match[2] },
+        size: defaultSize, dark: false,
+        x: pos.x, y: pos.y,
+        order: nextWidgetOrder(), isPersisted: false, createdAt: null
+      };
+      createWidgetElement(id);
+      renderWidget(id);
+    }
+  }
+
+  // ── End Widget Drawer ──────────────────────────────────────────────────
+
   function createWidgetElement(id) {
     var widget = state.widgets[id];
     if (!widget) return;
@@ -326,10 +468,15 @@
 
   function renderAllWidgets() {
     $arena.children('.wd').remove();
+    var existingHint = document.getElementById('mobAddHint');
+    if (existingHint) existingHint.remove();
     Object.keys(state.widgets).sort(sortWidgetIdsForRender).forEach(function (id) {
       createWidgetElement(id);
       renderWidget(id);
     });
+    if (document.body.classList.contains('mob')) {
+      updateMobAddHint();
+    }
   }
 
   function sortWidgetIdsForRender(a, b) {
@@ -374,6 +521,109 @@
 
     if (widget.state === 'setup') {
       el.className = 'wd c1';
+
+      if (widget.provider === 'whatsapp') {
+        el.innerHTML = [
+          '<div class="ws">',
+          '  <div class="ws-hd">',
+          '    <div class="ws-ic ws-ic--wa">' + whatsappGlyph() + '</div>',
+          '    <div>',
+          '      <div class="ws-nm">WhatsApp</div>',
+          '      <div class="ws-ds">Botão de contato direto</div>',
+          '    </div>',
+          '  </div>',
+          '  <div class="ws-wa-row">',
+          '    <select class="ws-wa-cc" id="cc' + id + '">',
+          '      <option value="55" selected>🇧🇷 +55</option>',
+          '      <option value="1">🇺🇸 +1</option>',
+          '      <option value="351">🇵🇹 +351</option>',
+          '      <option value="54">🇦🇷 +54</option>',
+          '      <option value="34">🇪🇸 +34</option>',
+          '      <option value="44">🇬🇧 +44</option>',
+          '    </select>',
+          '    <input class="ws-in ws-wa-nr" id="i' + id + '" placeholder="(00) 0 0000-0000" inputmode="numeric" autocomplete="tel">',
+          '  </div>',
+          '  <div class="ws-er" id="e' + id + '"></div>',
+          '  <div class="ws-wa-photo-row">',
+          '    <div class="ws-wa-photo-circle" id="wpc' + id + '">',
+          '      <input type="file" id="wapf' + id + '" accept="image/*" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;">',
+          '      <span class="ws-wa-photo-plus" id="wpp' + id + '">',
+          '        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+          '      </span>',
+          '    </div>',
+          '    <div>',
+          '      <div class="ws-wa-photo-title">Foto do contato</div>',
+          '      <div class="ws-wa-photo-sub">Opcional · aparece no widget</div>',
+          '    </div>',
+          '  </div>',
+          '  <div class="ws-bt">',
+          '    <button class="ws-cc" onclick="window.editorWidget.toEmpty(\'' + id + '\')">Cancelar</button>',
+          '    <button class="ws-go" id="g' + id + '" disabled onclick="window.editorWidget.toActive(\'' + id + '\')">Adicionar</button>',
+          '  </div>',
+          '</div>',
+          moveHandle
+        ].join('');
+
+        var waInput = document.getElementById('i' + id);
+        setTimeout(function () { waInput.focus(); }, 40);
+        waInput.addEventListener('input', function () {
+          var pos = waInput.selectionStart;
+          var raw = waInput.value.replace(/\D/g, '').substring(0, 11);
+          var masked = maskBrPhone(raw);
+          waInput.value = masked;
+          // Restore cursor: count only digit positions up to old cursor
+          try { waInput.setSelectionRange(masked.length, masked.length); } catch(e) {}
+          validateWhatsAppWidget(id);
+        });
+        waInput.addEventListener('keydown', function (event) {
+          if (event.key === 'Enter' && state.widgets[id] && state.widgets[id].parsed) { toActive(id); }
+          if (event.key === 'Escape') { toEmpty(id); }
+        });
+        document.getElementById('cc' + id).addEventListener('change', function () { validateWhatsAppWidget(id); });
+        document.getElementById('wapf' + id).addEventListener('change', function () { processWidgetPhoto(id, this); });
+        return;
+      }
+
+      if (widget.provider === 'youtube') {
+        el.innerHTML = [
+          '<div class="ws">',
+          '  <div class="ws-hd">',
+          '    <div class="ws-ic" style="background:#FF0000;">' + youtubeGlyph() + '</div>',
+          '    <div>',
+          '      <div class="ws-nm">' + provider.name + '</div>',
+          '      <div class="ws-ds">Vídeo, playlist, canal</div>',
+          '    </div>',
+          '  </div>',
+          '  <input class="ws-in" id="i' + id + '" placeholder="Cole o link do YouTube..." autocomplete="off" spellcheck="false">',
+          '  <div class="ws-er" id="e' + id + '"></div>',
+          '  <div class="ws-bt">',
+          '    <button class="ws-cc" onclick="window.editorWidget.toEmpty(\'' + id + '\')">Cancelar</button>',
+          '    <button class="ws-go" id="g' + id + '" disabled onclick="window.editorWidget.toActive(\'' + id + '\')">Adicionar</button>',
+          '  </div>',
+          '</div>',
+          moveHandle
+        ].join('');
+
+        var ytInput = document.getElementById('i' + id);
+        if (widget.url) ytInput.value = widget.url;
+
+        setTimeout(function () { ytInput.focus(); }, 40);
+        ytInput.addEventListener('input', function () {
+          validateYoutubeWidget(id);
+        });
+        ytInput.addEventListener('keydown', function (event) {
+          if (event.key === 'Enter' && state.widgets[id] && state.widgets[id].parsed) {
+            toActive(id);
+          }
+          if (event.key === 'Escape') {
+            toEmpty(id);
+          }
+        });
+
+        validateYoutubeWidget(id);
+        return;
+      }
+
       el.innerHTML = [
         '<div class="ws">',
         '  <div class="ws-hd">',
@@ -414,8 +664,119 @@
     }
 
     var size = getSize(widget);
-    var src = buildSpotifyEmbedSrc(widget);
     el.className = 'wd c' + size.cols;
+
+    if (widget.provider === 'whatsapp') {
+      var phone = widget.parsed.phone;
+      var waHref = 'https://wa.me/' + phone;
+      var displayPhone = formatWhatsAppPhone(phone);
+      var waInner;
+
+      var waOnclick = 'onclick="window.openWaLink(event,\'' + phone + '\')"';
+
+      if (widget.size === 'standard') {
+        waInner = [
+          '<a class="wwa-square" href="' + waHref + '" ' + waOnclick + ' rel="noopener">',
+          buildWaIconHtml('wwa-sq-icon', widget.customPhoto),
+          '  <div class="wwa-sq-info">',
+          '    <div class="wwa-sq-name">Fale comigo</div>',
+          '    <div class="wwa-sq-phone">' + displayPhone + '</div>',
+          '  </div>',
+          '  <div class="wwa-sq-btn">💬 Abrir WhatsApp</div>',
+          '</a>'
+        ].join('');
+      } else if (widget.size === 'large') {
+        var phoneParts = displayPhone.replace(/\s+/, ' ').trim().split(' ');
+        var phoneLine = phoneParts.length >= 3
+          ? phoneParts.slice(0, 3).join(' ') + '<br>' + phoneParts.slice(3).join(' ')
+          : displayPhone;
+        waInner = [
+          '<a class="wwa-large" href="' + waHref + '" ' + waOnclick + ' rel="noopener">',
+          '  <div class="wwa-lg-top">',
+          '    ' + buildWaIconHtml('wwa-lg-icon', widget.customPhoto),
+          '    <div>',
+          '      <div class="wwa-lg-tname">WhatsApp</div>',
+          '      <div class="wwa-lg-tagline">Respondo em instantes ⚡</div>',
+          '    </div>',
+          '  </div>',
+          '  <div class="wwa-lg-divider"></div>',
+          '  <div class="wwa-lg-mid">',
+          '    ' + buildWhatsAppQR(),
+          '    <div class="wwa-lg-minfo">',
+          '      <div class="wwa-lg-phone">' + phoneLine + '</div>',
+          '      <div class="wwa-lg-status">Disponível agora</div>',
+          '    </div>',
+          '  </div>',
+          '  <div class="wwa-lg-btn">',
+          '    ' + WA_ICON_SVG.replace('viewBox="0 0 48 48"', 'viewBox="0 0 48 48" width="16" height="16"'),
+          '    Iniciar conversa no WhatsApp',
+          '  </div>',
+          '</a>'
+        ].join('');
+      } else if (widget.size === 'mini') {
+        waInner = [
+          '<a class="wwa-rect wwa-rect--mini" href="' + waHref + '" ' + waOnclick + ' rel="noopener">',
+          buildWaIconHtml('wwa-rect-icon wwa-rect-icon--sm', widget.customPhoto),
+          '  <div class="wwa-rect-info">',
+          '    <div class="wwa-rect-name">WhatsApp</div>',
+          '    <div class="wwa-rect-phone">' + displayPhone + '</div>',
+          '  </div>',
+          '  <div class="wwa-rect-btn wwa-rect-btn--sm">💬 Chat</div>',
+          '</a>'
+        ].join('');
+      } else {
+        // compact (default)
+        waInner = [
+          '<a class="wwa-rect" href="' + waHref + '" ' + waOnclick + ' rel="noopener">',
+          buildWaIconHtml('wwa-rect-icon', widget.customPhoto),
+          '  <div class="wwa-rect-info">',
+          '    <div class="wwa-rect-name">Fale comigo no WhatsApp</div>',
+          '    <div class="wwa-rect-phone">' + displayPhone + '</div>',
+          '  </div>',
+          '  <div class="wwa-rect-btn">💬 Chamar agora</div>',
+          '</a>'
+        ].join('');
+      }
+
+      el.innerHTML = [
+        '<div class="wa wa--wa" style="height:' + size.h + 'px">',
+        waInner,
+        '</div>',
+        '<div class="hv hv-e" onclick="event.stopPropagation();window.editorWidget.openToolbar(\'' + id + '\')">' + pencilIcon() + '</div>',
+        '<div class="hv hv-d" onclick="event.stopPropagation();window.editorWidget.remove(\'' + id + '\')">' + trashIcon() + '</div>',
+        moveHandle,
+        '<div class="tba" id="t' + id + '">',
+        '  <div class="tbr">',
+        buildToolbarButtons(id),
+        '    <div class="tb-sep"></div>',
+        '    <button class="tb-i" onclick="window.editorWidget.closeToolbar(\'' + id + '\')" title="Fechar">' + closeIcon() + '</button>',
+        '  </div>',
+        '</div>'
+      ].join('');
+      return;
+    }
+
+    if (widget.provider === 'youtube') {
+      var ytSrc = buildYoutubeEmbedSrc(widget);
+      el.innerHTML = [
+        '<div class="wa" style="height:' + size.h + 'px">',
+        '  <iframe src="' + ytSrc + '" style="height:' + size.h + 'px" loading="lazy" allow="autoplay; encrypted-media; fullscreen; picture-in-picture"></iframe>',
+        '</div>',
+        '<div class="hv hv-e" onclick="event.stopPropagation();window.editorWidget.openToolbar(\'' + id + '\')">' + pencilIcon() + '</div>',
+        '<div class="hv hv-d" onclick="event.stopPropagation();window.editorWidget.remove(\'' + id + '\')">' + trashIcon() + '</div>',
+        moveHandle,
+        '<div class="tba" id="t' + id + '">',
+        '  <div class="tbr">',
+        buildToolbarButtons(id),
+        '    <div class="tb-sep"></div>',
+        '    <button class="tb-i" onclick="window.editorWidget.closeToolbar(\'' + id + '\')" title="Fechar">' + closeIcon() + '</button>',
+        '  </div>',
+        '</div>'
+      ].join('');
+      return;
+    }
+
+    var src = buildSpotifyEmbedSrc(widget);
     el.innerHTML = [
       '<div class="wa" style="height:' + size.h + 'px">',
       '  <iframe src="' + src + '" style="height:' + size.h + 'px" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>',
@@ -439,8 +800,10 @@
   }
 
   function buildToolbarButtons(id) {
-    var current = state.widgets[id].size;
-    return PROVIDERS.spotify.sizes.map(function (size) {
+    var widget = state.widgets[id];
+    var current = widget.size;
+    var providerDef = PROVIDERS[widget.provider] || PROVIDERS.spotify;
+    return providerDef.sizes.map(function (size) {
       var icon = size.icon;
       return [
         '<button class="tb-b ' + (size.key === current ? 'on' : '') + '" onclick="window.editorWidget.resize(\'' + id + '\', \'' + size.key + '\')" title="' + size.label + ' · ' + size.cols + ' col · ' + size.h + 'px">',
@@ -455,6 +818,67 @@
   function buildSpotifyEmbedSrc(widget) {
     var suffix = widget.dark ? '&theme=0' : '';
     return 'https://open.spotify.com/embed/' + widget.parsed.type + '/' + widget.parsed.id + '?utm_source=getmi' + suffix;
+  }
+
+  function buildYoutubeEmbedSrc(widget) {
+    if (widget.parsed.type === 'playlist') {
+      return 'https://www.youtube.com/embed/videoseries?list=' + widget.parsed.id;
+    }
+    return 'https://www.youtube.com/embed/' + widget.parsed.id;
+  }
+
+  function youtubeGlyph() {
+    return '<svg viewBox="0 0 24 24" width="18" height="18"><path fill="#fff" d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>';
+  }
+
+  function validateYoutubeWidget(id) {
+    var widget = state.widgets[id];
+    var input  = document.getElementById('i' + id);
+    var error  = document.getElementById('e' + id);
+    var button = document.getElementById('g' + id);
+    if (!widget || !input || !error || !button) return;
+
+    var value = input.value.trim();
+    if (!value) {
+      input.className = 'ws-in';
+      error.textContent = '';
+      button.disabled = true;
+      widget.parsed = null;
+      widget.url = '';
+      return;
+    }
+
+    // Playlist primeiro
+    var listMatch = value.match(YOUTUBE_LIST_REGEX);
+    if (listMatch) {
+      var vidMatch = value.match(YOUTUBE_VIDEO_REGEX);
+      widget.url = value;
+      widget.parsed = { type: 'playlist', id: listMatch[1], videoId: vidMatch ? vidMatch[1] : null };
+      input.className = 'ws-in ok';
+      error.style.color = 'var(--editor-mint)';
+      error.textContent = 'Playlist detectada';
+      button.disabled = false;
+      return;
+    }
+
+    // Vídeo / Short
+    var videoMatch = value.match(YOUTUBE_VIDEO_REGEX);
+    if (videoMatch) {
+      widget.url = value;
+      widget.parsed = { type: 'video', id: videoMatch[1] };
+      input.className = 'ws-in ok';
+      error.style.color = 'var(--editor-mint)';
+      error.textContent = 'Vídeo detectado';
+      button.disabled = false;
+      return;
+    }
+
+    widget.parsed = null;
+    widget.url = value;
+    input.className = 'ws-in bad';
+    error.style.color = '#EF4444';
+    error.textContent = 'Cole uma URL válida do YouTube';
+    button.disabled = true;
   }
 
   function validateWidget(id) {
@@ -500,6 +924,174 @@
     button.disabled = true;
   }
 
+  function maskBrPhone(digits) {
+    // digits: up to 11 raw digits (DDD + number)
+    if (digits.length === 0) return '';
+    if (digits.length <= 2) return '(' + digits;
+    var ddd  = digits.substring(0, 2);
+    var rest = digits.substring(2);
+    if (rest.length === 0) return '(' + ddd + ') ';
+    if (rest.length <= 4) return '(' + ddd + ') ' + rest;
+    // 11 digits: (DDD) 9 XXXX-XXXX
+    if (digits.length === 11) {
+      return '(' + ddd + ') ' + rest[0] + ' ' + rest.substring(1, 5) + '-' + rest.substring(5);
+    }
+    // 5-8 digits after DDD → still typing landline or mobile
+    if (rest.length <= 8) {
+      var mid = rest.length <= 4 ? rest : rest.substring(0, 4) + '-' + rest.substring(4);
+      return '(' + ddd + ') ' + mid;
+    }
+    // 9+ → landline (8) or mobile (9)
+    if (rest.length === 9) {
+      return '(' + ddd + ') ' + rest[0] + ' ' + rest.substring(1, 5) + '-' + rest.substring(5);
+    }
+    return '(' + ddd + ') ' + rest.substring(0, 4) + '-' + rest.substring(4);
+  }
+
+  function validateWhatsAppWidget(id) {
+    var widget = state.widgets[id];
+    var ccEl   = document.getElementById('cc' + id);
+    var input  = document.getElementById('i' + id);
+    var error  = document.getElementById('e' + id);
+    var button = document.getElementById('g' + id);
+    if (!widget || !ccEl || !input || !error || !button) return;
+
+    var digits = input.value.replace(/\D/g, '');
+    if (!digits) {
+      input.className = 'ws-in ws-wa-nr';
+      error.textContent = '';
+      button.disabled = true;
+      widget.parsed = null;
+      return;
+    }
+
+    var minLen = 10, maxLen = 11;
+    if (digits.length < minLen || digits.length > maxLen) {
+      input.className = 'ws-in ws-wa-nr bad';
+      error.style.color = '#EF4444';
+      error.textContent = 'Número incompleto';
+      button.disabled = true;
+      widget.parsed = null;
+      return;
+    }
+
+    var full = ccEl.value + digits;
+    widget.parsed = { phone: full };
+    widget.url = 'https://wa.me/' + full;
+    input.className = 'ws-in ws-wa-nr ok';
+    error.style.color = 'var(--editor-mint)';
+    error.textContent = 'Número válido';
+    button.disabled = false;
+  }
+
+  function formatWhatsAppPhone(phone) {
+    // phone = countryCode + number, e.g. '5579996718588'
+    // Try to detect country code length (1, 2, or 3 digits)
+    // Default to 2 (Brazil +55)
+    var ccLen = 2;
+    var rest = phone.substring(ccLen);
+    var cc = phone.substring(0, ccLen);
+    if (rest.length === 11) {
+      // mobile with 9: (DDD) 9 XXXX-XXXX
+      return '+' + cc + ' (' + rest.substring(0, 2) + ') ' + rest.substring(2, 3) + ' ' + rest.substring(3, 7) + '-' + rest.substring(7);
+    }
+    if (rest.length === 10) {
+      // landline: (DDD) XXXX-XXXX
+      return '+' + cc + ' (' + rest.substring(0, 2) + ') ' + rest.substring(2, 6) + '-' + rest.substring(6);
+    }
+    return '+' + phone;
+  }
+
+  var WA_ICON_SVG = '<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="24" fill="#fff"/><path fill="#25D366" d="M24 7C14.6 7 7 14.6 7 24c0 3 .8 5.9 2.3 8.4L7 41l8.9-2.3C18.2 40.2 21 41 24 41c9.4 0 17-7.6 17-17S33.4 7 24 7z"/><path fill="#fff" d="M33.5 28.6c-.5-.2-2.9-1.4-3.3-1.6-.4-.2-.7-.2-1 .2-.3.5-1.2 1.6-1.5 1.9-.3.3-.5.4-1 .1-.5-.2-2-.7-3.8-2.3-1.4-1.2-2.4-2.8-2.6-3.2-.3-.5 0-.7.2-.9l.6-.8c.2-.3.3-.5.4-.8.1-.3 0-.6-.1-.8-.1-.2-1-2.5-1.4-3.4-.4-.9-.8-.8-1-.8h-.9c-.3 0-.8.1-1.2.6-.4.4-1.6 1.6-1.6 3.9s1.6 4.5 1.9 4.8c.2.3 3.2 5 7.9 7 1.1.5 2 .8 2.7 1 1.1.3 2.2.3 3 .2.9-.1 2.9-1.2 3.3-2.3.4-1.1.4-2.1.3-2.3-.1-.3-.4-.4-.9-.6z"/></svg>';
+
+  function whatsappGlyph() {
+    return WA_ICON_SVG;
+  }
+
+  function buildWaIconHtml(iconClass, customPhoto) {
+    var url = customPhoto || (state.profile && state.profile.avatarUrl);
+    var badgeSvg = WA_ICON_SVG.replace('viewBox="0 0 48 48"', 'viewBox="0 0 48 48" width="14" height="14"');
+    if (url) {
+      return [
+        '<div class="wwa-icon-wrap ' + iconClass + '" style="background:transparent;">',
+        '  <img class="wwa-avatar" src="' + url + '" alt="" style="clip-path:circle(50% at 50% 50%);">',
+        '</div>'
+      ].join('');
+    }
+    return '<div class="' + iconClass + '">' + WA_ICON_SVG + '</div>';
+  }
+
+  function processWidgetPhoto(id, input) {
+    var file = input.files && input.files[0];
+    if (!file) return;
+    var widget = state.widgets[id];
+    if (!widget) return;
+
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      var img = new Image();
+      img.onload = function () {
+        var MAX = 400;
+        var w = img.width, h = img.height;
+        if (w > h) { if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; } }
+        else        { if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; } }
+        var canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        var dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+        widget.customPhoto = dataUrl; // data URL temporário; será trocado pela URL do Storage no toActive
+        updateWidgetPhotoCircle(id);
+        input.value = '';
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function removeWidgetPhoto(id) {
+    var widget = state.widgets[id];
+    if (!widget) return;
+    widget.customPhoto = null;
+    updateWidgetPhotoCircle(id);
+  }
+
+  function updateWidgetPhotoCircle(id) {
+    var widget = state.widgets[id];
+    var circle = document.getElementById('wpc' + id);
+    var plus   = document.getElementById('wpp' + id);
+    if (!circle) return;
+    // remove preview anterior
+    var prev = circle.querySelector('img.ws-wa-ph-img');
+    if (prev) prev.remove();
+    var rmBtn = circle.querySelector('.ws-wa-photo-rm');
+    if (rmBtn) rmBtn.remove();
+
+    if (widget && widget.customPhoto) {
+      circle.classList.add('has-photo');
+      var img = document.createElement('img');
+      img.className = 'ws-wa-ph-img';
+      img.src = widget.customPhoto;
+      circle.insertBefore(img, circle.firstChild);
+      var btn = document.createElement('div');
+      btn.className = 'ws-wa-photo-rm';
+      btn.title = 'Remover foto';
+      btn.innerHTML = '✕';
+      btn.onclick = function (e) { e.stopPropagation(); removeWidgetPhoto(id); };
+      circle.appendChild(btn);
+      if (plus) plus.style.display = 'none';
+    } else {
+      circle.classList.remove('has-photo');
+      if (plus) plus.style.display = '';
+    }
+  }
+
+  function buildWhatsAppQR() {
+    var pattern = [1,1,0,1,1,0,1,1,0,1,0,0,0,1,0,0,1,1,1,0,1,0,1,1,0,1,1,0,0,0,1,1,0,1,1,0];
+    return '<div class="wwa-qr">' + pattern.map(function (v) {
+      return '<div class="wwa-qr-cell" style="background:' + (v ? 'rgba(255,255,255,.85)' : 'transparent') + '"></div>';
+    }).join('') + '</div>';
+  }
+
   function toSetup(id) {
     var widget = state.widgets[id];
     if (!widget) return;
@@ -530,7 +1122,31 @@
     widget.y = safe.y;
     renderWidget(id);
     normalizeWidgetOrders(false);
-    persistWidget(widget, true);
+
+    // Se há uma foto como data URL (ainda não enviada ao Storage), faz upload antes de persistir
+    if (widget.provider === 'whatsapp' && widget.customPhoto && widget.customPhoto.indexOf('data:') === 0 && storage) {
+      setSaveState('saving', 'Salvando...');
+      var dataUrl = widget.customPhoto;
+      var byteStr = atob(dataUrl.split(',')[1]);
+      var ab = new ArrayBuffer(byteStr.length);
+      var ia = new Uint8Array(ab);
+      for (var i = 0; i < byteStr.length; i++) { ia[i] = byteStr.charCodeAt(i); }
+      var blob = new Blob([ab], { type: 'image/jpeg' });
+      var photoPath = 'widget-photos/' + state.currentUser.uid + '/' + id + '.jpg';
+      storage.ref().child(photoPath).put(blob, { contentType: 'image/jpeg' })
+        .then(function (snap) { return snap.ref.getDownloadURL(); })
+        .then(function (url) {
+          widget.customPhoto = url;
+          persistWidget(widget, true);
+        })
+        .catch(function () {
+          // falha no upload da foto — persiste sem ela
+          widget.customPhoto = null;
+          persistWidget(widget, true);
+        });
+    } else {
+      persistWidget(widget, true);
+    }
   }
 
   function openToolbar(id) {
@@ -638,11 +1254,20 @@
   }
 
   function persistWidget(widget, includeCreatedAt, silent) {
+    var contentType, contentId;
+    if (widget.provider === 'whatsapp') {
+      contentType = 'whatsapp_cta';
+      contentId   = widget.parsed.phone;
+    } else {
+      contentType = widget.parsed.type;
+      contentId   = widget.parsed.id;
+    }
     var payload = {
       provider: widget.provider,
-      contentType: widget.parsed.type,
-      contentId: widget.parsed.id,
+      contentType: contentType,
+      contentId: contentId,
       url: widget.url,
+      customPhoto: widget.customPhoto || null,
       size: widget.size,
       theme: widget.dark ? 'dark' : 'light',
       position: { x: widget.x, y: widget.y },
@@ -731,35 +1356,57 @@
     }
 
     var previousUrl = state.profile.avatarUrl;
+    setSaveState('saving', 'Enviando avatar...');
+
     var reader = new FileReader();
-    reader.onload = function (event) {
-      renderAvatar(event.target.result);
+    reader.onload = function (e) {
+      var img = new Image();
+      img.onload = function () {
+        // Redimensiona para no máximo 400×400 mantendo proporção
+        var MAX = 400;
+        var w = img.width, h = img.height;
+        if (w > h) { if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; } }
+        else        { if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; } }
+
+        var canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+
+        // Preview imediato com a versão redimensionada (antes do upload terminar)
+        renderAvatar(canvas.toDataURL('image/jpeg', 0.85));
+
+        canvas.toBlob(function (blob) {
+          if (!blob) {
+            state.profile.avatarUrl = previousUrl;
+            renderAvatar(previousUrl);
+            setSaveState('error', 'Erro ao processar');
+            showToast('Não foi possível processar a imagem.', 'error');
+            input.value = '';
+            return;
+          }
+          var path = 'avatars/' + state.currentUser.uid + '/' + Date.now() + '.jpg';
+          storage.ref().child(path).put(blob, { contentType: 'image/jpeg' })
+            .then(function (snapshot) { return snapshot.ref.getDownloadURL(); })
+            .then(function (url) {
+              state.profile.avatarUrl = url;
+              renderAvatar(url);
+              showToast('Avatar atualizado.', 'success');
+              queueProfileSave();
+            })
+            .catch(function (error) {
+              console.error('Erro ao enviar avatar:', error);
+              state.profile.avatarUrl = previousUrl;
+              renderAvatar(previousUrl);
+              setSaveState('error', 'Erro ao salvar');
+              showToast('Não foi possível enviar o avatar.', 'error');
+            })
+            .finally(function () { input.value = ''; });
+        }, 'image/jpeg', 0.85);
+      };
+      img.src = e.target.result;
     };
     reader.readAsDataURL(file);
-
-    setSaveState('saving', 'Enviando avatar...');
-    var safeName = String(file.name || 'avatar').replace(/[^a-zA-Z0-9._-]/g, '-');
-    var path = 'avatars/' + state.currentUser.uid + '/' + Date.now() + '-' + safeName;
-    storage.ref().child(path).put(file, { contentType: file.type })
-      .then(function (snapshot) {
-        return snapshot.ref.getDownloadURL();
-      })
-      .then(function (url) {
-        state.profile.avatarUrl = url;
-        renderAvatar(url);
-        queueProfileSave();
-        showToast('Avatar atualizado.', 'success');
-      })
-      .catch(function (error) {
-        console.error('Erro ao enviar avatar:', error);
-        state.profile.avatarUrl = previousUrl;
-        renderAvatar(previousUrl);
-        setSaveState('error', 'Erro ao salvar');
-        showToast('Não foi possível enviar o avatar.', 'error');
-      })
-      .finally(function () {
-        input.value = '';
-      });
   }
 
   function removeAvatar(event) {
@@ -1072,6 +1719,19 @@
     $('#tM').toggleClass('on', mobile);
     mountProfileForViewport(mobile);
     renderAllWidgets();
+    var board = document.querySelector('.board');
+    if (board) board.scrollTo(0, 0);
+  }
+
+  function updateMobAddHint() {
+    var existing = document.getElementById('mobAddHint');
+    if (existing) existing.remove();
+    var hint = document.createElement('div');
+    hint.id = 'mobAddHint';
+    hint.className = 'mob-add-hint';
+    hint.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">add</span> Adicionar widget';
+    hint.onclick = openWidgetDrawer;
+    $arena.append(hint);
   }
 
   function initMove(id, event) {
@@ -1289,6 +1949,31 @@
   function closeIcon() {
     return '<svg viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
   }
+
+  // ── WhatsApp smart-link (works on editor + public profile) ──────────
+  // Mobile  → whatsapp:// deep-link (opens app); fallback wa.me after 1.5s
+  // Desktop → WhatsApp Web in new tab (Chrome/Edge show "Open Desktop App?" banner)
+  window.openWaLink = function (event, phone) {
+    event.preventDefault();
+    var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobile) {
+      window.location.href = 'whatsapp://send?phone=' + phone;
+      setTimeout(function () {
+        // Only fires if app is NOT installed — app intercepts navigation and this tab goes background
+        window.location.href = 'https://wa.me/' + phone;
+      }, 1500);
+    } else {
+      window.open('https://web.whatsapp.com/send?phone=' + phone, '_blank', 'noopener');
+    }
+  };
+
+  // Quando o browser restaura a página do bfcache (F5, botão voltar)
+  // o JS não re-executa — reseta o estado visual para evitar mensagens presas
+  window.addEventListener('pageshow', function (e) {
+    if (e.persisted) {
+      setSaveState('saved', 'Salvo');
+    }
+  });
 
   window.editorWidget = {
     toSetup: toSetup,
