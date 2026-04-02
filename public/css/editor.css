@@ -1523,23 +1523,101 @@ body.mob .mob-add-hint span {
   }
 }
 
+/* ── Mobile shell (real narrow viewport ≤ 768px) ──────────────────────── */
 @media (max-width: 768px) {
+  /* Top bar: single compact row — logo left, actions right */
   .top {
-    padding: 10px 12px;
-    flex-wrap: wrap;
-    justify-content: center;
+    padding: 6px 10px;
+    min-height: 46px;
+    gap: 8px;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    border-radius: 16px;
+    top: 10px;
   }
 
-  .top__status {
-    order: 3;
-    width: 100%;
-    justify-content: center;
+  /* Hide status pills and nav link from top bar — redundant on narrow screens */
+  .top__status,
+  .top__link {
+    display: none;
   }
 
   .top__actions {
     margin-left: auto;
+    gap: 4px;
   }
 
+  .top__logo {
+    height: 18px;
+  }
+
+  /* Bottom bar: single row — settings | share | toggle */
+  .bb {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 8px;
+    min-height: 54px;
+    border-radius: 18px;
+    bottom: 10px;
+  }
+
+  /* Hide nav links and save pulse in bottom bar */
+  .bb__link,
+  .bb__saving {
+    display: none;
+  }
+
+  /* Left cluster: just the settings icon */
+  .bb__cluster {
+    width: auto;
+    flex-shrink: 0;
+    flex-wrap: nowrap;
+    gap: 0;
+  }
+
+  /* Hide Community / Explore — settings icon stays */
+  .bb__cluster > .bb__link {
+    display: none;
+  }
+
+  /* Share button: flex:1 between settings and toggle */
+  .bb__share {
+    order: 0;
+    width: auto;
+    flex: 1;
+    min-width: 0;
+    min-height: 42px;
+    padding: 0 12px;
+    font-size: 13px;
+    gap: 6px;
+    border-radius: 999px;
+  }
+
+  /* Right cluster: just the toggle */
+  .bb__cluster--right {
+    width: auto;
+    flex-shrink: 0;
+    gap: 6px;
+  }
+
+  /* Compact toggle buttons */
+  .bb__toggle-btn {
+    min-width: 64px;
+    min-height: 32px;
+    padding: 0 10px;
+    font-size: 11px;
+  }
+
+  /* FAB: above the compact bottom bar */
+  .fab {
+    width: 54px;
+    height: 54px;
+    right: 16px;
+    bottom: 80px;
+  }
+
+  /* Dialog: sheet-style from bottom */
   .username-dialog {
     padding: 16px;
     align-items: flex-end;
@@ -1556,21 +1634,6 @@ body.mob .mob-add-hint span {
 
   .username-field__prefix {
     font-size: 12px;
-  }
-
-  .bb__cluster {
-    width: 100%;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .bb__cluster--right {
-    gap: 10px;
-  }
-
-  .fab {
-    width: 58px;
-    height: 58px;
   }
 }
 

@@ -115,6 +115,8 @@
 
   function init() {
     bindPageEvents();
+    applyViewportMode();
+    window.addEventListener('resize', debounce(applyViewportMode, 200));
     auth.onAuthStateChanged(function (user) {
       if (!user) {
         window.location.replace('/login.html?view=login');
@@ -124,6 +126,28 @@
       state.currentUser = user;
       loadInitialData();
     });
+  }
+
+  function applyViewportMode() {
+    // On narrow viewports auto-switch to mobile preview; don't override a
+    // deliberate desktop choice the user made by clicking the toggle.
+    if (window.innerWidth <= 768) {
+      if (!document.body.classList.contains('mob')) {
+        document.body.classList.add('mob');
+        $('#tD').removeClass('on');
+        $('#tM').addClass('on');
+        mountProfileForViewport(true);
+        renderAllWidgets();
+      }
+    }
+  }
+
+  function debounce(fn, ms) {
+    var t;
+    return function () {
+      clearTimeout(t);
+      t = setTimeout(fn, ms);
+    };
   }
 
   function bindPageEvents() {
