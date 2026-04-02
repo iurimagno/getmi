@@ -15,7 +15,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
 
   <link rel="stylesheet" href="/css/tokens.css">
-  <link rel="stylesheet" href="/css/editor.css">
+  <link rel="stylesheet" href="/css/editor.css?v=3">
 </head>
 <body>
   <div class="editor-loading" id="editorLoading" role="status" aria-live="polite">
@@ -25,11 +25,7 @@
   <div class="editor-shell" id="editorShell" hidden>
     <header class="top">
       <div class="top__brand">
-        <img src="/img/getmi-logo-dark.svg" alt="getmi.app" class="top__logo">
-        <div class="top__brand-copy">
-          <strong>getmi<i>.ai</i></strong>
-          <span class="top__meta" id="topUsername">/username</span>
-        </div>
+        <img src="/img/getmi-logo-text.png" alt="getmi.app" class="top__logo">
       </div>
 
       <div class="top__status">
@@ -65,7 +61,7 @@
             type="text"
             maxlength="40"
             placeholder="Your name"
-            autocomplete="name"
+            autocomplete="off"
           >
           <textarea
             id="pfBio"
@@ -185,6 +181,331 @@
   <div class="editor-toast" id="editorToast" role="status" aria-live="polite"></div>
   <div class="editor-confetti" id="editorConfetti" aria-hidden="true"></div>
 
+  <!-- Widget Drawer -->
+  <div class="wdr-overlay" id="wdrOverlay" hidden></div>
+  <div class="wdr-panel" id="wdrPanel" hidden role="dialog" aria-modal="true" aria-labelledby="wdrTitle">
+
+    <div class="wdr-head">
+      <div class="wdr-toprow">
+        <span class="wdr-title" id="wdrTitle">Adicionar</span>
+        <button type="button" class="wdr-close" id="wdrClose" aria-label="Fechar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <label class="wdr-link" for="wdrLinkInput">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        <input type="text" class="wdr-link-input" id="wdrLinkInput" placeholder="Cole qualquer link aqui..." autocomplete="off" spellcheck="false">
+      </label>
+
+      <div class="wdr-tabs" id="wdrTabs" role="tablist">
+        <button class="wdr-tab on" data-s="todos" role="tab" aria-selected="true">Todos</button>
+        <button class="wdr-tab" data-s="brasil" role="tab" aria-selected="false">Brasil</button>
+        <button class="wdr-tab" data-s="musica" role="tab" aria-selected="false">Música</button>
+        <button class="wdr-tab" data-s="video" role="tab" aria-selected="false">Vídeo</button>
+        <button class="wdr-tab" data-s="social" role="tab" aria-selected="false">Social</button>
+        <button class="wdr-tab" data-s="vendas" role="tab" aria-selected="false">Vendas</button>
+        <button class="wdr-tab" data-s="agenda" role="tab" aria-selected="false">Agenda</button>
+        <button class="wdr-tab" data-s="outros" role="tab" aria-selected="false">Outros</button>
+      </div>
+    </div>
+
+    <div class="wdr-scroll">
+
+      <!-- TODOS -->
+      <div class="wdr-section on" id="wds-todos">
+        <div class="wdr-sect-label">Destaques Brasil</div>
+        <div class="wdr-grid wdr-grid--light" style="margin-bottom:16px;">
+          <div class="wdr-card wdr-card--light wdr-soon"><div class="wdr-ic" style="background:#00B1EB;color:#fff;">Pix</div><div><div class="wdr-card-label">Pix QR</div><div class="wdr-card-sub">Cobrança instantânea</div></div><span class="wdr-br-badge">BR</span></div>
+          <div class="wdr-card wdr-card--light" data-available data-provider="whatsapp"><div class="wdr-ic" style="background:#25D366;color:#fff;">WA</div><div><div class="wdr-card-label">WhatsApp</div><div class="wdr-card-sub">CTA direto</div></div><span class="wdr-br-badge">BR</span></div>
+          <div class="wdr-card wdr-card--light wdr-soon"><div class="wdr-ic" style="background:#F5A623;color:#fff;">ML</div><div><div class="wdr-card-label">Mercado Livre</div><div class="wdr-card-sub">Produto ou loja</div></div><span class="wdr-br-badge">BR</span></div>
+          <div class="wdr-card wdr-card--light wdr-soon"><div class="wdr-ic" style="background:#7047EB;color:#fff;">Ht</div><div><div class="wdr-card-label">Hotmart</div><div class="wdr-card-sub">Curso, produto</div></div><span class="wdr-br-badge">BR</span></div>
+        </div>
+        <div class="wdr-featured-wrap" style="margin-bottom:16px;">
+          <div class="wdr-featured wdr-featured--wa" data-available data-provider="whatsapp">
+            <div class="wdr-wa-preview">
+              <a class="wdr-wa-mock-cta">
+                <div class="wdr-wa-mock-icon">
+                  <svg viewBox="0 0 48 48" width="26" height="26"><circle cx="24" cy="24" r="24" fill="rgba(255,255,255,.2)"/><path fill="#fff" d="M24 7C14.6 7 7 14.6 7 24c0 3 .8 5.9 2.3 8.4L7 41l8.9-2.3C18.2 40.2 21 41 24 41c9.4 0 17-7.6 17-17S33.4 7 24 7z"/><path fill="#25D366" d="M33.5 28.6c-.5-.2-2.9-1.4-3.3-1.6-.4-.2-.7-.2-1 .2-.3.5-1.2 1.6-1.5 1.9-.3.3-.5.4-1 .1-.5-.2-2-.7-3.8-2.3-1.4-1.2-2.4-2.8-2.6-3.2-.3-.5 0-.7.2-.9l.6-.8c.2-.3.3-.5.4-.8.1-.3 0-.6-.1-.8-.1-.2-1-2.5-1.4-3.4-.4-.9-.8-.8-1-.8h-.9c-.3 0-.8.1-1.2.6-.4.4-1.6 1.6-1.6 3.9s1.6 4.5 1.9 4.8c.2.3 3.2 5 7.9 7 1.1.5 2 .8 2.7 1 1.1.3 2.2.3 3 .2.9-.1 2.9-1.2 3.3-2.3.4-1.1.4-2.1.3-2.3-.1-.3-.4-.4-.9-.6z"/></svg>
+                </div>
+                <div class="wdr-wa-mock-text">
+                  <div class="wdr-wa-mock-lbl">Fale comigo no WhatsApp</div>
+                  <div class="wdr-wa-mock-num">+55 00 0 0000-0000</div>
+                </div>
+                <div class="wdr-wa-mock-arr">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </div>
+              </a>
+            </div>
+            <div class="wdr-featured-foot">
+              <div>
+                <div class="wdr-sm-nm">WhatsApp</div>
+                <div class="wdr-sm-ds">Botão de contato direto</div>
+              </div>
+              <span class="wdr-featured-add">Adicionar</span>
+            </div>
+          </div>
+        </div>
+        <div class="wdr-sect-label">Widgets</div>
+        <div class="wdr-grid" style="margin-bottom:16px;">
+          <div class="wdr-card wdr-card--dark wdr-soon"><div class="wdr-dark-circle" style="width:70px;height:70px;bottom:-20px;right:-20px;"></div><div class="wdr-dark-circle" style="width:40px;height:40px;top:10px;right:10px;"></div><div style="position:relative;z-index:1;"><div class="wdr-card-label wdr-card-label--white">Imagem</div><div class="wdr-card-sub wdr-card-sub--white">Foto ou vídeo</div></div></div>
+          <div class="wdr-card wdr-card--note wdr-soon"><div class="wdr-note-text">Aqui vai sua mensagem.</div><div class="wdr-note-foot">Nota</div></div>
+          <div class="wdr-card wdr-card--map wdr-soon"><div class="wdr-map-pin"></div><div class="wdr-card-label" style="color:#2D5A27;position:relative;">Mapa</div></div>
+          <div class="wdr-card wdr-card--section wdr-soon"><div class="wdr-section-line"></div><div class="wdr-card-label">Título de seção</div></div>
+        </div>
+        <div class="wdr-sect-label">Música</div>
+        <div class="wdr-featured-wrap" style="margin-bottom:16px;">
+          <div class="wdr-featured" data-available data-provider="spotify">
+            <div class="wdr-sp-player">
+              <div class="wdr-sp-logo">
+                <svg viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+              </div>
+              <div class="wdr-sp-art">
+                <div class="wdr-sp-art-img">
+                  <span class="wdr-sp-art-label">♫</span>
+                </div>
+              </div>
+              <div class="wdr-sp-info">
+                <div class="wdr-sp-title">Minha Delicadeza</div>
+                <div class="wdr-sp-artist">Juarez, Xand Avião</div>
+                <div class="wdr-sp-progress-row">
+                  <div class="wdr-sp-bar"><div class="wdr-sp-bar-fill"></div></div>
+                  <span class="wdr-sp-time">03:10</span>
+                </div>
+              </div>
+              <div class="wdr-sp-actions">
+                <div class="wdr-sp-btn">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                </div>
+                <div class="wdr-sp-btn more">
+                  <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1" fill="#B3B3B3" stroke="none"/><circle cx="12" cy="12" r="1" fill="#B3B3B3" stroke="none"/><circle cx="19" cy="12" r="1" fill="#B3B3B3" stroke="none"/></svg>
+                </div>
+                <div class="wdr-sp-play">
+                  <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                </div>
+              </div>
+            </div>
+            <div class="wdr-featured-foot">
+              <div>
+                <div class="wdr-sm-nm">Spotify</div>
+                <div class="wdr-sm-ds">Música, álbum, playlist, podcast</div>
+              </div>
+              <span class="wdr-featured-add">Adicionar</span>
+            </div>
+          </div>
+          <div class="wdr-featured" data-available data-provider="youtube">
+            <div class="wdr-yt-player">
+              <div class="wdr-yt-logo">
+                <svg viewBox="0 0 24 24" width="14" height="14"><path fill="#FF0000" d="M12 0C5.376 0 0 5.376 0 12s5.376 12 12 12 12-5.376 12-12S18.624 0 12 0zm0 19.104c-3.924 0-7.104-3.18-7.104-7.104S8.076 4.896 12 4.896s7.104 3.18 7.104 7.104-3.18 7.104-7.104 7.104zm0-13.332c-3.432 0-6.228 2.796-6.228 6.228S8.568 18.228 12 18.228s6.228-2.796 6.228-6.228S15.432 5.772 12 5.772zM9.684 15.54V8.46L16.2 12l-6.516 3.54z"/></svg>
+              </div>
+              <div class="wdr-yt-art">
+                <div class="wdr-yt-art-img"><span class="wdr-yt-art-label">♫</span></div>
+              </div>
+              <div class="wdr-yt-info">
+                <div class="wdr-yt-title">Favorita</div>
+                <div class="wdr-yt-artist">Anitta</div>
+                <div class="wdr-yt-progress-row">
+                  <div class="wdr-yt-bar"><div class="wdr-yt-bar-fill"></div></div>
+                  <span class="wdr-yt-time">03:24</span>
+                </div>
+              </div>
+              <div class="wdr-yt-play">
+                <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              </div>
+            </div>
+            <div class="wdr-featured-foot">
+              <div>
+                <div class="wdr-sm-nm">YouTube</div>
+                <div class="wdr-sm-ds">Vídeo, playlist, canal</div>
+              </div>
+              <span class="wdr-featured-add">Adicionar</span>
+            </div>
+          </div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#FF6314;color:#fff;">Sc</div><div><div class="wdr-sm-nm">SoundCloud</div><div class="wdr-sm-ds">Track</div></div></div>
+        </div>
+        <div class="wdr-sect-label">Social</div>
+        <div class="wdr-row2">
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:linear-gradient(135deg,#f09433,#dc2743,#bc1888);color:#fff;">IG</div><div><div class="wdr-sm-nm">Instagram</div><div class="wdr-sm-ds">Post, feed</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#000;color:#fff;">X</div><div><div class="wdr-sm-nm">X (Twitter)</div><div class="wdr-sm-ds">Post</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#FF0000;color:#fff;">YT</div><div><div class="wdr-sm-nm">YouTube</div><div class="wdr-sm-ds">Vídeo, canal</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#1A1A1A;color:#fff;">Gh</div><div><div class="wdr-sm-nm">GitHub</div><div class="wdr-sm-ds">Repo, perfil</div></div></div>
+        </div>
+        <div class="wdr-tip"><svg viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>Cole um link direto no editor com <strong>CMD+V</strong> — o widget é criado automaticamente.</span></div>
+      </div>
+
+      <!-- BRASIL -->
+      <div class="wdr-section" id="wds-brasil">
+        <div class="wdr-sect-label">Exclusivos Brasil</div>
+        <div class="wdr-grid wdr-grid--light">
+          <div class="wdr-card wdr-card--light wdr-soon"><div class="wdr-ic" style="background:#00B1EB;color:#fff;">Pix</div><div><div class="wdr-card-label">Pix QR Code</div><div class="wdr-card-sub">Chave ou QR dinâmico</div></div><span class="wdr-br-badge">BR</span></div>
+          <div class="wdr-card wdr-card--light" data-available data-provider="whatsapp"><div class="wdr-ic" style="background:#25D366;color:#fff;">WA</div><div><div class="wdr-card-label">WhatsApp CTA</div><div class="wdr-card-sub">Botão direto chat</div></div><span class="wdr-br-badge">BR</span></div>
+          <div class="wdr-card wdr-card--light wdr-soon"><div class="wdr-ic" style="background:#25D366;color:#fff;">WC</div><div><div class="wdr-card-label">WA Catálogo</div><div class="wdr-card-sub">Catálogo de produtos</div></div><span class="wdr-br-badge">BR</span></div>
+          <div class="wdr-card wdr-card--light wdr-soon"><div class="wdr-ic" style="background:#F5A623;color:#fff;">ML</div><div><div class="wdr-card-label">Mercado Livre</div><div class="wdr-card-sub">Produto ou loja</div></div><span class="wdr-br-badge">BR</span></div>
+          <div class="wdr-card wdr-card--light wdr-soon"><div class="wdr-ic" style="background:#EE4D2D;color:#fff;">Sh</div><div><div class="wdr-card-label">Shopee</div><div class="wdr-card-sub">Produto, loja</div></div><span class="wdr-br-badge">BR</span></div>
+          <div class="wdr-card wdr-card--light wdr-soon"><div class="wdr-ic" style="background:#6C4CC0;color:#fff;">OL</div><div><div class="wdr-card-label">OLX</div><div class="wdr-card-sub">Anúncio</div></div><span class="wdr-br-badge">BR</span></div>
+          <div class="wdr-card wdr-card--light wdr-soon"><div class="wdr-ic" style="background:#7047EB;color:#fff;">Ht</div><div><div class="wdr-card-label">Hotmart</div><div class="wdr-card-sub">Curso, produto</div></div><span class="wdr-br-badge">BR</span></div>
+          <div class="wdr-card wdr-card--light wdr-soon"><div class="wdr-ic" style="background:#00A896;color:#fff;">Ed</div><div><div class="wdr-card-label">Eduzz</div><div class="wdr-card-sub">Produto digital</div></div><span class="wdr-br-badge">BR</span></div>
+          <div class="wdr-card wdr-card--light wdr-soon"><div class="wdr-ic" style="background:#00D4AA;color:#fff;">PP</div><div><div class="wdr-card-label">PicPay</div><div class="wdr-card-sub">Link de cobrança</div></div><span class="wdr-br-badge">BR</span></div>
+          <div class="wdr-card wdr-card--light wdr-soon"><div class="wdr-ic" style="background:#0066CC;color:#fff;">PS</div><div><div class="wdr-card-label">PagSeguro</div><div class="wdr-card-sub">Botão pagamento</div></div><span class="wdr-br-badge">BR</span></div>
+        </div>
+      </div>
+
+      <!-- MÚSICA -->
+      <div class="wdr-section" id="wds-musica">
+        <div class="wdr-sect-label">Plataformas de Música</div>
+        <div class="wdr-featured-wrap" style="margin-bottom:8px;">
+          <div class="wdr-featured" data-available data-provider="spotify">
+            <div class="wdr-sp-player">
+              <div class="wdr-sp-logo">
+                <svg viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+              </div>
+              <div class="wdr-sp-art">
+                <div class="wdr-sp-art-img">
+                  <span class="wdr-sp-art-label">♫</span>
+                </div>
+              </div>
+              <div class="wdr-sp-info">
+                <div class="wdr-sp-title">Minha Delicadeza</div>
+                <div class="wdr-sp-artist">Juarez, Xand Avião</div>
+                <div class="wdr-sp-progress-row">
+                  <div class="wdr-sp-bar"><div class="wdr-sp-bar-fill"></div></div>
+                  <span class="wdr-sp-time">03:10</span>
+                </div>
+              </div>
+              <div class="wdr-sp-actions">
+                <div class="wdr-sp-btn">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                </div>
+                <div class="wdr-sp-btn more">
+                  <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1" fill="#B3B3B3" stroke="none"/><circle cx="12" cy="12" r="1" fill="#B3B3B3" stroke="none"/><circle cx="19" cy="12" r="1" fill="#B3B3B3" stroke="none"/></svg>
+                </div>
+                <div class="wdr-sp-play">
+                  <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                </div>
+              </div>
+            </div>
+            <div class="wdr-featured-foot">
+              <div>
+                <div class="wdr-sm-nm">Spotify</div>
+                <div class="wdr-sm-ds">Música, álbum, playlist, podcast</div>
+              </div>
+              <span class="wdr-featured-add">Adicionar</span>
+            </div>
+          </div>
+          <div class="wdr-featured" data-available data-provider="youtube">
+            <div class="wdr-yt-player">
+              <div class="wdr-yt-logo">
+                <svg viewBox="0 0 24 24" width="14" height="14"><path fill="#FF0000" d="M12 0C5.376 0 0 5.376 0 12s5.376 12 12 12 12-5.376 12-12S18.624 0 12 0zm0 19.104c-3.924 0-7.104-3.18-7.104-7.104S8.076 4.896 12 4.896s7.104 3.18 7.104 7.104-3.18 7.104-7.104 7.104zm0-13.332c-3.432 0-6.228 2.796-6.228 6.228S8.568 18.228 12 18.228s6.228-2.796 6.228-6.228S15.432 5.772 12 5.772zM9.684 15.54V8.46L16.2 12l-6.516 3.54z"/></svg>
+              </div>
+              <div class="wdr-yt-art">
+                <div class="wdr-yt-art-img"><span class="wdr-yt-art-label">♫</span></div>
+              </div>
+              <div class="wdr-yt-info">
+                <div class="wdr-yt-title">Favorita</div>
+                <div class="wdr-yt-artist">Anitta</div>
+                <div class="wdr-yt-progress-row">
+                  <div class="wdr-yt-bar"><div class="wdr-yt-bar-fill"></div></div>
+                  <span class="wdr-yt-time">03:24</span>
+                </div>
+              </div>
+              <div class="wdr-yt-play">
+                <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              </div>
+            </div>
+            <div class="wdr-featured-foot">
+              <div>
+                <div class="wdr-sm-nm">YouTube</div>
+                <div class="wdr-sm-ds">Vídeo, playlist, canal</div>
+              </div>
+              <span class="wdr-featured-add">Adicionar</span>
+            </div>
+          </div>
+        </div>
+        <div class="wdr-row2">
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#FF6314;color:#fff;">Sc</div><div><div class="wdr-sm-nm">SoundCloud</div><div class="wdr-sm-ds">Track, playlist</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#FF5722;color:#fff;">Dz</div><div><div class="wdr-sm-nm">Deezer</div><div class="wdr-sm-ds">Track, álbum</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#fc3c44;color:#fff;">Am</div><div><div class="wdr-sm-nm">Apple Music</div><div class="wdr-sm-ds">Track, álbum</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#FF9900;color:#fff;">Az</div><div><div class="wdr-sm-nm">Amazon Music</div><div class="wdr-sm-ds">Track, álbum</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#9003BE;color:#fff;">Pd</div><div><div class="wdr-sm-nm">Podcast Spotify</div><div class="wdr-sm-ds">Episódio, show</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#6957D1;color:#fff;">Ap</div><div><div class="wdr-sm-nm">Apple Podcasts</div><div class="wdr-sm-ds">Episódio</div></div></div>
+        </div>
+      </div>
+
+      <!-- VÍDEO -->
+      <div class="wdr-section" id="wds-video">
+        <div class="wdr-sect-label">Plataformas de Vídeo</div>
+        <div class="wdr-row2">
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#FF0000;color:#fff;">YT</div><div><div class="wdr-sm-nm">YouTube</div><div class="wdr-sm-ds">Vídeo, canal, shorts</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#000;color:#fff;">TT</div><div><div class="wdr-sm-nm">TikTok</div><div class="wdr-sm-ds">Vídeo embed</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#1AB7EA;color:#fff;">Vi</div><div><div class="wdr-sm-nm">Vimeo</div><div class="wdr-sm-ds">Vídeo embed</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#E1306C;color:#fff;">IR</div><div><div class="wdr-sm-nm">Instagram Reels</div><div class="wdr-sm-ds">Reels, posts</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#6441A5;color:#fff;">Tw</div><div><div class="wdr-sm-nm">Twitch</div><div class="wdr-sm-ds">Clip, ao vivo</div></div></div>
+        </div>
+      </div>
+
+      <!-- SOCIAL -->
+      <div class="wdr-section" id="wds-social">
+        <div class="wdr-sect-label">Redes Sociais</div>
+        <div class="wdr-row2">
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:linear-gradient(135deg,#f09433,#dc2743,#bc1888);color:#fff;">IG</div><div><div class="wdr-sm-nm">Instagram</div><div class="wdr-sm-ds">Post, feed</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#000;color:#fff;">X</div><div><div class="wdr-sm-nm">X (Twitter)</div><div class="wdr-sm-ds">Post, timeline</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#3A5BA0;color:#fff;">Fb</div><div><div class="wdr-sm-nm">Facebook</div><div class="wdr-sm-ds">Post, página</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#6364FF;color:#fff;">Th</div><div><div class="wdr-sm-nm">Threads</div><div class="wdr-sm-ds">Post único</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#0054FF;color:#fff;">Bs</div><div><div class="wdr-sm-nm">Bluesky</div><div class="wdr-sm-ds">Post, perfil</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#0A66C2;color:#fff;">Li</div><div><div class="wdr-sm-nm">LinkedIn</div><div class="wdr-sm-ds">Post, perfil</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#1A1A1A;color:#fff;">Gh</div><div><div class="wdr-sm-nm">GitHub</div><div class="wdr-sm-ds">Repo, perfil</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#5865F2;color:#fff;">Dc</div><div><div class="wdr-sm-nm">Discord</div><div class="wdr-sm-ds">Servidor</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#E60023;color:#fff;">Pi</div><div><div class="wdr-sm-nm">Pinterest</div><div class="wdr-sm-ds">Pin, board</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#35465C;color:#fff;">Tu</div><div><div class="wdr-sm-nm">Tumblr</div><div class="wdr-sm-ds">Post, blog</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#FF4500;color:#fff;">Re</div><div><div class="wdr-sm-nm">Reddit</div><div class="wdr-sm-ds">Post, subreddit</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#FF3C00;color:#fff;">Dr</div><div><div class="wdr-sm-nm">Dribbble</div><div class="wdr-sm-ds">Shot, portfólio</div></div></div>
+        </div>
+      </div>
+
+      <!-- VENDAS -->
+      <div class="wdr-section" id="wds-vendas">
+        <div class="wdr-sect-label">Lojas &amp; Produtos</div>
+        <div class="wdr-row2">
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#96BF48;color:#fff;">Sf</div><div><div class="wdr-sm-nm">Shopify</div><div class="wdr-sm-ds">Produto da loja</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#FF2D55;color:#fff;">Gu</div><div><div class="wdr-sm-nm">Gumroad</div><div class="wdr-sm-ds">Produto digital</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#F5A623;color:#fff;">ML</div><div><div class="wdr-sm-nm">Mercado Livre</div><div class="wdr-sm-ds">Produto, loja</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#EE4D2D;color:#fff;">Sh</div><div><div class="wdr-sm-nm">Shopee</div><div class="wdr-sm-ds">Produto, loja</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#7047EB;color:#fff;">Ht</div><div><div class="wdr-sm-nm">Hotmart</div><div class="wdr-sm-ds">Curso, produto</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#00A896;color:#fff;">Ed</div><div><div class="wdr-sm-nm">Eduzz</div><div class="wdr-sm-ds">Produto digital</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#2563EB;color:#fff;">Mo</div><div><div class="wdr-sm-nm">Monetizze</div><div class="wdr-sm-ds">Afiliado, produto</div></div></div>
+        </div>
+      </div>
+
+      <!-- AGENDA -->
+      <div class="wdr-section" id="wds-agenda">
+        <div class="wdr-sect-label">Agendamento</div>
+        <div class="wdr-row2">
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#006BFF;color:#fff;">Ca</div><div><div class="wdr-sm-nm">Calendly</div><div class="wdr-sm-ds">Agendamento inline</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#292929;color:#fff;">Cl</div><div><div class="wdr-sm-nm">Cal.com</div><div class="wdr-sm-ds">Open source</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#4285F4;color:#fff;">GC</div><div><div class="wdr-sm-nm">Google Calendar</div><div class="wdr-sm-ds">Evento, agenda</div></div></div>
+        </div>
+      </div>
+
+      <!-- OUTROS -->
+      <div class="wdr-section" id="wds-outros">
+        <div class="wdr-sect-label">Conteúdo &amp; Blog</div>
+        <div class="wdr-row2" style="margin-bottom:16px;">
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#000;color:#fff;">Md</div><div><div class="wdr-sm-nm">Medium</div><div class="wdr-sm-ds">Post, publicação</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#FF6719;color:#fff;">Ss</div><div><div class="wdr-sm-nm">Substack</div><div class="wdr-sm-ds">Newsletter</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#2962FF;color:#fff;">No</div><div><div class="wdr-sm-nm">Notion</div><div class="wdr-sm-ds">Página pública</div></div></div>
+        </div>
+        <div class="wdr-sect-label">Formulários</div>
+        <div class="wdr-row2">
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#F04E37;color:#fff;">Tf</div><div><div class="wdr-sm-nm">Typeform</div><div class="wdr-sm-ds">Formulário</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#7B68EE;color:#fff;">Tl</div><div><div class="wdr-sm-nm">Tally</div><div class="wdr-sm-ds">Formulário grátis</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#4285F4;color:#fff;">GF</div><div><div class="wdr-sm-nm">Google Forms</div><div class="wdr-sm-ds">Formulário</div></div></div>
+        </div>
+        <div class="wdr-tip" style="margin-top:16px;"><svg viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span>Cole um link direto no editor com <strong>CMD+V</strong> — o widget é criado automaticamente.</span></div>
+      </div>
+
+    </div>
+  </div>
+
   <script src="/lib/jquery.min.js"></script>
   <script src="/lib/bootstrap.bundle.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -197,7 +518,7 @@
       firebase.initializeApp(firebaseConfig);
     }
   </script>
-  <script src="/js/editor.js"></script>
+  <script src="/js/editor.js?v=3"></script>
   <script src="/js/sw-register.js"></script>
 </body>
 </html>

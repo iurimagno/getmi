@@ -245,6 +245,7 @@
 
     snapshot.forEach(function (doc) {
       var data = doc.data();
+      if (!PROVIDERS[data.provider]) return; // skip widgets from unknown providers
       var sizeKey = resolveSizeKey(data.provider, data.size);
       var size = getSize({ provider: data.provider || 'spotify', size: sizeKey });
       var widget = {
