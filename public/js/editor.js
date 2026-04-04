@@ -15,44 +15,83 @@
     episode: 'Episódio'
   };
 
-  var YOUTUBE_VIDEO_REGEX = /(?:(?:music\.)?youtube\.com\/(?:watch[?&](?:[^#]*&)?v=|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i;
-  var YOUTUBE_LIST_REGEX  = /(?:(?:music\.)?youtube\.com)\/(?:watch|playlist)[?&#].*?list=([a-zA-Z0-9_-]+)/i;
+  var YOUTUBE_VIDEO_REGEX = /(?:youtube\.com\/(?:watch[?&](?:[^#]*&)?v=|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i;
+  var YOUTUBE_LIST_REGEX  = /(?:youtube\.com)\/(?:watch|playlist)[?&#].*?list=([a-zA-Z0-9_-]+)/i;
   var YOUTUBE_LABELS = { video: 'Vídeo', playlist: 'Playlist' };
+
+  var DEEZER_REGEX  = /deezer\.com\/(?:[a-z]{2}\/)?(track|album|playlist|artist|podcast|show|episode)\/(\d+)/i;
+  var DEEZER_LABELS = { track: 'Música', album: 'Álbum', playlist: 'Playlist', artist: 'Artista', podcast: 'Podcast', show: 'Podcast', episode: 'Episódio' };
+
+  // Apple Music: captura storefront, tipo, slug opcional, id
+  var APPLE_REGEX = /music\.apple\.com\/([a-z]{2})\/(album|playlist|artist|song)(?:\/[^\/?#]*)?\/([a-zA-Z0-9._-]+)(?:\?i=(\d+))?/i;
 
   var PROVIDERS = {
     spotify: {
       name: 'Spotify',
       color: '#1DB954',
       defaultSize: 'standard',
+      defaultMobSize: 'wide',
+      // mobOk: true = cabe em tela cheia no bento mobile sem scroll interno
+      // Spotify/YouTube iframes têm largura mínima ~300px → c1 (~155px) gera scroll horizontal
       sizes: [
-        { key: 'compact', label: 'Compact', cols: 1, h: 80, icon: { vb: '0 0 30 10', x: 1, y: 1, w: 28, h: 8, rx: 2 } },
-        { key: 'standard', label: 'Padrão', cols: 1, h: 152, icon: { vb: '0 0 16 16', x: 1, y: 1, w: 14, h: 14, rx: 2 } },
-        { key: 'wide', label: 'Wide', cols: 2, h: 152, icon: { vb: '0 0 30 14', x: 1, y: 1, w: 28, h: 12, rx: 2 } },
-        { key: 'tall', label: 'Tall', cols: 1, h: 352, icon: { vb: '0 0 12 28', x: 1, y: 1, w: 10, h: 26, rx: 2 } },
-        { key: 'large', label: 'Large', cols: 2, h: 352, icon: { vb: '0 0 24 22', x: 1, y: 1, w: 22, h: 20, rx: 2 } }
+        { key: 'compact', label: 'Compact', cols: 1, h: 80,  mobOk: false, icon: { vb: '0 0 30 10', x: 1, y: 1, w: 28, h: 8,  rx: 2 } },
+        { key: 'standard', label: 'Padrão', cols: 1, h: 152, mobOk: false, icon: { vb: '0 0 16 16', x: 1, y: 1, w: 14, h: 14, rx: 2 } },
+        { key: 'wide',     label: 'Wide',   cols: 2, h: 152, mobOk: true,  icon: { vb: '0 0 30 14', x: 1, y: 1, w: 28, h: 12, rx: 2 } },
+        { key: 'tall',     label: 'Tall',   cols: 1, h: 352, mobOk: false, icon: { vb: '0 0 12 28', x: 1, y: 1, w: 10, h: 26, rx: 2 } },
+        { key: 'large',    label: 'Large',  cols: 2, h: 352, mobOk: true,  icon: { vb: '0 0 24 22', x: 1, y: 1, w: 22, h: 20, rx: 2 } }
       ]
     },
     whatsapp: {
       name: 'WhatsApp',
       color: '#25D366',
       defaultSize: 'compact',
+      defaultMobSize: 'compact',
+      // WhatsApp é HTML puro — todas as opções cabem sem scroll
       sizes: [
-        { key: 'mini',     label: 'Meia',       cols: 1, h: 80,  icon: { vb: '0 0 14 10', x: 1, y: 1, w: 12, h: 8,  rx: 2 } },
-        { key: 'compact',  label: 'Retangular', cols: 2, h: 80,  icon: { vb: '0 0 30 10', x: 1, y: 1, w: 28, h: 8,  rx: 2 } },
-        { key: 'standard', label: 'Quadrado',   cols: 1, h: 220, icon: { vb: '0 0 14 14', x: 1, y: 1, w: 12, h: 12, rx: 2 } },
-        { key: 'large',    label: 'Grande',     cols: 2, h: 280, icon: { vb: '0 0 28 20', x: 1, y: 1, w: 26, h: 18, rx: 2 } }
+        { key: 'mini',     label: 'Meia',       cols: 1, h: 80,  mobOk: true, icon: { vb: '0 0 14 10', x: 1, y: 1, w: 12, h: 8,  rx: 2 } },
+        { key: 'compact',  label: 'Retangular', cols: 2, h: 80,  mobOk: true, icon: { vb: '0 0 30 10', x: 1, y: 1, w: 28, h: 8,  rx: 2 } },
+        { key: 'standard', label: 'Quadrado',   cols: 1, h: 220, mobOk: true, icon: { vb: '0 0 14 14', x: 1, y: 1, w: 12, h: 12, rx: 2 } },
+        { key: 'large',    label: 'Grande',     cols: 2, h: 280, mobOk: true, icon: { vb: '0 0 28 20', x: 1, y: 1, w: 26, h: 18, rx: 2 } }
       ]
     },
     youtube: {
       name: 'YouTube',
       color: '#FF0000',
       defaultSize: 'standard',
+      defaultMobSize: 'wide',
       sizes: [
-        { key: 'compact',  label: 'Compact', cols: 1, h: 80,  icon: { vb: '0 0 30 10', x: 1, y: 1, w: 28, h: 8,  rx: 2 } },
-        { key: 'standard', label: 'Padrão',  cols: 1, h: 152, icon: { vb: '0 0 16 16', x: 1, y: 1, w: 14, h: 14, rx: 2 } },
-        { key: 'wide',     label: 'Wide',    cols: 2, h: 152, icon: { vb: '0 0 30 14', x: 1, y: 1, w: 28, h: 12, rx: 2 } },
-        { key: 'tall',     label: 'Tall',    cols: 1, h: 352, icon: { vb: '0 0 12 28', x: 1, y: 1, w: 10, h: 26, rx: 2 } },
-        { key: 'large',    label: 'Large',   cols: 2, h: 352, icon: { vb: '0 0 24 22', x: 1, y: 1, w: 22, h: 20, rx: 2 } }
+        { key: 'compact',  label: 'Compact', cols: 1, h: 80,  mobOk: false, icon: { vb: '0 0 30 10', x: 1, y: 1, w: 28, h: 8,  rx: 2 } },
+        { key: 'standard', label: 'Padrão',  cols: 1, h: 152, mobOk: false, icon: { vb: '0 0 16 16', x: 1, y: 1, w: 14, h: 14, rx: 2 } },
+        { key: 'wide',     label: 'Wide',    cols: 2, h: 152, mobOk: true,  icon: { vb: '0 0 30 14', x: 1, y: 1, w: 28, h: 12, rx: 2 } },
+        { key: 'tall',     label: 'Tall',    cols: 1, h: 352, mobOk: false, icon: { vb: '0 0 12 28', x: 1, y: 1, w: 10, h: 26, rx: 2 } },
+        { key: 'large',    label: 'Large',   cols: 2, h: 352, mobOk: true,  icon: { vb: '0 0 24 22', x: 1, y: 1, w: 22, h: 20, rx: 2 } }
+      ]
+    },
+    deezer: {
+      name: 'Deezer',
+      color: '#A238FF',
+      defaultSize: 'standard',
+      defaultMobSize: 'wide',
+      sizes: [
+        { key: 'compact',  label: 'Compact', cols: 1, h: 80,  mobOk: false, icon: { vb: '0 0 30 10', x: 1, y: 1, w: 28, h: 8,  rx: 2 } },
+        { key: 'standard', label: 'Padrão',  cols: 1, h: 152, mobOk: false, icon: { vb: '0 0 16 16', x: 1, y: 1, w: 14, h: 14, rx: 2 } },
+        { key: 'wide',     label: 'Wide',    cols: 2, h: 152, mobOk: true,  icon: { vb: '0 0 30 14', x: 1, y: 1, w: 28, h: 12, rx: 2 } },
+        { key: 'tall',     label: 'Tall',    cols: 1, h: 352, mobOk: false, icon: { vb: '0 0 12 28', x: 1, y: 1, w: 10, h: 26, rx: 2 } },
+        { key: 'large',    label: 'Large',   cols: 2, h: 352, mobOk: true,  icon: { vb: '0 0 24 22', x: 1, y: 1, w: 22, h: 20, rx: 2 } }
+      ]
+    },
+    applemusic: {
+      name: 'Apple Music',
+      color: '#FA233B',
+      defaultSize: 'standard',
+      defaultMobSize: 'wide',
+      // Apple Music não suporta embed de artistas — apenas album, playlist, song
+      sizes: [
+        { key: 'compact',  label: 'Compact', cols: 1, h: 80,  mobOk: false, icon: { vb: '0 0 30 10', x: 1, y: 1, w: 28, h: 8,  rx: 2 } },
+        { key: 'standard', label: 'Padrão',  cols: 1, h: 152, mobOk: false, icon: { vb: '0 0 16 16', x: 1, y: 1, w: 14, h: 14, rx: 2 } },
+        { key: 'wide',     label: 'Wide',    cols: 2, h: 152, mobOk: true,  icon: { vb: '0 0 30 14', x: 1, y: 1, w: 28, h: 12, rx: 2 } },
+        { key: 'tall',     label: 'Tall',    cols: 1, h: 450, mobOk: false, icon: { vb: '0 0 12 28', x: 1, y: 1, w: 10, h: 26, rx: 2 } },
+        { key: 'large',    label: 'Large',   cols: 2, h: 450, mobOk: true,  icon: { vb: '0 0 24 22', x: 1, y: 1, w: 22, h: 20, rx: 2 } }
       ]
     }
   };
@@ -113,6 +152,19 @@
   var profileHomeParent = profileEl ? profileEl.parentNode : null;
   var profileHomeNext = profileEl ? profileEl.nextElementSibling : null;
 
+  // ── Jiggle mode (mobile) ────────────────────────────────────────────────
+  var jiggle = {
+    active: false,
+    pressTimer: null,
+    dragId: null,
+    dragEl: null,
+    lastTarget: null,
+    ghost: null,
+    ghostOffX: 0,
+    ghostOffY: 0,
+    rafPending: null
+  };
+
   function init() {
     bindPageEvents();
     applyViewportMode();
@@ -129,16 +181,20 @@
   }
 
   function applyViewportMode() {
-    // On narrow viewports auto-switch to mobile preview; don't override a
-    // deliberate desktop choice the user made by clicking the toggle.
-    if (window.innerWidth <= 768) {
-      if (!document.body.classList.contains('mob')) {
-        document.body.classList.add('mob');
-        $('#tD').removeClass('on');
-        $('#tM').addClass('on');
-        mountProfileForViewport(true);
-        renderAllWidgets();
-      }
+    // Usa clientWidth para evitar inconsistências com zoom do browser mobile
+    var vw = document.documentElement.clientWidth || window.innerWidth;
+    var isNarrow = vw <= 900;
+    document.body.classList.toggle('real-mob', isNarrow);
+    // Mostra/esconde botão lápis
+    var btnJiggle = document.getElementById('btnJiggle');
+    if (btnJiggle) btnJiggle.hidden = !isNarrow;
+    if (isNarrow) {
+      // Sempre força mobile — garante estado correto mesmo após resize ou bfcache
+      document.body.classList.add('mob');
+      $('#tD').removeClass('on');
+      $('#tM').addClass('on');
+      mountProfileForViewport(true);
+      renderAllWidgets();
     }
   }
 
@@ -207,9 +263,30 @@
       }
     });
 
+    // Jiggle mode (long press + drag no mobile)
+    bindJiggleEvents();
+
+    // Botão lápis ativa/desativa jiggle mode
+    $('#btnJiggle').on('click', function () {
+      if (jiggle.active) exitJiggleMode(); else enterJiggleMode();
+    });
+
+    // Tap-to-reveal widget controls em real mobile
+    $arena.on('click', '.wd', function (e) {
+      if (!document.body.classList.contains('real-mob')) return;
+      if ($(e.target).closest('.hv').length) return;
+      var $wd = $(this);
+      var wasTapped = $wd.hasClass('tapped');
+      $arena.find('.wd.tapped').removeClass('tapped');
+      if (!wasTapped) $wd.addClass('tapped');
+    });
+
     $(document).on('click', function (event) {
       if (!$(event.target).closest('.settings-popover, #btnSettings, .username-dialog').length) {
         closeSettingsPopover();
+      }
+      if (document.body.classList.contains('real-mob') && !$(event.target).closest('.wd').length) {
+        $arena.find('.wd.tapped').removeClass('tapped');
       }
       if ($(event.target).closest('.tba, .hv, .mv').length) return;
       closeAllToolbars();
@@ -279,9 +356,12 @@
         url: data.url || '',
         parsed: data.provider === 'whatsapp'
           ? { phone: data.contentId }
-          : { type: data.contentType, id: data.contentId },
+          : data.provider === 'applemusic'
+            ? { type: data.contentType, id: data.contentId, embedUrl: data.embedUrl || '' }
+            : { type: data.contentType, id: data.contentId },
         customPhoto: data.customPhoto || null,
         size: sizeKey,
+        mobileSize: data.mobileSize ? resolveSizeKey(data.provider, data.mobileSize) : null,
         dark: data.theme === 'dark',
         x: normalizeToGrid(data.position && data.position.x, 28),
         y: normalizeToGrid(data.position && data.position.y, 28),
@@ -372,6 +452,7 @@
   var SPOTIFY_REGEX_DRAWER = /open\.spotify\.com\/(track|album|playlist|artist|show|episode)\/([A-Za-z0-9]+)/;
 
   function openWidgetDrawer() {
+    exitJiggleMode();
     closeAllToolbars();
     var overlay = document.getElementById('wdrOverlay');
     var panel   = document.getElementById('wdrPanel');
@@ -401,15 +482,9 @@
       var el = e.target.closest('[data-available]');
       if (!el) return;
       var provider = el.dataset.provider;
-      if (provider === 'spotify') {
+      if (PROVIDERS[provider]) {
         closeWidgetDrawer();
-        addWidgetInSetup('spotify');
-      } else if (provider === 'whatsapp') {
-        closeWidgetDrawer();
-        addWidgetInSetup('whatsapp');
-      } else if (provider === 'youtube') {
-        closeWidgetDrawer();
-        addWidgetInSetup('youtube');
+        addWidgetInSetup(provider);
       }
     };
 
@@ -458,23 +533,55 @@
   function onDrawerLinkPaste(e) {
     var value = (e.clipboardData || window.clipboardData).getData('text').trim();
     if (!value) return;
-    var match = value.match(SPOTIFY_REGEX_DRAWER);
-    if (match) {
+
+    // Tenta detectar o provider pelo link colado
+    var detected = detectProviderFromUrl(value);
+    if (detected) {
       closeWidgetDrawer();
-      var provider    = PROVIDERS.spotify;
-      var defaultSize = provider.defaultSize;
-      var id          = 'widget-' + Date.now() + '-' + state.widgetSeq++;
-      var pos         = findFreePos(defaultSize, null);
+      var prov = PROVIDERS[detected.provider];
+      var id   = 'widget-' + Date.now() + '-' + state.widgetSeq++;
+      var pos  = findFreePos(prov.defaultSize, null);
       state.widgets[id] = {
-        id: id, provider: 'spotify', state: 'setup',
-        url: value, parsed: { type: match[1].toLowerCase(), id: match[2] },
-        size: defaultSize, dark: false,
+        id: id, provider: detected.provider, state: 'setup',
+        url: value, parsed: detected.parsed,
+        size: prov.defaultSize, dark: false,
         x: pos.x, y: pos.y,
         order: nextWidgetOrder(), isPersisted: false, createdAt: null
       };
       createWidgetElement(id);
       renderWidget(id);
     }
+  }
+
+  function detectProviderFromUrl(value) {
+    // Spotify
+    var spMatch = value.match(SPOTIFY_REGEX_DRAWER);
+    if (spMatch) return { provider: 'spotify', parsed: { type: spMatch[1].toLowerCase(), id: spMatch[2] } };
+
+    // YouTube
+    var ytList = value.match(YOUTUBE_LIST_REGEX);
+    if (ytList) {
+      var ytVid = value.match(YOUTUBE_VIDEO_REGEX);
+      return { provider: 'youtube', parsed: { type: 'playlist', id: ytList[1], videoId: ytVid ? ytVid[1] : null } };
+    }
+    var ytVidOnly = value.match(YOUTUBE_VIDEO_REGEX);
+    if (ytVidOnly) return { provider: 'youtube', parsed: { type: 'video', id: ytVidOnly[1] } };
+
+    // Deezer
+    var dzMatch = value.match(DEEZER_REGEX);
+    if (dzMatch) return { provider: 'deezer', parsed: { type: dzMatch[1].toLowerCase(), id: dzMatch[2] } };
+
+    // Apple Music
+    var apMatch = value.match(APPLE_REGEX);
+    if (apMatch) {
+      var apType = apMatch[2];
+      if (apType === 'artist') return null; // embed não suportado
+      var embedPath = 'https://embed.music.apple.com/' + apMatch[1] + '/' + apType + '/' + apMatch[3];
+      if (apMatch[4]) embedPath += '?i=' + apMatch[4];
+      return { provider: 'applemusic', parsed: { type: apType, id: apMatch[3], storefront: apMatch[1], embedUrl: embedPath } };
+    }
+
+    return null;
   }
 
   // ── End Widget Drawer ──────────────────────────────────────────────────
@@ -523,7 +630,10 @@
     var moveHandle = buildMoveHandle(id);
 
     if (document.body.classList.contains('mob')) {
-      $arena.append(el);
+      // Só move para arena se ainda não estiver lá — evita desordenar o grid
+      if (el.parentNode !== $arena[0]) {
+        $arena.append(el);
+      }
       el.style.left = '';
       el.style.top = '';
     } else {
@@ -619,7 +729,7 @@
           '      <div class="ws-ds">Vídeo, playlist, canal</div>',
           '    </div>',
           '  </div>',
-          '  <input class="ws-in" id="i' + id + '" placeholder="Cole o link do YouTube..." autocomplete="off" spellcheck="false">',
+          '  <input class="ws-in" id="i' + id + '" placeholder="Cole o link do YouTube (youtube.com ou youtu.be)..." autocomplete="off" spellcheck="false">',
           '  <div class="ws-er" id="e' + id + '"></div>',
           '  <div class="ws-bt">',
           '    <button class="ws-cc" onclick="window.editorWidget.toEmpty(\'' + id + '\')">Cancelar</button>',
@@ -646,6 +756,70 @@
         });
 
         validateYoutubeWidget(id);
+        return;
+      }
+
+      if (widget.provider === 'deezer') {
+        el.innerHTML = [
+          '<div class="ws">',
+          '  <div class="ws-hd">',
+          '    <div class="ws-ic" style="background:#A238FF;">' + deezerGlyph() + '</div>',
+          '    <div>',
+          '      <div class="ws-nm">Deezer</div>',
+          '      <div class="ws-ds">Música, álbum, playlist, artista</div>',
+          '    </div>',
+          '  </div>',
+          '  <input class="ws-in" id="i' + id + '" placeholder="Cole o link direto (deezer.com/track/...)" autocomplete="off" spellcheck="false">',
+          '  <div class="ws-er" id="e' + id + '"></div>',
+          '  <div class="ws-bt">',
+          '    <button class="ws-cc" onclick="window.editorWidget.toEmpty(\'' + id + '\')">Cancelar</button>',
+          '    <button class="ws-go" id="g' + id + '" disabled onclick="window.editorWidget.toActive(\'' + id + '\')">Adicionar</button>',
+          '  </div>',
+          '</div>',
+          moveHandle
+        ].join('');
+
+        var dzIn = document.getElementById('i' + id);
+        if (widget.url) dzIn.value = widget.url;
+        setTimeout(function () { dzIn.focus(); }, 40);
+        dzIn.addEventListener('input', function () { validateDeezerWidget(id); });
+        dzIn.addEventListener('keydown', function (event) {
+          if (event.key === 'Enter' && state.widgets[id] && state.widgets[id].parsed) { toActive(id); }
+          if (event.key === 'Escape') { toEmpty(id); }
+        });
+        validateDeezerWidget(id);
+        return;
+      }
+
+      if (widget.provider === 'applemusic') {
+        el.innerHTML = [
+          '<div class="ws">',
+          '  <div class="ws-hd">',
+          '    <div class="ws-ic" style="background:#FA233B;">' + appleGlyph() + '</div>',
+          '    <div>',
+          '      <div class="ws-nm">Apple Music</div>',
+          '      <div class="ws-ds">Música, álbum, playlist</div>',
+          '    </div>',
+          '  </div>',
+          '  <input class="ws-in" id="i' + id + '" placeholder="Cole o link do Apple Music..." autocomplete="off" spellcheck="false">',
+          '  <div class="ws-er" id="e' + id + '"></div>',
+          '  <div class="ws-bt">',
+          '    <button class="ws-cc" onclick="window.editorWidget.toEmpty(\'' + id + '\')">Cancelar</button>',
+          '    <button class="ws-go" id="g' + id + '" disabled onclick="window.editorWidget.toActive(\'' + id + '\')">Adicionar</button>',
+          '  </div>',
+          '</div>',
+          moveHandle
+        ].join('');
+
+        var apIn = document.getElementById('i' + id);
+        if (widget.url) apIn.value = widget.url;
+        setTimeout(function () { apIn.focus(); }, 40);
+        apIn.addEventListener('input', function () { validateAppleWidget(id); });
+        apIn.addEventListener('keydown', function (event) {
+          if (event.key === 'Enter' && state.widgets[id] && state.widgets[id].parsed) { toActive(id); }
+          if (event.key === 'Escape') { toEmpty(id); }
+        });
+        validateAppleWidget(id);
         return;
       }
 
@@ -688,7 +862,8 @@
       return;
     }
 
-    var size = getSize(widget);
+    var effectiveSizeKey = getEffectiveSizeKey(widget);
+    var size = getEffectiveSize(widget);
     el.className = 'wd c' + size.cols;
 
     if (widget.provider === 'whatsapp') {
@@ -699,7 +874,7 @@
 
       var waOnclick = 'onclick="window.openWaLink(event,\'' + phone + '\')"';
 
-      if (widget.size === 'standard') {
+      if (effectiveSizeKey === 'standard') {
         waInner = [
           '<a class="wwa-square" href="' + waHref + '" ' + waOnclick + ' rel="noopener">',
           buildWaIconHtml('wwa-sq-icon', widget.customPhoto),
@@ -710,7 +885,7 @@
           '  <div class="wwa-sq-btn">💬 Abrir WhatsApp</div>',
           '</a>'
         ].join('');
-      } else if (widget.size === 'large') {
+      } else if (effectiveSizeKey === 'large') {
         var phoneParts = displayPhone.replace(/\s+/, ' ').trim().split(' ');
         var phoneLine = phoneParts.length >= 3
           ? phoneParts.slice(0, 3).join(' ') + '<br>' + phoneParts.slice(3).join(' ')
@@ -738,7 +913,7 @@
           '  </div>',
           '</a>'
         ].join('');
-      } else if (widget.size === 'mini') {
+      } else if (effectiveSizeKey === 'mini') {
         waInner = [
           '<a class="wwa-rect wwa-rect--mini" href="' + waHref + '" ' + waOnclick + ' rel="noopener">',
           buildWaIconHtml('wwa-rect-icon wwa-rect-icon--sm', widget.customPhoto),
@@ -801,6 +976,47 @@
       return;
     }
 
+    if (widget.provider === 'deezer') {
+      var dzSrc = buildDeezerEmbedSrc(widget);
+      el.innerHTML = [
+        '<div class="wa" style="height:' + size.h + 'px">',
+        '  <iframe src="' + dzSrc + '" style="height:' + size.h + 'px" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" scrolling="no" frameborder="0"></iframe>',
+        '</div>',
+        '<div class="hv hv-e" onclick="event.stopPropagation();window.editorWidget.openToolbar(\'' + id + '\')">' + pencilIcon() + '</div>',
+        '<div class="hv hv-d" onclick="event.stopPropagation();window.editorWidget.remove(\'' + id + '\')">' + trashIcon() + '</div>',
+        moveHandle,
+        '<div class="tba" id="t' + id + '">',
+        '  <div class="tbr">',
+        buildToolbarButtons(id),
+        '    <div class="tb-sep"></div>',
+        '    <button class="tb-i ' + (widget.dark ? 'on' : '') + '" onclick="window.editorWidget.toggleTheme(\'' + id + '\')" title="Tema escuro">' + moonIcon() + '</button>',
+        '    <button class="tb-i" onclick="window.editorWidget.closeToolbar(\'' + id + '\')" title="Fechar">' + closeIcon() + '</button>',
+        '  </div>',
+        '</div>'
+      ].join('');
+      return;
+    }
+
+    if (widget.provider === 'applemusic') {
+      var apSrc = buildAppleEmbedSrc(widget);
+      el.innerHTML = [
+        '<div class="wa" style="height:' + size.h + 'px">',
+        '  <iframe src="' + apSrc + '" style="height:' + size.h + 'px" loading="lazy" allow="autoplay *; encrypted-media *;" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" frameborder="0"></iframe>',
+        '</div>',
+        '<div class="hv hv-e" onclick="event.stopPropagation();window.editorWidget.openToolbar(\'' + id + '\')">' + pencilIcon() + '</div>',
+        '<div class="hv hv-d" onclick="event.stopPropagation();window.editorWidget.remove(\'' + id + '\')">' + trashIcon() + '</div>',
+        moveHandle,
+        '<div class="tba" id="t' + id + '">',
+        '  <div class="tbr">',
+        buildToolbarButtons(id),
+        '    <div class="tb-sep"></div>',
+        '    <button class="tb-i" onclick="window.editorWidget.closeToolbar(\'' + id + '\')" title="Fechar">' + closeIcon() + '</button>',
+        '  </div>',
+        '</div>'
+      ].join('');
+      return;
+    }
+
     var src = buildSpotifyEmbedSrc(widget);
     el.innerHTML = [
       '<div class="wa" style="height:' + size.h + 'px">',
@@ -824,11 +1040,25 @@
     return '<div class="mv" onpointerdown="window.editorWidget.initMove(\'' + id + '\', event)">' + gripIcon() + '</div>';
   }
 
+  function buildToolbarInner(id) {
+    var widget = state.widgets[id];
+    var parts = [buildToolbarButtons(id), '<div class="tb-sep"></div>'];
+    // Spotify e Deezer suportam alternância de tema claro/escuro
+    if (widget.provider === 'spotify' || widget.provider === 'deezer') {
+      parts.push('<button class="tb-i ' + (widget.dark ? 'on' : '') + '" onclick="window.editorWidget.toggleTheme(\'' + id + '\')" title="Tema escuro">' + moonIcon() + '</button>');
+    }
+    parts.push('<button class="tb-i" onclick="window.editorWidget.closeToolbar(\'' + id + '\')" title="Fechar">' + closeIcon() + '</button>');
+    return parts.join('');
+  }
+
   function buildToolbarButtons(id) {
     var widget = state.widgets[id];
-    var current = widget.size;
+    var current = getEffectiveSizeKey(widget); // destaca o tamanho ativo no contexto atual
     var providerDef = PROVIDERS[widget.provider] || PROVIDERS.spotify;
-    return providerDef.sizes.map(function (size) {
+    var isMob = document.body.classList.contains('mob');
+    // No mobile, exibe apenas tamanhos sem scroll interno (mobOk)
+    var sizes = isMob ? providerDef.sizes.filter(function (s) { return s.mobOk; }) : providerDef.sizes;
+    return sizes.map(function (size) {
       var icon = size.icon;
       return [
         '<button class="tb-b ' + (size.key === current ? 'on' : '') + '" onclick="window.editorWidget.resize(\'' + id + '\', \'' + size.key + '\')" title="' + size.label + ' · ' + size.cols + ' col · ' + size.h + 'px">',
@@ -850,6 +1080,141 @@
       return 'https://www.youtube.com/embed/videoseries?list=' + widget.parsed.id;
     }
     return 'https://www.youtube.com/embed/' + widget.parsed.id;
+  }
+
+  function buildDeezerEmbedSrc(widget) {
+    var theme = widget.dark ? 'dark' : 'light';
+    var type = widget.parsed.type === 'show' ? 'podcast' : widget.parsed.type;
+    return 'https://widget.deezer.com/widget/' + theme + '/' + type + '/' + widget.parsed.id;
+  }
+
+  function buildAppleEmbedSrc(widget) {
+    // Converte music.apple.com → embed.music.apple.com mantendo o path inteiro
+    return widget.parsed.embedUrl || '';
+  }
+
+  function deezerGlyph() {
+    return '<svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><rect x="0"  y="17" width="4" height="3" rx="1"/><rect x="5"  y="13" width="4" height="7" rx="1"/><rect x="10" y="9"  width="4" height="11" rx="1"/><rect x="15" y="5"  width="4" height="15" rx="1"/><rect x="20" y="12" width="4" height="8"  rx="1"/></svg>';
+  }
+
+  function appleGlyph() {
+    return '<svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M23.994 6.124a9.23 9.23 0 00-.24-2.19c-.317-1.31-1.064-2.31-2.18-3.043a5.022 5.022 0 00-1.898-.732 7.29 7.29 0 00-1.308-.13H6.045a6.04 6.04 0 00-2.16.39A4.81 4.81 0 001.67 2.765a5.24 5.24 0 00-.89 1.896 7.07 7.07 0 00-.178 1.332C.572 6.346.57 6.7.57 7.053v9.895c0 .363.002.72.032 1.06.06.67.218 1.32.508 1.93.54 1.12 1.41 1.85 2.59 2.26.55.187 1.12.27 1.69.27h12.86c.58 0 1.15-.09 1.71-.27 1.09-.38 1.92-1.06 2.49-2.06.31-.57.48-1.19.55-1.82.04-.38.05-.76.05-1.14V7.053c0-.308-.003-.615-.052-.93zm-8.044 7.03c0 .47-.04.94-.12 1.41-.06.35-.18.7-.36 1.01-.33.58-.82.97-1.47 1.12-.35.08-.7.1-1.05.06-.35-.04-.68-.14-.97-.3a2.29 2.29 0 01-.95-1.04 2.17 2.17 0 01-.21-.96c0-.36.07-.72.22-1.05.25-.56.71-.97 1.28-1.19a3.3 3.3 0 011.15-.22c.16 0 .31.01.46.03.15.02.28.04.39.06V8.47l-4.62 1.05v5.73c0 .47-.04.94-.12 1.41-.07.35-.19.7-.37 1.01-.33.58-.82.97-1.47 1.12-.35.08-.7.1-1.06.06a2.6 2.6 0 01-.97-.3 2.29 2.29 0 01-.95-1.04 2.17 2.17 0 01-.21-.96c0-.36.07-.72.22-1.05.25-.56.71-.97 1.28-1.19a3.3 3.3 0 011.15-.22c.16 0 .31.01.46.03V9.09l6.7-1.53v6.594z"/></svg>';
+  }
+
+  function validateDeezerWidget(id) {
+    var widget = state.widgets[id];
+    var input  = document.getElementById('i' + id);
+    var error  = document.getElementById('e' + id);
+    var button = document.getElementById('g' + id);
+    if (!widget || !input || !error || !button) return;
+
+    var value = input.value.trim();
+    if (!value) {
+      input.className = 'ws-in'; error.textContent = '';
+      button.disabled = true; widget.parsed = null; widget.url = ''; return;
+    }
+
+    var match = value.match(DEEZER_REGEX);
+    if (match) {
+      var type = match[1].toLowerCase();
+      widget.url = value;
+      widget.parsed = { type: type, id: match[2] };
+      input.className = 'ws-in ok';
+      error.style.color = 'var(--editor-mint)';
+      error.textContent = (DEEZER_LABELS[type] || 'Deezer') + ' detectado';
+      button.disabled = false;
+      return;
+    }
+
+    // Link encurtado (link.deezer.com) — resolve automaticamente via Cloud Function
+    if (/link\.deezer\.com|deezer\.com\/s\//i.test(value)) {
+      input.className = 'ws-in';
+      error.style.color = 'var(--editor-gray-400)';
+      error.textContent = 'Resolvendo link…';
+      button.disabled = true;
+      resolveShortLink(value, function (resolved) {
+        // Verifica se o widget ainda existe e o input ainda tem o mesmo valor
+        var w = state.widgets[id];
+        var inp = document.getElementById('i' + id);
+        if (!w || !inp || inp.value.trim() !== value) return;
+        if (resolved) {
+          inp.value = resolved;
+          validateDeezerWidget(id);
+        } else {
+          inp.className = 'ws-in bad';
+          error.style.color = '#EF4444';
+          error.textContent = 'Não foi possível resolver o link. Tente copiar diretamente do deezer.com';
+        }
+      });
+      return;
+    }
+
+    widget.parsed = null; widget.url = value;
+    input.className = 'ws-in bad';
+    error.style.color = '#EF4444';
+    error.textContent = 'Cole uma URL direta do Deezer (deezer.com/track/... ou deezer.com/album/...)';
+    button.disabled = true;
+  }
+
+  function resolveShortLink(url, callback) {
+    fetch('/api/resolve-link?url=' + encodeURIComponent(url))
+      .then(function (r) { return r.json(); })
+      .then(function (data) { callback(data.url || null); })
+      .catch(function () { callback(null); });
+  }
+
+  function validateAppleWidget(id) {
+    var widget = state.widgets[id];
+    var input  = document.getElementById('i' + id);
+    var error  = document.getElementById('e' + id);
+    var button = document.getElementById('g' + id);
+    if (!widget || !input || !error || !button) return;
+
+    var value = input.value.trim();
+    if (!value) {
+      input.className = 'ws-in'; error.textContent = '';
+      button.disabled = true; widget.parsed = null; widget.url = ''; return;
+    }
+
+    var match = value.match(APPLE_REGEX);
+    if (match) {
+      var storefront = match[1];   // ex: 'br', 'us'
+      var type       = match[2];   // album | playlist | artist | song
+      var slug       = match[3];   // nome ou pl.xxxxx
+      var trackId    = match[4];   // ?i=xxxxxx (música específica dentro de álbum)
+
+      if (type === 'artist') {
+        // Apple Music não suporta embed de artistas
+        widget.parsed = null; widget.url = value;
+        input.className = 'ws-in bad';
+        error.style.color = '#EF4444';
+        error.textContent = 'Perfil de artista não suporta incorporação. Use um álbum ou playlist.';
+        button.disabled = true;
+        return;
+      }
+
+      // Constrói a URL de embed diretamente
+      var embedPath = 'https://embed.music.apple.com/' + storefront + '/' + type + '/' + slug;
+      if (trackId) embedPath += '?i=' + trackId;
+
+      var labels = { album: 'Álbum', playlist: 'Playlist', song: 'Música' };
+      widget.url = value;
+      widget.parsed = { type: type, id: slug, storefront: storefront, embedUrl: embedPath };
+      input.className = 'ws-in ok';
+      error.style.color = 'var(--editor-mint)';
+      error.textContent = (labels[type] || 'Apple Music') + ' detectado';
+      button.disabled = false;
+      return;
+    }
+
+    widget.parsed = null; widget.url = value;
+    input.className = 'ws-in bad';
+    error.style.color = '#EF4444';
+    var isApple = /apple\.com/i.test(value);
+    error.textContent = isApple
+      ? 'Use o link de compartilhamento do Apple Music (music.apple.com/...)'
+      : 'Cole uma URL válida do Apple Music';
+    button.disabled = true;
   }
 
   function youtubeGlyph() {
@@ -902,7 +1267,11 @@
     widget.url = value;
     input.className = 'ws-in bad';
     error.style.color = '#EF4444';
-    error.textContent = 'Cole uma URL válida do YouTube';
+    // Detecta YouTube Music e orienta o usuário
+    var isMusicUrl = /music\.youtube\.com/i.test(value);
+    error.textContent = isMusicUrl
+      ? 'YouTube Music não suporta incorporação. Use youtube.com'
+      : 'Cole uma URL válida do YouTube (youtube.com ou youtu.be)';
     button.disabled = true;
   }
 
@@ -1176,11 +1545,45 @@
 
   function openToolbar(id) {
     closeAllToolbars();
-    renderWidget(id);
+    // Atualiza só os botões da toolbar em-place — não recria o widget nem o iframe
+    var tbr = document.querySelector('#t' + id + ' .tbr');
+    if (tbr) {
+      tbr.innerHTML = buildToolbarInner(id);
+    } else {
+      // Toolbar ainda não existe (primeira abertura) — precisa renderizar
+      renderWidget(id);
+    }
     setTimeout(function () {
       var toolbar = document.getElementById('t' + id);
-      if (toolbar) toolbar.classList.add('show');
+      if (toolbar) {
+        toolbar.classList.add('show');
+        if (!document.body.classList.contains('mob')) {
+          clampToolbar(toolbar);
+        }
+      }
     }, 20);
+  }
+
+  // Impede a toolbar de sair dos limites da arena (esquerda/direita)
+  function clampToolbar(toolbar) {
+    // Reseta para o padrão antes de medir
+    toolbar.style.left = '';
+    toolbar.style.right = '';
+    toolbar.style.transform = 'translateX(-50%)';
+
+    var tbRect = toolbar.getBoundingClientRect();
+    var arenaRect = $arena[0].getBoundingClientRect();
+    var margin = 6;
+
+    if (tbRect.left < arenaRect.left + margin) {
+      // Cola na borda esquerda
+      var shift = arenaRect.left + margin - tbRect.left;
+      toolbar.style.transform = 'translateX(calc(-50% + ' + shift + 'px))';
+    } else if (tbRect.right > arenaRect.right - margin) {
+      // Cola na borda direita
+      var shift2 = tbRect.right - (arenaRect.right - margin);
+      toolbar.style.transform = 'translateX(calc(-50% - ' + shift2 + 'px))';
+    }
   }
 
   function closeToolbar(id) {
@@ -1196,27 +1599,87 @@
     var widget = state.widgets[id];
     if (!widget) return;
 
-    widget.size = resolveSizeKey(widget.provider, sizeKey);
-    var safe = findSafePlacement(id, widget.x, widget.y, widget.size, true);
-    widget.x = safe.x;
-    widget.y = safe.y;
-    renderWidget(id);
-    openToolbar(id);
-    normalizeWidgetOrders(false);
-    if (widget.isPersisted) {
-      persistWidget(widget, false);
+    var resolved = resolveSizeKey(widget.provider, sizeKey);
+    var isMob = document.body.classList.contains('mob');
+    if (isMob) {
+      widget.mobileSize = resolved;
+    } else {
+      widget.size = resolved;
+      var safe = findSafePlacement(id, widget.x, widget.y, widget.size, true);
+      widget.x = safe.x;
+      widget.y = safe.y;
     }
+
+    var size = getEffectiveSize(widget);
+    var el = document.getElementById(id);
+
+    if (el && widget.state === 'active') {
+      // Atualiza grid class
+      el.className = 'wd ' + (size.cols === 2 ? 'c2' : 'c1');
+
+      // Atualiza posição no desktop
+      if (!isMob) {
+        el.style.left = widget.x + 'px';
+        el.style.top  = widget.y + 'px';
+      }
+
+      if (widget.provider === 'whatsapp') {
+        // WA não tem iframe — reconstrói só o .wa sem flash
+        renderWidget(id);
+      } else {
+        // Spotify / YouTube: só muda alturas, não recarrega iframe
+        var wa = el.querySelector('.wa');
+        if (wa) wa.style.height = size.h + 'px';
+        var iframe = el.querySelector('iframe');
+        if (iframe) iframe.style.height = size.h + 'px';
+      }
+
+      // Atualiza toolbar em-place
+      var tbr2 = el.querySelector('.tbr');
+      if (tbr2) tbr2.innerHTML = buildToolbarInner(id);
+      setTimeout(function () {
+        var toolbar = document.getElementById('t' + id);
+        if (toolbar) {
+          toolbar.classList.add('show');
+          if (!document.body.classList.contains('mob')) clampToolbar(toolbar);
+        }
+      }, 20);
+    } else {
+      renderWidget(id);
+      openToolbar(id);
+    }
+
+    normalizeWidgetOrders(false);
+    if (widget.isPersisted) persistWidget(widget, false);
   }
 
   function toggleTheme(id) {
     var widget = state.widgets[id];
     if (!widget) return;
     widget.dark = !widget.dark;
-    renderWidget(id);
-    openToolbar(id);
-    if (widget.isPersisted) {
-      persistWidget(widget, false);
+
+    var el = document.getElementById(id);
+    if (el && (widget.provider === 'spotify' || widget.provider === 'deezer')) {
+      // Apenas atualiza o src do iframe — sem recriar o widget
+      var newSrc = widget.provider === 'deezer' ? buildDeezerEmbedSrc(widget) : buildSpotifyEmbedSrc(widget);
+      var iframe = el.querySelector('iframe');
+      if (iframe) iframe.src = newSrc;
+      // Atualiza estado do botão lua
+      var tbr3 = el.querySelector('.tbr');
+      if (tbr3) tbr3.innerHTML = buildToolbarInner(id);
+      setTimeout(function () {
+        var toolbar = document.getElementById('t' + id);
+        if (toolbar) {
+          toolbar.classList.add('show');
+          if (!document.body.classList.contains('mob')) clampToolbar(toolbar);
+        }
+      }, 20);
+    } else {
+      renderWidget(id);
+      openToolbar(id);
     }
+
+    if (widget.isPersisted) persistWidget(widget, false);
   }
 
   function removeWidget(id) {
@@ -1292,8 +1755,11 @@
       contentType: contentType,
       contentId: contentId,
       url: widget.url,
+      // Apple Music precisa salvar a embedUrl (inclui storefront e path completo)
+      embedUrl: (widget.provider === 'applemusic' && widget.parsed.embedUrl) ? widget.parsed.embedUrl : null,
       customPhoto: widget.customPhoto || null,
       size: widget.size,
+      mobileSize: widget.mobileSize || null,
       theme: widget.dark ? 'dark' : 'light',
       position: { x: widget.x, y: widget.y },
       order: widget.order,
@@ -1738,6 +2204,7 @@
 
   function setViewport(view) {
     var mobile = view === 'mobile';
+    exitJiggleMode();
     closeAllToolbars();
     document.body.classList.toggle('mob', mobile);
     $('#tD').toggleClass('on', !mobile);
@@ -1759,8 +2226,275 @@
     $arena.append(hint);
   }
 
+  // ── Jiggle Mode ─────────────────────────────────────────────────────────
+
+  function enterJiggleMode() {
+    if (jiggle.active) return;
+    jiggle.active = true;
+    document.body.classList.add('jiggle');
+    var btn = document.getElementById('btnJiggle');
+    if (btn) btn.classList.add('is-active');
+  }
+
+  function exitJiggleMode() {
+    if (!jiggle.active) return;
+    jiggle.active = false;
+    document.body.classList.remove('jiggle');
+    var btn = document.getElementById('btnJiggle');
+    if (btn) btn.classList.remove('is-active');
+    endJiggleDrag();
+  }
+
+  function startJiggleDrag(id, touch) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    jiggle.dragId = id;
+    jiggle.dragEl = el;
+    jiggle.lastTarget = null;
+    jiggle.rafPending = null;
+
+    // Ghost: retângulo visual simples (não clona o DOM para evitar iframes duplicados)
+    var rect = el.getBoundingClientRect();
+    var ghost = document.createElement('div');
+    ghost.id = 'jiggle-ghost';
+    var bg = getComputedStyle(el).backgroundColor || 'rgba(26,31,54,0.12)';
+    ghost.style.cssText = [
+      'position:fixed',
+      'left:' + rect.left + 'px',
+      'top:' + rect.top + 'px',
+      'width:' + rect.width + 'px',
+      'height:' + rect.height + 'px',
+      'margin:0',
+      'z-index:1000',
+      'pointer-events:none',
+      'transition:none',
+      'transform:scale(1.06) rotate(2deg)',
+      'opacity:0.72',
+      'background:' + bg,
+      'box-shadow:0 16px 40px rgba(26,31,54,.32)',
+      'border-radius:' + getComputedStyle(el).borderRadius,
+      'backdrop-filter:blur(2px)'
+    ].join(';');
+    document.body.appendChild(ghost);
+
+    jiggle.ghost = ghost;
+    jiggle.ghostOffX = touch.clientX - rect.left;
+    jiggle.ghostOffY = touch.clientY - rect.top;
+
+    el.classList.add('mob-dragging');
+  }
+
+  function moveJiggleDrag(touch) {
+    if (!jiggle.dragEl || !jiggle.ghost) return;
+    var x = touch.clientX;
+    var y = touch.clientY;
+
+    // Ghost segue o dedo em tempo real (sem RAF para máxima fluidez)
+    jiggle.ghost.style.left = (x - jiggle.ghostOffX) + 'px';
+    jiggle.ghost.style.top  = (y - jiggle.ghostOffY) + 'px';
+
+    // Detecção de troca throttleada via RAF
+    if (jiggle.rafPending) return;
+    jiggle.rafPending = requestAnimationFrame(function () {
+      jiggle.rafPending = null;
+      if (!jiggle.dragEl) return;
+
+      // Ghost tem pointer-events:none → elementFromPoint encontra o que está embaixo
+      var below = document.elementFromPoint(x, y);
+      if (!below) return;
+      var targetEl = below.closest('.wd');
+      if (!targetEl || targetEl === jiggle.dragEl) return;
+      if (targetEl === jiggle.lastTarget) return;
+
+      swapDomWidgets(jiggle.dragEl, targetEl);
+      jiggle.lastTarget = targetEl;
+    });
+  }
+
+  function endJiggleDrag() {
+    if (jiggle.rafPending) {
+      cancelAnimationFrame(jiggle.rafPending);
+      jiggle.rafPending = null;
+    }
+    if (jiggle.ghost) {
+      jiggle.ghost.remove();
+      jiggle.ghost = null;
+    }
+    if (jiggle.dragEl) {
+      jiggle.dragEl.classList.remove('mob-dragging');
+      $arena.find('.wd.mob-drop-target').removeClass('mob-drop-target');
+      syncOrdersFromDom();
+    }
+    jiggle.dragId = null;
+    jiggle.dragEl = null;
+    jiggle.lastTarget = null;
+    jiggle.ghostOffX = 0;
+    jiggle.ghostOffY = 0;
+  }
+
+  function swapDomWidgets(a, b) {
+    var parent = a.parentNode;
+    if (!parent || b.parentNode !== parent) return;
+    var children = Array.from(parent.children);
+    var ai = children.indexOf(a);
+    var bi = children.indexOf(b);
+    if (ai < bi) {
+      parent.insertBefore(b, a);
+    } else {
+      parent.insertBefore(a, b);
+    }
+  }
+
+  function syncOrdersFromDom() {
+    var order = 0;
+    $arena[0].querySelectorAll('.wd').forEach(function (el) {
+      var widget = state.widgets[el.id];
+      if (!widget || widget.state !== 'active') return;
+      widget.order = order++;
+      if (widget.isPersisted) persistWidget(widget, false, true);
+    });
+  }
+
+  function bindJiggleEvents() {
+    var arenaEl = $arena[0];
+
+    arenaEl.addEventListener('touchstart', function (e) {
+      if (!document.body.classList.contains('real-mob')) return;
+
+      // Deixa passar: botões de ação, formulários de setup
+      if (e.target.closest('.hv') || e.target.closest('.ws')) return;
+
+      var wd = e.target.closest('.wd');
+      if (!wd) return;
+
+      // NÃO chama preventDefault aqui: permite scroll normal do browser.
+      // user-select:none no CSS já previne seleção de texto.
+      // O drag só bloqueia scroll quando realmente em modo arrasto (touchmove).
+
+      if (jiggle.active) {
+        startJiggleDrag(wd.id, e.touches[0]);
+        return;
+      }
+
+      // Long press → entra em jiggle mode após 500ms parado
+      var pressStart = e.touches[0];
+      jiggle.pressTimer = setTimeout(function () {
+        enterJiggleMode();
+        startJiggleDrag(wd.id, pressStart);
+      }, 500);
+    }, { passive: true });
+
+    arenaEl.addEventListener('touchmove', function (e) {
+      // Cancela long press se o dedo mover
+      if (jiggle.pressTimer) {
+        clearTimeout(jiggle.pressTimer);
+        jiggle.pressTimer = null;
+      }
+      if (jiggle.dragEl) {
+        e.preventDefault(); // impede scroll durante drag
+        moveJiggleDrag(e.touches[0]);
+      }
+    }, { passive: false });
+
+    arenaEl.addEventListener('touchend', function (e) {
+      clearTimeout(jiggle.pressTimer);
+      jiggle.pressTimer = null;
+      endJiggleDrag();
+    }, { passive: true });
+
+    arenaEl.addEventListener('touchcancel', function () {
+      clearTimeout(jiggle.pressTimer);
+      jiggle.pressTimer = null;
+      endJiggleDrag();
+    }, { passive: true });
+
+    // Botão Concluído
+    document.getElementById('jiggleDone').addEventListener('click', exitJiggleMode);
+
+    // Toque fora da arena sai do jiggle mode
+    document.addEventListener('touchstart', function (e) {
+      if (!jiggle.active) return;
+      if (!e.target.closest('#arena, #jiggleDone')) {
+        exitJiggleMode();
+      }
+    }, { passive: true });
+  }
+
+  // Drag de reordenação via mouse no modo mobile preview do desktop
+  function initMobMouseMove(id, event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    var el = document.getElementById(id);
+    if (!el) return;
+
+    var lastTarget = null;
+    var rafPending = null;
+
+    // Ghost visual simples (sem clonar DOM — evita iframes duplicados)
+    var rect = el.getBoundingClientRect();
+    var ghost = document.createElement('div');
+    ghost.id = 'mob-mouse-ghost';
+    var bg = getComputedStyle(el).backgroundColor || 'rgba(26,31,54,0.12)';
+    ghost.style.cssText = [
+      'position:fixed',
+      'left:' + rect.left + 'px',
+      'top:' + rect.top + 'px',
+      'width:' + rect.width + 'px',
+      'height:' + rect.height + 'px',
+      'margin:0',
+      'z-index:1000',
+      'pointer-events:none',
+      'transition:none',
+      'transform:scale(1.06) rotate(1.5deg)',
+      'opacity:0.72',
+      'background:' + bg,
+      'box-shadow:0 16px 40px rgba(26,31,54,.28)',
+      'border-radius:' + getComputedStyle(el).borderRadius,
+      'cursor:grabbing',
+      'backdrop-filter:blur(2px)'
+    ].join(';');
+    document.body.appendChild(ghost);
+
+    var offX = event.clientX - rect.left;
+    var offY = event.clientY - rect.top;
+    el.classList.add('mob-dragging');
+
+    function onMove(e) {
+      ghost.style.left = (e.clientX - offX) + 'px';
+      ghost.style.top  = (e.clientY - offY) + 'px';
+
+      if (rafPending) return;
+      rafPending = requestAnimationFrame(function () {
+        rafPending = null;
+        var below = document.elementFromPoint(e.clientX, e.clientY);
+        if (!below) return;
+        var targetEl = below.closest('.wd');
+        if (!targetEl || targetEl === el || targetEl === lastTarget) return;
+        swapDomWidgets(el, targetEl);
+        lastTarget = targetEl;
+      });
+    }
+
+    function onUp() {
+      if (rafPending) { cancelAnimationFrame(rafPending); }
+      ghost.remove();
+      el.classList.remove('mob-dragging');
+      document.removeEventListener('pointermove', onMove);
+      document.removeEventListener('pointerup', onUp);
+      syncOrdersFromDom();
+    }
+
+    document.addEventListener('pointermove', onMove);
+    document.addEventListener('pointerup', onUp);
+  }
+
   function initMove(id, event) {
-    if (document.body.classList.contains('mob')) return;
+    // Em mob (preview desktop), usa swap de grid em vez de posicionamento absoluto
+    if (document.body.classList.contains('mob')) {
+      initMobMouseMove(id, event);
+      return;
+    }
 
     event.preventDefault();
     event.stopPropagation();
@@ -1901,6 +2635,29 @@
       return size.key === widget.size;
     });
     return found || provider.sizes[0];
+  }
+
+  // Retorna o sizeKey efetivo: mobileSize quando em mob, size no desktop.
+  // Em mob, se o size não é mobOk (ex: Spotify 'compact'), usa defaultMobSize.
+  function getEffectiveSizeKey(widget) {
+    var isMob = document.body.classList.contains('mob');
+    if (!isMob) return widget.size;
+
+    var provider = PROVIDERS[widget.provider || 'spotify'];
+    var candidate = widget.mobileSize || widget.size;
+    var candidateDef = provider.sizes.find(function (s) { return s.key === candidate; });
+
+    if (!candidateDef || candidateDef.mobOk === false) {
+      var fallback = provider.sizes.find(function (s) { return s.mobOk; });
+      return (provider.defaultMobSize) || (fallback ? fallback.key : provider.sizes[0].key);
+    }
+    return candidate;
+  }
+
+  function getEffectiveSize(widget) {
+    var key = getEffectiveSizeKey(widget);
+    var provider = PROVIDERS[widget.provider || 'spotify'];
+    return provider.sizes.find(function (s) { return s.key === key; }) || provider.sizes[0];
   }
 
   function resolveSizeKey(providerKey, sizeKey) {

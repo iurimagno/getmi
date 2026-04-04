@@ -12,6 +12,10 @@
     ],
     "rewrites": [
       {
+        "source": "/api/resolve-link",
+        "function": "resolveLink"
+      },
+      {
         "source": "**",
         "destination": "/p.html"
       }
@@ -64,9 +68,20 @@
       }
     ]
   },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": ["node_modules", ".git"]
+    }
+  ],
   "emulators": {
     "hosting": {
-      "port": 8080
+      "port": 8080,
+      "host": "0.0.0.0"
+    },
+    "functions": {
+      "port": 5001
     }
   },
   "firestore": {

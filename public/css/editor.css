@@ -578,8 +578,7 @@ a {
   transition:
     box-shadow .2s ease,
     left .3s var(--editor-spring),
-    top .3s var(--editor-spring),
-    width .3s var(--editor-spring);
+    top .3s var(--editor-spring);
   filter: drop-shadow(0 2px 8px rgba(26, 31, 54, .06));
 }
 
@@ -1371,21 +1370,26 @@ body.mob .profile {
 }
 
 body.mob .arena > .profile {
-  margin: 0 0 22px;
+  grid-column: 1 / -1;   /* ocupa as duas colunas do bento grid */
+  margin: 0 0 14px;
   padding: 4px 6px 0;
 }
 
 body.mob .pf-avatar {
-  margin: 0 auto 24px;
+  width: 88px;
+  height: 88px;
+  margin: 0 auto 14px;
 }
 
-body.mob .pf-name,
-body.mob .pf-bio {
+body.mob .pf-name {
+  font-size: 22px;
   text-align: center;
 }
 
 body.mob .pf-bio {
-  max-width: 340px;
+  font-size: 13px;
+  text-align: center;
+  max-width: 300px;
 }
 
 body.mob .profile-card {
@@ -1407,8 +1411,11 @@ body.mob .settings-popover__card {
 body.mob .arena {
   width: min(390px, calc(100vw - 40px));
   min-height: auto;
-  display: flex;
-  flex-direction: column;
+  /* Bento grid: c1 = meia célula, c2 = linha inteira — vale em desktop preview e mobile real */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  align-items: start;
   padding: 22px 18px 26px;
   border-radius: 40px;
   overflow: hidden;
@@ -1441,33 +1448,85 @@ body.mob .arena::after {
 
 body.mob .wd {
   position: static !important;
-  width: 100% !important;
   left: auto !important;
   top: auto !important;
-  margin-bottom: 14px;
+  width: auto !important;
   display: block;
 }
 
-body.mob .wd.c1,
-body.mob .wd.c2 {
-  width: 100%;
-}
+/* c1 → meia célula; c2 → linha inteira */
+body.mob .wd.c1 { grid-column: span 1; }
+body.mob .wd.c2 { grid-column: 1 / -1; }
 
-body.mob .mv {
+/* No mobile real, o grip some — jiggle touch cuida da reordenação */
+body.mob.real-mob .mv {
   display: none !important;
 }
 
-/* Hide desktop-only edit overlays in mobile preview */
-body.mob .hv {
+/* No preview desktop em modo mobile, reposiciona o grip para dentro do widget
+   (arena tem overflow:hidden e o espaço lateral não existe no grid) */
+body.mob:not(.real-mob) .mv {
+  right: auto;
+  left: 50%;
+  top: auto;
+  bottom: 6px;
+  transform: translateX(-50%);
+}
+
+body.mob:not(.real-mob) .wd:hover .mv {
+  opacity: 1;
+  right: auto;
+  bottom: 6px;
+}
+
+/* Toolbar fixa no viewport em mob: escapa do overflow:hidden do frame do celular */
+body.mob .tba.show {
+  position: fixed !important;
+  bottom: 88px !important;
+  left: 50% !important;
+  top: auto !important;
+  transform: translateX(-50%) !important;
+  z-index: 400 !important;
+}
+
+/* No mobile real, hv e tba ficam ocultos por padrão (jiggle mode os revela).
+   No preview desktop em modo mobile, ficam visíveis como no desktop normal. */
+body.mob.real-mob .hv {
   display: none !important;
 }
 
-body.mob .tba {
+/* No mobile real fora do jiggle: toolbar oculta */
+body.mob.real-mob:not(.jiggle) .tba {
   display: none !important;
 }
 
-body.mob .wa iframe {
-  height: 152px !important;
+/* Alturas de iframe em mob são controladas via JS (resizeWidget) — sem override aqui */
+
+/* Previne seleção de texto em todos os widgets no mobile */
+body.mob .wd {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* No preview desktop em modo mobile: iframes não precisam de interação (só edição) */
+body.mob:not(.real-mob) .wd iframe {
+  pointer-events: none;
+}
+
+/* No celular real em jiggle mode: iframes bloqueados para não roubar o drag */
+body.mob.real-mob.jiggle .wd iframe {
+  pointer-events: none;
+}
+/* Fora do jiggle no celular: iframes interativos (play, scroll, etc.) */
+body.mob.real-mob:not(.jiggle) .wd iframe {
+  pointer-events: auto;
+}
+
+/* Botão lápis ativo durante jiggle mode */
+.bb__edit-btn.is-active {
+  background: rgba(255, 107, 74, .12);
+  color: var(--editor-coral);
 }
 
 /* Mobile add-widget nudge (shown inside phone frame when widgets exist) */
@@ -1476,6 +1535,7 @@ body.mob .wa iframe {
 }
 
 body.mob .mob-add-hint {
+  grid-column: 1 / -1;   /* ocupa as duas colunas */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1499,6 +1559,21 @@ body.mob .mob-add-hint:hover {
 body.mob .mob-add-hint span {
   font-size: 16px;
   line-height: 1;
+}
+
+/* ── Touch-reveal controls (real mobile com body.mob + body.real-mob) ─── */
+body.mob.real-mob .hv {
+  display: flex !important;
+  opacity: 0 !important;
+  transform: scale(.72) !important;
+  pointer-events: none;
+  transition: opacity .15s ease, transform .15s var(--editor-spring) !important;
+}
+
+body.mob.real-mob .wd.tapped .hv {
+  opacity: 1 !important;
+  transform: scale(1) !important;
+  pointer-events: auto;
 }
 
 @media (max-width: 1024px) {
@@ -1581,32 +1656,22 @@ body.mob .mob-add-hint span {
     display: none;
   }
 
-  /* Share button: flex:1 between settings and toggle */
+  /* Share button: ocupa o espaço restante, texto em linha única */
   .bb__share {
     order: 0;
-    width: auto;
     flex: 1;
     min-width: 0;
     min-height: 42px;
-    padding: 0 12px;
-    font-size: 13px;
+    padding: 0 16px;
+    font-size: 14px;
     gap: 6px;
     border-radius: 999px;
+    white-space: nowrap;
   }
 
-  /* Right cluster: just the toggle */
+  /* Esconde o toggle Desktop/Mobile no celular real */
   .bb__cluster--right {
-    width: auto;
-    flex-shrink: 0;
-    gap: 6px;
-  }
-
-  /* Compact toggle buttons */
-  .bb__toggle-btn {
-    min-width: 64px;
-    min-height: 32px;
-    padding: 0 10px;
-    font-size: 11px;
+    display: none;
   }
 
   /* FAB: above the compact bottom bar */
@@ -1635,6 +1700,7 @@ body.mob .mob-add-hint span {
   .username-field__prefix {
     font-size: 12px;
   }
+
 }
 
 
@@ -3074,3 +3140,140 @@ body.mob .mob-add-hint span {
 .wdr-yt-play svg { width: 12px; height: 12px; fill: #fff; margin-left: 2px; }
 .wdr-yt-logo { position: absolute; top: 10px; right: 12px; opacity: .7; }
 .wdr-yt-logo svg { display: block; }
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   REAL MOBILE — deve ficar aqui, após todos os estilos base (cascata correta)
+   Aplica quando a viewport física é ≤ 768 px — independente da classe .mob
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* ── Drawer como bottom sheet (sobrescreve as regras base acima) ── */
+  .wdr-panel {
+    top: auto !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    max-height: 82vh !important;
+    border-radius: 22px 22px 0 0 !important;
+    transform: translateY(100%) !important;
+    box-shadow: 0 -8px 48px rgba(26, 31, 54, .16) !important;
+  }
+
+  .wdr-panel.open {
+    transform: translateY(0) !important;
+  }
+
+  /* Drag handle no topo */
+  .wdr-head {
+    padding-top: 14px;
+  }
+
+  .wdr-head::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 5px;
+    border-radius: 999px;
+    background: rgba(26, 31, 54, .12);
+    margin: 0 auto 14px;
+  }
+
+  /* ── Elimina "frame dentro do frame" (sobrescreve body.mob acima) ── */
+  body.mob .board {
+    display: block !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    background: var(--editor-warm-white) !important;
+    background-image: none !important;
+  }
+
+  body.mob .arena-wrap {
+    width: 100% !important;
+    flex-direction: column !important;
+    margin: 60px 0 140px !important;
+    padding: 0 !important;
+    gap: 0 !important;
+  }
+
+  body.mob .arena {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: transparent !important;
+    padding: 0 16px 24px !important;
+    /* grid já definido no base body.mob .arena — aqui só remove o frame */
+  }
+
+  body.mob .arena::before,
+  body.mob .arena::after {
+    display: none !important;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   JIGGLE MODE — long press no mobile para editar / reordenar widgets
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@keyframes mob-jiggle {
+  0%   { transform: rotate(-1.8deg) scale(1); }
+  100% { transform: rotate(1.8deg)  scale(1); }
+}
+
+/* Todos os widgets balançam */
+body.jiggle .wd {
+  animation: mob-jiggle .18s ease-in-out infinite alternate;
+  transform-origin: center;
+  cursor: grab;
+}
+
+/* Widget sendo arrastado: ghost fixo segue o dedo/mouse — original vira placeholder */
+body.jiggle .wd.mob-dragging,
+body.mob .wd.mob-dragging {
+  animation: none !important;
+  transform: none !important;
+  opacity: .3 !important;
+  box-shadow: none !important;
+  pointer-events: none;
+  transition: none !important;
+}
+
+/* Slot de destino: destaque sutil */
+body.jiggle .wd.mob-drop-target {
+  outline: 2px dashed rgba(255, 107, 74, .55);
+  outline-offset: 3px;
+}
+
+/* Editar/deletar visíveis em jiggle mode */
+body.jiggle.mob .hv {
+  display: flex !important;
+  opacity: 1 !important;
+  transform: scale(1) !important;
+  pointer-events: auto !important;
+}
+
+body.jiggle.mob .hv-e,
+body.jiggle.mob .hv-d {
+  width: 30px !important;
+  height: 30px !important;
+}
+
+/* Botão Concluir edição — fica no lugar do Compartilhar na barra inferior */
+#jiggleDone {
+  display: none;
+  background: var(--editor-navy) !important;
+  color: #fff !important;
+}
+
+/* Em jiggle mode: troca Compartilhar por Concluir */
+body.jiggle #btnShare {
+  display: none !important;
+}
+
+body.jiggle #jiggleDone {
+  display: inline-flex !important;
+}

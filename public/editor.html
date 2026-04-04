@@ -15,7 +15,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
 
   <link rel="stylesheet" href="/css/tokens.css">
-  <link rel="stylesheet" href="/css/editor.css?v=4">
+  <link rel="stylesheet" href="/css/editor.css?v=20">
 </head>
 <body>
   <div class="editor-loading" id="editorLoading" role="status" aria-live="polite">
@@ -86,6 +86,9 @@
         <button type="button" class="bb__icon-btn" id="btnSettings" aria-label="Abrir configurações">
           <span class="material-symbols-outlined" aria-hidden="true">tune</span>
         </button>
+        <button type="button" class="bb__icon-btn bb__edit-btn" id="btnJiggle" aria-label="Editar widgets" hidden>
+          <span class="material-symbols-outlined" aria-hidden="true">draw</span>
+        </button>
         <a href="/" class="bb__link">Community</a>
         <a href="/" class="bb__link">Explore</a>
       </div>
@@ -93,6 +96,11 @@
       <button type="button" class="bb__share" id="btnShare">
         <span class="material-symbols-outlined" aria-hidden="true">ios_share</span>
         Compartilhar getmi
+      </button>
+
+      <button type="button" class="bb__share bb__done" id="jiggleDone" aria-label="Concluir edição">
+        <span class="material-symbols-outlined" aria-hidden="true">check</span>
+        Concluir edição
       </button>
 
       <div class="bb__cluster bb__cluster--right">
@@ -177,6 +185,8 @@
       <p class="username-dialog__foot">O link já está ativo na sua página pública.</p>
     </div>
   </section>
+
+  <button type="button" class="jiggle-done" id="jiggleDone" hidden aria-label="Concluir edição">Concluído</button>
 
   <div class="editor-toast" id="editorToast" role="status" aria-live="polite"></div>
   <div class="editor-confetti" id="editorConfetti" aria-hidden="true"></div>
@@ -321,6 +331,8 @@
               <span class="wdr-featured-add">Adicionar</span>
             </div>
           </div>
+          <div class="wdr-sm" data-available data-provider="deezer"><div class="wdr-sm-ic" style="background:#A238FF;color:#fff;">Dz</div><div><div class="wdr-sm-nm">Deezer</div><div class="wdr-sm-ds">Música, álbum, playlist</div></div></div>
+          <div class="wdr-sm" data-available data-provider="applemusic"><div class="wdr-sm-ic" style="background:#FA233B;color:#fff;">AM</div><div><div class="wdr-sm-nm">Apple Music</div><div class="wdr-sm-ds">Música, álbum, playlist</div></div></div>
           <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#FF6314;color:#fff;">Sc</div><div><div class="wdr-sm-nm">SoundCloud</div><div class="wdr-sm-ds">Track</div></div></div>
         </div>
         <div class="wdr-sect-label">Social</div>
@@ -423,9 +435,9 @@
         </div>
         <div class="wdr-row2">
           <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#FF6314;color:#fff;">Sc</div><div><div class="wdr-sm-nm">SoundCloud</div><div class="wdr-sm-ds">Track, playlist</div></div></div>
-          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#FF5722;color:#fff;">Dz</div><div><div class="wdr-sm-nm">Deezer</div><div class="wdr-sm-ds">Track, álbum</div></div></div>
-          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#fc3c44;color:#fff;">Am</div><div><div class="wdr-sm-nm">Apple Music</div><div class="wdr-sm-ds">Track, álbum</div></div></div>
-          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#FF9900;color:#fff;">Az</div><div><div class="wdr-sm-nm">Amazon Music</div><div class="wdr-sm-ds">Track, álbum</div></div></div>
+          <div class="wdr-sm" data-available data-provider="deezer"><div class="wdr-sm-ic" style="background:#A238FF;color:#fff;">Dz</div><div><div class="wdr-sm-nm">Deezer</div><div class="wdr-sm-ds">Música, álbum, playlist</div></div></div>
+          <div class="wdr-sm" data-available data-provider="applemusic"><div class="wdr-sm-ic" style="background:#FA233B;color:#fff;">AM</div><div><div class="wdr-sm-nm">Apple Music</div><div class="wdr-sm-ds">Música, álbum, playlist</div></div></div>
+          <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#FF9900;color:#fff;">Az</div><div><div class="wdr-sm-nm">Amazon Music</div><div class="wdr-sm-ds">Em breve</div></div></div>
           <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#9003BE;color:#fff;">Pd</div><div><div class="wdr-sm-nm">Podcast Spotify</div><div class="wdr-sm-ds">Episódio, show</div></div></div>
           <div class="wdr-sm wdr-soon"><div class="wdr-sm-ic" style="background:#6957D1;color:#fff;">Ap</div><div><div class="wdr-sm-nm">Apple Podcasts</div><div class="wdr-sm-ds">Episódio</div></div></div>
         </div>
@@ -518,7 +530,7 @@
       firebase.initializeApp(firebaseConfig);
     }
   </script>
-  <script src="/js/editor.js?v=4"></script>
+  <script src="/js/editor.js?v=19"></script>
   <script src="/js/sw-register.js"></script>
 </body>
 </html>
